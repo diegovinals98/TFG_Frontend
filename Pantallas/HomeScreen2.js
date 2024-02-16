@@ -19,7 +19,7 @@ export default function HomeScreen() {
   // useEffect se ejecuta después de la renderización del componente.
   useEffect(() => {
     // Llamada a la API local para obtener datos de usuarios de la base de datos del servidor
-    fetch('http://localhost:3000/datos')
+    fetch('http://10.0.0.36:3000/usuario_grupo')
     .then((response) => response.json())
     .then((json) => setData(json))
     .catch((error) => console.error(error));

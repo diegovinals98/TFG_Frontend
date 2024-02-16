@@ -9,7 +9,7 @@ services:
     container_name: "mariadb"
     hostname: mariadb
     volumes:
-      - /Users/diegovinals/Library/CloudStorage/OneDrive-UFV/5 Curso (23-24)/TFG/TestTFG/docker/mariadb:/config
+      - /Users/diegovinals/Library/CloudStorage/OneDrive-UFV/5 Curso (23-24)/TFG/TFGSeriesTrack/docker/mariadb:/config
     networks:
       - diegosNetwork
     ports:

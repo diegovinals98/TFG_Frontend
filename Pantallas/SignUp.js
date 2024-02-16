@@ -63,27 +63,38 @@ const SignUp = ({ props, navigation }) => {
   }
 
 
-  const handleSignUp = () => {
-    // Verificar si el correo electrónico es válido
+  const handleSignUp = async () => {
     if (!validateEmail(email)) {
       alert("Por favor, introduce un correo electrónico válido.");
-      return; // Salir de la función si el correo electrónico no es válido
+      return;
     }
-
-    const nuevoUsuario = {
-      id: generarIdUnico(), // Genera un ID único
+  
+    const usuario = {
+      Id: generarIdUnico(), // Genera un ID único
       Nombre: nombre,
-      Apellidos: apellidos,
-      Email: email,
-      Password: password
-      // Añade más campos según sea necesario
+      Usuario: email,
+      Contraseña: password
     };
-    añadirItemADynamoDB(nuevoUsuario)
-    alert('Usuario creado con éxito')
-    navigation.navigate('Welcome')
+  
+    try {
+      let response = await fetch('http://10.0.0.36:3000/usuario', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(usuario)
+      });
+  
+      if (response.ok) {
+        alert('Usuario creado con éxito');
+        navigation.navigate('Welcome');
+      } else {
+        alert('Error al crear el usuario');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
-  
-  
   
 
   return (
