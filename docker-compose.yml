@@ -1,0 +1,57 @@
+version: "3.8"
+networks:
+  diegosNetwork:
+    driver: bridge
+
+services:
+  mariadb:
+    image: "linuxserver/mariadb"
+    container_name: "mariadb"
+    hostname: mariadb
+    volumes:
+      - /Users/diegovinals/Library/CloudStorage/OneDrive-UFV/5 Curso (23-24)/TFG/TestTFG/docker/mariadb:/config
+    networks:
+      - diegosNetwork
+    ports:
+      - target: 3306
+        published: 3306
+        protocol: tcp
+        mode: host
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=27101998
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+
+  phpmyadmin:
+    hostname: phpmyadmin
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    links:
+      - mariadb:db
+    networks:
+      - diegosNetwork
+    ports:
+      - "4442:80"
+    environment:
+      - PMA_HOST=mariadb
+      - MYSQL_ROOT_PASSWORD=27101998
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    networks:
+      - diegosNetwork
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    command: -H unix:///var/run/docker.sock
+
+volumes:
+  portainer_data:
