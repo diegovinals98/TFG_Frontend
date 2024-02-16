@@ -25,7 +25,7 @@ export default function HomeScreen() {
     .catch((error) => console.error(error));
   
     // Llamada a la API de TMDb para obtener información de una serie específica.
-    const serie_a_buscar = 'Game of Thrones';
+    const serie_a_buscar = 'Masters of the air';
     let apiSeries = `https://api.themoviedb.org/3/search/tv?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES&page=1&query=${serie_a_buscar}&include_adult=false`;
   
     fetch(apiSeries)
