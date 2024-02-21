@@ -1,12 +1,7 @@
 
-import React, { useState} from "react";
-
-import * as SQLite from 'expo-sqlite';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
 import { globalStyles } from '../estilosGlobales.js';
 import logoFST from '../assets/logoFST.jpg';
-import { añadirItemADynamoDB } from '../database.js';
-
 
 import {
   View,
@@ -20,37 +15,37 @@ import {
   Dimensions
 } from 'react-native';
 
+// Obtiene el ancho de la ventana del dispositivo
 const windowWidth = Dimensions.get('window').width;
 
-
-
-
-const SignUp = ({ props, navigation }) => {
+// Componente SignUp para el registro de usuarios
+const SignUp = ({ navigation }) => {
   
+  // Estados para manejar la entrada de datos del usuario
   const [nombreUsuario, setnombreUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellidos, setApellidos] = useState('');
-  
 
+  // Función para volver a la pantalla anterior
+  const volver = () => {
+    navigation.goBack();
+  };
 
-  const volver = () =>{
-    navigation.goBack()
-  }
-  
-
-
+  // Función para generar un ID único para cada usuario
   function generarIdUnico() {
-    // Genera un número aleatorio entre 1 y 9999999
     return Math.floor(Math.random() * 9999999) + 1;
   }
 
+  // Manejador para el registro de un nuevo usuario
   const handleSignUp = async () => {
 
-    if(password != password2){
-      alert('Contraseñas no coinciden')
-    }else{
+    // Verifica si las contraseñas coinciden
+    if(password !== password2){
+      alert('Contraseñas no coinciden');
+    } else {
+      // Crea un objeto de usuario con la información proporcionada
       const usuario = {
         Id: generarIdUnico(), // Genera un ID único
         Nombre: nombre,
@@ -59,6 +54,7 @@ const SignUp = ({ props, navigation }) => {
         Contraseña: password
       };
     
+      // Intenta registrar al usuario en el servidor
       try {
         let response = await fetch('http://10.0.0.36:3000/usuario', {
           method: 'POST',
@@ -68,18 +64,17 @@ const SignUp = ({ props, navigation }) => {
           body: JSON.stringify(usuario)
         });
     
+        // Verifica si el registro fue exitoso
         if (response.ok) {
           alert('Usuario creado con éxito');
-          navigation.navigate('Welcome');
+          navigation.navigate('Welcome'); // Navega a la pantalla 'Welcome'
         } else {
           alert('Error al crear el usuario');
         }
       } catch (error) {
         console.error(error);
       }
-
     }
-    
   };
   
 
@@ -111,7 +106,7 @@ const SignUp = ({ props, navigation }) => {
 
         <TextInput
         style={styles.input}
-        placeholder="usuario"
+        placeholder="Usuario"
         placeholderTextColor="#666"
         onChangeText={newText => setnombreUsuario(newText)}
         autoCapitalize="none"
