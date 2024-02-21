@@ -12,7 +12,6 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { globalStyles } from '../estilosGlobales.js';
 import { useUser } from '../userContext.js';
-import { dynamoDb } from '../database.js';
 
 const Settings = () => {
 
