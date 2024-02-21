@@ -27,6 +27,8 @@ const SignUp = ({ navigation }) => {
   const [password2, setPassword2] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellidos, setApellidos] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
 
   // Función para volver a la pantalla anterior
   const volver = () => {
@@ -38,13 +40,25 @@ const SignUp = ({ navigation }) => {
     return Math.floor(Math.random() * 9999999) + 1;
   }
 
+  function validarContraseña(contraseña) {
+    const longitudValida = contraseña.length >= 8; // Verifica la longitud mínima de 8 caracteres
+    const tieneMayuscula = /[A-Z]/.test(contraseña); // Verifica la presencia de al menos una letra mayúscula
+    const tieneNumero = /[0-9]/.test(contraseña); // Verifica la presencia de al menos un número
+  
+    return longitudValida && tieneMayuscula && tieneNumero;
+  }
+  
+
   // Manejador para el registro de un nuevo usuario
   const handleSignUp = async () => {
 
     // Verifica si las contraseñas coinciden
-    if(password !== password2){
+    if(password != password2){
       alert('Contraseñas no coinciden');
-    } else {
+    } else if(!validarContraseña(password)){
+      setErrorMessage('La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número');
+      return;
+    }else {
       // Crea un objeto de usuario con la información proporcionada
       const usuario = {
         Id: generarIdUnico(), // Genera un ID único
@@ -106,7 +120,7 @@ const SignUp = ({ navigation }) => {
 
         <TextInput
         style={styles.input}
-        placeholder="Usuario"
+        placeholder="Nombre de Usuario"
         placeholderTextColor="#666"
         onChangeText={newText => setnombreUsuario(newText)}
         autoCapitalize="none"
@@ -131,6 +145,8 @@ const SignUp = ({ navigation }) => {
             secureTextEntry={true}
             placeholderTextColor={'#cacaca'}
           />
+
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
           <TouchableOpacity style={globalStyles.button} title="Check user" onPress={() => handleSignUp()}>
             <Text style = {globalStyles.buttonText} >Crear Cuenta</Text>
@@ -211,5 +227,6 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
+    width: '80%'
   },
 });

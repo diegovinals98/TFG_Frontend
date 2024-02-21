@@ -176,3 +176,5 @@ Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 330
 2024-02-21 16:30:36 85 [Warning] Aborted connection 85 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
 2024-02-21 16:30:58 176 [Warning] Aborted connection 176 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
 2024-02-21 16:46:53 177 [Warning] Aborted connection 177 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-21 16:59:41 230 [Warning] Aborted connection 230 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-21 18:21:40 245 [Warning] Aborted connection 245 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)

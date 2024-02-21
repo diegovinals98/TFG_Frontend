@@ -62,6 +62,23 @@ app.get('/usuario', (req, res) => {
   });
 });
 
+app.put('/usuario/:id', (req, res) => {
+  const { id } = req.params;
+  const { newNombre, newApellidos, newUsuario, newContrasena } = req.body;
+
+  let sql = `UPDATE Usuarios SET Nombre = ?, Apellidos = ?, Usuario = ?, Contraseña = ? WHERE Id = ?`;
+  db.query(sql, [newNombre, newApellidos, newUsuario, newContrasena, id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error al actualizar el usuario');
+    } else {
+      console.log('Datos del usuario actualizados:', result);
+      res.send('Datos del usuario actualizados correctamente.');
+    }
+  });
+});
+
+
 // Ruta para añadir un nuevo usuario a la tabla Usuarios
 app.post('/usuario', (req, res) => {
   console.log("Añadiendo un nuevo usuario");

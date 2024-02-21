@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import logoFST from '../assets/logoFST.jpg';
 import { useNavigation } from '@react-navigation/native';
-import { dynamoDb } from '../database.js';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
-import * as AppleAuthentication from 'expo-apple-authentication';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { Alert } from 'react-native';
 
 
@@ -84,7 +81,7 @@ const LogInScreen = () => {
       <Text style={styles.title}>Iniciar Sesión</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Nombre de Usuario"
         placeholderTextColor="#666"
         value={username}
         onChangeText={setUsername}

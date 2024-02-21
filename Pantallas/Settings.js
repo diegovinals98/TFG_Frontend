@@ -15,49 +15,56 @@ import { useUser } from '../userContext.js';
 import { dynamoDb } from '../database.js';
 
 const Settings = () => {
+
   const navigation = useNavigation();
   const { user, setUser } = useUser();
+
+  // Los datos del usuario, para usarlos, hay que poner {id} o {nombre}
   const [nombre, setNombre] = useState(user?.nombre || '');
   const [apellidos, setApellidos] = useState(user?.apellidos || '');
-  const [email, setEmail] = useState(user?.email || '');
+  const [usuario, setUsuario] = useState(user?.usuario || '');
   const [contrasena, setContrasena] = useState('');
+  const [id, setId] = useState(user?.id || '');
+
 
   const iniciales = user?.nombre ? `${user?.nombre.charAt(0)}${user?.apellidos.charAt(0)}` : '';
 
-  async function updateUser(userId, newNombre, newApellidos, newEmail, newContrasena) {
-    const params = {
-      TableName: "Usuarios",
-      Key: {
-        "id": userId, // Asegúrate de que 'id' sea la clave de partición o una parte de la clave principal de tu tabla
-      },
-      UpdateExpression: "set Nombre = :n, Apellidos = :a, Email = :e, Password = :c",
-      ExpressionAttributeValues: {
-        ":n": newNombre,
-        ":a": newApellidos,
-        ":e": newEmail,
-        ":c": newContrasena,
-      },
-      ReturnValues: "UPDATED_NEW", // Devuelve los atributos del ítem después de la actualización
-    };
-  
+  async function updateUser(userId, newNombre, newApellidos, newUsuario, newContrasena) {
     try {
-      const data = await dynamoDb.update(params).promise();
-      console.log("Datos del usuario actualizados:", data);
-      // Actualiza el estado global del usuario
-      setUser({
-        id: userId,
-        nombre: newNombre,
-        apellidos: newApellidos,
-        email: newEmail,
-        // Es recomendable no almacenar la contraseña en el estado global
+      let response = await fetch(`http://10.0.0.36:3000/usuario/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          newNombre,
+          newApellidos,
+          newUsuario,
+          newContrasena
+        })
       });
-      alert('Datos del usuario actualizados correctamente.');
-      navigation.goBack();
+  
+      if (response.ok) {
+        console.log("Datos del usuario actualizados correctamente.");
+        setUser({
+          id: userId,
+          nombre: newNombre,
+          apellidos: newApellidos,
+          usuario: newUsuario,
+          // Es recomendable no almacenar la contraseña en el estado global
+        });
+        alert('Datos del usuario actualizados correctamente.');
+        navigation.goBack();
+      } else {
+        console.error('Error al actualizar el usuario:', response);
+        alert('Error al actualizar usuario.');
+      }
     } catch (error) {
-      console.error("Error al actualizar usuario en DynamoDB:", error);
+      console.error('Error en la solicitud:', error);
       alert('Error al actualizar usuario.');
     }
   }
+  
 
   const guardarCambios = () => {
     if (nombre.trim() && apellidos.trim() && email.trim() && contrasena.trim()) {
@@ -102,13 +109,11 @@ const Settings = () => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>Nombre de Usuario</Text>
           <TextInput 
             style={styles.input}
-            onChangeText={setEmail}
-            value={email}
-            placeholder="Email"
-            keyboardType="email-address"
+            onChangeText={setUsuario}
+            value={usuario}
             autoCapitalize="none"
           />
         </View>

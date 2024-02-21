@@ -1,23 +1,39 @@
-import React from 'react';
+import { React, useState} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import logoFST from '../assets/logoFST.jpg';
 import { Dimensions } from 'react-native';
 import { globalStyles } from '../estilosGlobales.js';
-import {dynamoDb, obtenerTodosLosItemsDeDynamoDB } from '../database.js'
 
 const windowWidth = Dimensions.get('window').width;
 
 export default function WelcomeScreen({ navigation }) {
+  // data: Almacena datos de usuarios.
+  const [todosUsuarios, settodosUsuarios] = useState([]);
+
+  const imprimirUsuarios = (usuarios) => {
+    console.log("---------------------- USUARIOS ----------------------");
+    usuarios.forEach((usuario, index) => {
+      console.log(`----------- Usuario ${index + 1}----------- `);
+      console.log();
+      console.log(`ID: ${usuario.Id}, Nombre: ${usuario.Nombre}, Apellidos: ${usuario.Apellidos}, Usuario: ${usuario.Usuario}, Contraseña : ${usuario.Contraseña}`);
+      console.log();
+    });
+  };
   
   const handleLoginPress = () => {
-    obtenerTodosLosItemsDeDynamoDB()
+    fetch('http://10.0.0.36:3000/usuario')
+      .then((response) => response.json())
+      .then((json) => {
+        settodosUsuarios(json);
+        imprimirUsuarios(json); // Llama a una función para imprimir los usuarios
+      })
+      .catch((error) => console.error(error));
+  
     console.log('Login pressed');
-    navigation.navigate('LogInScreen') // Navegar a la pantalla 'Home' al presionar
-    // Aquí iría la lógica para manejar el inicio de sesión
+    navigation.navigate('LogInScreen'); // Navegar a la pantalla 'LogInScreen'
   };
 
   const handleCreateAccountPress = () => {
-    obtenerTodosLosItemsDeDynamoDB()
     console.log('Create Account pressed');
     navigation.navigate('SignUp') // Navegar a la pantalla 'Home' al presionar
     // Aquí iría la lógica para manejar la creación de la cuenta
