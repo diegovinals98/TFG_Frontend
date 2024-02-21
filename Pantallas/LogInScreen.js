@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import logoFST from '../assets/logoFST.jpg';
 import { useNavigation } from '@react-navigation/native';
 import { dynamoDb } from '../database.js';
-import { useUser } from '../userContext'; // Importa el hook useUser
+import { useUser } from '../userContext.js'; // Importa el hook useUser
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { Alert } from 'react-native';
+
 
 import { 
   View, 
@@ -28,83 +30,52 @@ const LogInScreen = () => {
   const [loginError, setLoginError] = useState('');
   const { setUser } = useUser();
 
-  const handleBiometricAuth = async () => {
-    // Verifica si la autenticación biométrica es compatible
-    const compatible = await LocalAuthentication.hasHardwareAsync();
-    if (!compatible) {
-      alert('Tu dispositivo no es compatible con la autenticación biométrica.');
-      return;
-    }
-  
-    // Verifica qué tipos de autenticación biométrica están disponibles
-    const { available, biometryType } = await LocalAuthentication.supportedAuthenticationTypesAsync();
-  
-    if (!available) {
-      alert('La autenticación biométrica no está disponible en este dispositivo.');
-      return;
-    }
-  
-    // Configurar mensaje basado en el tipo de biometría disponible
-    let promptMessage = 'Autenticar';
-    if (biometryType === LocalAuthentication.AuthenticationType.FINGERPRINT) {
-      promptMessage = 'Usar Touch ID';
-    } else if (biometryType === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION) {
-      promptMessage = 'Usar Face ID';
-    }
-  
-    // Intenta autenticar usando biometría
-    try {
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage,
-        fallbackLabel: 'Usar contraseña',
-      });
-  
-      if (result.success) {
-        // Autenticación exitosa, navega o realiza alguna acción
-        navigation.navigate('Home');
-      } else {
-        // Manejo si el usuario cancela o falla la autenticación
-        console.log('Autenticación fallida o cancelada');
-      }
-    } catch (error) {
-      console.error('Error en la autenticación biométrica', error);
-    }
-  };
-  
-  
 
   async function handleLogin() {
-    const params = {
-      TableName: 'Usuarios',
-      FilterExpression: 'Email = :email AND Password = :password',
-      ExpressionAttributeValues: {
-        ':email': username,
-        ':password': password,
-      },
-    };
-  
+    
     try {
-      const data = await dynamoDb.scan(params).promise();
-      if (data.Items.length > 0) {
-        const user = data.Items[0]; // Asigna el primer usuario devuelto a 'user'
-        setUser({
-          id: user.id, // Asegúrate de que estos campos coincidan con los de tu tabla DynamoDB
-          nombre: user.Nombre,
-          apellidos: user.Apellidos,
-          email: user.Email,
-        });
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
-      } else {
-        alert('Contraseña o Email incorrectos')
-        console.log('Contraseña o Email incorrectos')
-      }
-    } catch (error) {
-      console.error('Error al buscar en DynamoDB:', error);
+      let response = await fetch('http://10.0.0.36:3000/login', { // Asegúrate de que la IP y el puerto sean correctos
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          usuario: username,
+          contraseña: password
+        })
+      });
+  
+      let json = await response.json();
+    if (json.success === 1) {
+      console.log('Inicio de sesión exitoso:', json);
+      // Aquí puedes agregar la navegación a otra pantalla si es necesario
+      //Alert.alert("Éxito", "Inicio de sesión exitoso.");
+      setUser({
+        id: json.user.Id, // Asegúrate de que estos campos coincidan con los nombres en tu base de datos
+        nombre: json.user.Nombre,
+        apellidos: json.user.Apellidos,
+        usuario: json.user.Usuario,
+        contraseña: json.user.Contraseña,
+      });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    } else {
+      // Aquí manejas el caso de éxito 0 o cualquier otro caso
+      console.log('Error en el inicio de sesión');
+      setLoginError('Usuario o contraseña incorrectos');
+      Alert.alert("Error", "Usuario o contraseña incorrectos.");
     }
+  } catch (error) {
+    console.error('Error en la solicitud de inicio de sesión:', error);
+    setLoginError('Error al conectarse al servidor');
+    Alert.alert("Error de Conexión", "Error al conectarse al servidor.");
   }
+}
+  
+
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -128,48 +99,12 @@ const LogInScreen = () => {
         secureTextEntry
       />
 
-<AppleAuthentication.AppleAuthenticationButton
-  buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-  buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-  cornerRadius={10}
-  style={styles.button}
-  onPress={async () => {
-    try {
-      console.log('Dentro del try de apple')
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
 
-      // Imprime los datos obtenidos
-      console.log('Nombre completo:', credential.fullName);
-      console.log('Apellido:', credential.fullName.familyName);
-      console.log('Email:', credential.email);
-      // Continúa con tu lógica de autenticación, por ejemplo, crear un nuevo usuario
-      // en tu base de datos con estos datos o vincularlo con un usuario existente.
-    } catch (e) {
-      if (e.code === 'ERR_REQUEST_CANCELED') {
-        console.log('Inicio de sesión con Apple cancelado por el usuario');
-      } else {
-        console.error('Error al iniciar sesión con Apple:', e);
-      }
-    }
-  }}
-/>
-
-      
-<TouchableOpacity
-          style={styles.button}
-          onPress={handleBiometricAuth}
-        >
-          <Text style={styles.text}>Iniciar Sesión con Biometría</Text>
-        </TouchableOpacity>
+  
     
           <TouchableOpacity
             style={styles.button}
-            onPress={handleLogin}
+            onPress={() => handleLogin()}
           >
             <Text style={styles.text}>Iniciar Sesión</Text>
           </TouchableOpacity>

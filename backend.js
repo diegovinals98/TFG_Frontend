@@ -23,16 +23,31 @@ db.connect((err) => {
 });
 
 
-// Método para obtener todos los usuarios del LogIn
+// Método para verificar el inicio de sesión de un usuario
 app.post('/login', (req, res) => {
-  let sql = 'SELECT * FROM Usuarios';
-  db.query(sql, (err, results) => {
+  let usuario = req.body.usuario;
+  let contraseña = req.body.contraseña; // Asegúrate de que esto coincida con el nombre de campo en tu base de datos
+
+  console.log("Usuario: " + usuario);
+  console.log("Contraseña: " + contraseña);
+  let sql = 'SELECT * FROM Usuarios WHERE Usuario = ? AND Contraseña = ?';
+  db.query(sql, [usuario, contraseña], (err, results) => {
     if (err) {
       console.error(err);
-      return res.status(500).send('Error al obtener los usuarios');
+      return res.status(500).send('Error al verificar el usuario');
     }
-    // Devuelve todos los usuarios
-    res.json(results);
+    if (results.length > 0) {
+      // Usuario encontrado y contraseña correcta
+      console.log('Inicio de sesión exitoso');
+      // Envía los datos del usuario en la respuesta
+      let user = results[0]; // asumiendo que el usuario es único
+      console.log(user)
+      res.json({ success: 1, user: user });
+    } else {
+      // Usuario no encontrado o contraseña incorrecta
+      console.log('Usuario o contraseña incorrectos');
+      res.json({ success: 0 });
+    }
   });
 });
 
@@ -55,7 +70,8 @@ app.post('/usuario', (req, res) => {
     Id: req.body.Id,
     Nombre: req.body.Nombre,
     Usuario: req.body.Usuario,
-    Contraseña: req.body.Contraseña
+    Contraseña: req.body.Contraseña,
+    Apellidos: req.body.Apellidos
   };
 
   let sql = 'INSERT INTO Usuarios SET ?';

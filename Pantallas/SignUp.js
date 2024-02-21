@@ -27,11 +27,11 @@ const windowWidth = Dimensions.get('window').width;
 
 const SignUp = ({ props, navigation }) => {
   
-  const [email, setEmail] = useState('');
+  const [nombreUsuario, setnombreUsuario] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellidos, setApellidos] = useState('');
-  const [emailError, setEmailError] = useState('');
   
 
 
@@ -39,61 +39,47 @@ const SignUp = ({ props, navigation }) => {
     navigation.goBack()
   }
   
-  // Función para validar el formato del correo electrónico
-  const validateEmail = (email) => {
-    // Expresión regular para verificar el formato del correo electrónico
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
-  // Manejar el cambio en el campo de entrada de correo electrónico
-  const handleEmailChange = (newText) => {
-    setEmail(newText);
-    // Verificar si el correo electrónico es válido
-    if (!validateEmail(newText)) {
-      setEmailError('¡Esto no es un correo electrónico válido!');
-    } else {
-      setEmailError('');
-    }
-  };
 
   function generarIdUnico() {
     // Genera un número aleatorio entre 1 y 9999999
     return Math.floor(Math.random() * 9999999) + 1;
   }
 
-
   const handleSignUp = async () => {
-    if (!validateEmail(email)) {
-      alert("Por favor, introduce un correo electrónico válido.");
-      return;
-    }
-  
-    const usuario = {
-      Id: generarIdUnico(), // Genera un ID único
-      Nombre: nombre,
-      Usuario: email,
-      Contraseña: password
-    };
-  
-    try {
-      let response = await fetch('http://10.0.0.36:3000/usuario', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(usuario)
-      });
-  
-      if (response.ok) {
-        alert('Usuario creado con éxito');
-        navigation.navigate('Welcome');
-      } else {
-        alert('Error al crear el usuario');
+
+    if(password != password2){
+      alert('Contraseñas no coinciden')
+    }else{
+      const usuario = {
+        Id: generarIdUnico(), // Genera un ID único
+        Nombre: nombre,
+        Apellidos: apellidos,
+        Usuario: nombreUsuario,
+        Contraseña: password
+      };
+    
+      try {
+        let response = await fetch('http://10.0.0.36:3000/usuario', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(usuario)
+        });
+    
+        if (response.ok) {
+          alert('Usuario creado con éxito');
+          navigation.navigate('Welcome');
+        } else {
+          alert('Error al crear el usuario');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
+
     }
+    
   };
   
 
@@ -125,19 +111,27 @@ const SignUp = ({ props, navigation }) => {
 
         <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="usuario"
         placeholderTextColor="#666"
-        onChangeText={handleEmailChange}
+        onChangeText={newText => setnombreUsuario(newText)}
         autoCapitalize="none"
         />
-      {/* Mostrar el mensaje de error si el correo electrónico no es válido */}
-      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-
+    
           <TextInput
             style={styles.input}
             onChangeText={newText => setPassword(newText)}
             //value={number}
             placeholder="Contraseña"
+            keyboardType="default"
+            secureTextEntry={true}
+            placeholderTextColor={'#cacaca'}
+          />
+
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setPassword2(newText)}
+            //value={number}
+            placeholder="Repite la contraseña"
             keyboardType="default"
             secureTextEntry={true}
             placeholderTextColor={'#cacaca'}
