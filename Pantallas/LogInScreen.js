@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    //backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
-    backgroundColor: '#ffffff'
+    backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
+    //backgroundColor: '#ffffff'
   },
   title: {
     fontSize: 30,

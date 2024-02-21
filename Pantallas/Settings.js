@@ -17,57 +17,82 @@ const Settings = () => {
 
   const navigation = useNavigation();
   const { user, setUser } = useUser();
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Los datos del usuario, para usarlos, hay que poner {id} o {nombre}
   const [nombre, setNombre] = useState(user?.nombre || '');
   const [apellidos, setApellidos] = useState(user?.apellidos || '');
   const [usuario, setUsuario] = useState(user?.usuario || '');
   const [contrasena, setContrasena] = useState('');
+  const [contrasena2, setContrasena2] = useState('');
   const [id, setId] = useState(user?.id || '');
 
 
   const iniciales = user?.nombre ? `${user?.nombre.charAt(0)}${user?.apellidos.charAt(0)}` : '';
 
-  async function updateUser(userId, newNombre, newApellidos, newUsuario, newContrasena) {
-    try {
-      let response = await fetch(`http://10.0.0.36:3000/usuario/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          newNombre,
-          newApellidos,
-          newUsuario,
-          newContrasena
-        })
-      });
+  function validarContraseña(contraseña) {
+    const longitudValida = contraseña.length >= 8; // Verifica la longitud mínima de 8 caracteres
+    const tieneMayuscula = /[A-Z]/.test(contraseña); // Verifica la presencia de al menos una letra mayúscula
+    const tieneNumero = /[0-9]/.test(contraseña); // Verifica la presencia de al menos un número
   
-      if (response.ok) {
-        console.log("Datos del usuario actualizados correctamente.");
-        setUser({
-          id: userId,
-          nombre: newNombre,
-          apellidos: newApellidos,
-          usuario: newUsuario,
-          // Es recomendable no almacenar la contraseña en el estado global
+    return longitudValida && tieneMayuscula && tieneNumero;
+  }
+
+  async function updateUser(userId, newNombre, newApellidos, newUsuario, newContrasena) {
+    console.log(contrasena)
+    console.log(contrasena2)
+
+    // Verifica si las contraseñas coinciden
+    if(contrasena != contrasena2){
+      alert('Contraseñas no coinciden');
+    } else if(!validarContraseña(contrasena)){
+      setErrorMessage('La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número');
+      return;
+    }else{
+
+      try {
+        let response = await fetch(`http://10.0.0.36:3000/usuario/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            newNombre,
+            newApellidos,
+            newUsuario,
+            newContrasena
+          })
         });
-        alert('Datos del usuario actualizados correctamente.');
-        navigation.goBack();
-      } else {
-        console.error('Error al actualizar el usuario:', response);
+    
+        if (response.ok) {
+          console.log("Datos del usuario actualizados correctamente.");
+          setUser({
+            id: userId,
+            nombre: newNombre,
+            apellidos: newApellidos,
+            usuario: newUsuario,
+            // Es recomendable no almacenar la contraseña en el estado global
+          });
+          alert('Datos del usuario actualizados correctamente.');
+          navigation.goBack();
+        } else {
+          console.error('Error al actualizar el usuario:', response);
+          alert('Error al actualizar usuario.');
+        }
+      } catch (error) {
+        console.error('Error en la solicitud:', error);
         alert('Error al actualizar usuario.');
       }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      alert('Error al actualizar usuario.');
+
     }
+
+    
   }
   
 
   const guardarCambios = () => {
-    if (nombre.trim() && apellidos.trim() && email.trim() && contrasena.trim()) {
-      updateUser(user.id, nombre, apellidos, email, contrasena);
+    if (nombre.trim() && apellidos.trim() && usuario.trim() && contrasena.trim()) {
+      updateUser(user.id, nombre, apellidos, usuario, contrasena);
     } else {
       alert('Por favor, rellena todos los campos.');
     }
@@ -118,15 +143,28 @@ const Settings = () => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Contraseña</Text>
+          <Text style={styles.label}>Nueva Contraseña</Text>
           <TextInput 
             style={styles.input}
             onChangeText={setContrasena}
             value={contrasena}
-            placeholder="Contraseña"
+            placeholder="Nueva Contraseña"
             secureTextEntry
           />
         </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Repite Nueva Contraseña</Text>
+          <TextInput 
+            style={styles.input}
+            onChangeText={setContrasena2}
+            value={contrasena2}
+            placeholder="Repite Nueva Contraseña"
+            secureTextEntry
+          />
+        </View>
+
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
         <TouchableOpacity style={globalStyles.button} onPress={guardarCambios}>
           <Text style={globalStyles.buttonText}>Guardar Cambios</Text>
@@ -179,7 +217,12 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: '1%'
-  }
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    width: '80%'
+  },
 });
 
 export default Settings;

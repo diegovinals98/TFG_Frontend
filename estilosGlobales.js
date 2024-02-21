@@ -6,8 +6,8 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        //backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
-        backgroundColor:'#ffffff'
+        backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
+        //backgroundColor:'#ffffff'
       },
       
       button: {

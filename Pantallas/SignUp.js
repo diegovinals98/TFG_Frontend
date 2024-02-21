@@ -40,6 +40,7 @@ const SignUp = ({ navigation }) => {
     return Math.floor(Math.random() * 9999999) + 1;
   }
 
+  // Funcion que valida si la contraseña cumple con una serie de requisitos
   function validarContraseña(contraseña) {
     const longitudValida = contraseña.length >= 8; // Verifica la longitud mínima de 8 caracteres
     const tieneMayuscula = /[A-Z]/.test(contraseña); // Verifica la presencia de al menos una letra mayúscula
@@ -167,8 +168,8 @@ export default SignUp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
+    //backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
