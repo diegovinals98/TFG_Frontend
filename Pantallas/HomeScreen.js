@@ -36,6 +36,11 @@ const HomeScreen = () => {
     setIsVisible(false);
   };
 
+  function anadirGrupo() {
+    setIsVisible(false)
+    navigation.navigate('Añadir Grupo')
+  }
+
   // Función para realizar la llamada a la API y obtener los grupos del Usuario
   function llamarAGrupos(){
     setIsVisible(true);
@@ -45,6 +50,8 @@ const HomeScreen = () => {
       .catch((error) => console.error('Error al obtener los grupos:', error));
     console.log(TodosGrupos);
   }
+
+  
 
   // Efecto para cargar datos de una serie específica.
   useEffect(() => {
@@ -72,17 +79,16 @@ const HomeScreen = () => {
     navigation.navigate('Settings');
   }
 
-  // Renderizado del componente.
   return (
     <View style={[globalStyles.container, styles.container]}>
-      <StatusBar/>
-
+      <StatusBar />
+  
       {/* Renderizado de la fila superior con las iniciales del usuario y el botón de grupos. */}
       <View style={styles.row}>
         <TouchableOpacity style={styles.circle} onPress={() => handleSettings()}>
           <Text style={styles.initials}>{iniciales}</Text>
         </TouchableOpacity>
-
+  
         <TouchableOpacity
           style={styles.buttonGroup}
           onPress={() => llamarAGrupos()}
@@ -91,7 +97,7 @@ const HomeScreen = () => {
           <Text style={styles.dropdownIcon}>▼</Text>
         </TouchableOpacity>
       </View>
-
+  
       {/* Modal para mostrar los grupos disponibles. */}
       <Modal
         transparent={true}
@@ -113,17 +119,16 @@ const HomeScreen = () => {
                 <Text style={styles.itemText}>{group.Nombre_grupo}</Text>
               </TouchableOpacity>
             ))}
-
             {/* Botón para añadir un nuevo grupo. */}
-            <TouchableOpacity style={styles.item}>
-              <Text style={styles.itemText}>+ Añadir Grupo</Text>
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.item}
+        onPress={anadirGrupo}
+      >
+        <Text style={styles.itemText}>+ Crear Grupo</Text>
+      </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
-
-      
-
+  
       {/* Renderizado de los detalles de la serie seleccionada. */}
       {serieDetalle.name && (
         <View style={styles.serieDetailContainer}>
@@ -137,11 +142,12 @@ const HomeScreen = () => {
           <Text style={styles.serieOverview}>Status: {serieDetalle.status}</Text>
         </View>
       )}
+  
       {/* Mensaje de bienvenida y detalles del usuario. */}
       <Text>Bienvenido, {user?.nombre} {user?.apellidos} con id: {user?.id}</Text>
-      
+
     </View>
-  );
+  );  
 };
 
 
@@ -211,6 +217,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   itemText: {
+    textAlign: 'center', // Centrar el texto
     fontSize: 16,
   },
   serieDetailContainer:{

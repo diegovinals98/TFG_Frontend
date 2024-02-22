@@ -7,6 +7,7 @@ import LogInScreen from './Pantallas/LogInScreen.js'; // Asume que este es el co
 import HomeScreen from './Pantallas/HomeScreen.js'; // Asume que este es el componente al que quieres navegar después del login
 import SignUp from './Pantallas/SignUp.js'; // Asume que este es el componente al que quieres navegar después del login
 import Settings from './Pantallas/Settings.js'; // Asume que este es el componente al que quieres navegar después del login
+import anadirGrupo from './Pantallas/AnadirGrupo.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ function App() {
           <Stack.Screen name="Home"  options={{ headerShown: false }} component={HomeScreen} />
           <Stack.Screen name="SignUp"  options={{ headerShown: false }} component={SignUp} />
           <Stack.Screen name="Settings" component={Settings}/>
+          <Stack.Screen name="Añadir Grupo" component={anadirGrupo}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
