@@ -103,13 +103,35 @@ app.post('/usuario', (req, res) => {
 // Ruta de prueba para obtener datos de la tabla Usuario_grupo
 app.get('/usuario_grupo', (req, res) => {
   console.log("llamado a Usuario_Grupo")
-  let sql = 'SELECT * FROM Usuario_Grupo';
+  let sql = 'SELECT * FROM Usuario_Grupo2';
   db.query(sql, (err, results) => {
     if(err) throw err;
     console.log(results);
     res.send(results);
   });
 });
+
+// Ruta para obtener los grupos a los que pertenece un usuario
+app.get('/grupos/:userId', (req, res) => {
+  const userId = req.params.userId;
+  console.log("Llamado a grupos para el usuario:", userId);
+
+  // Ajusta esta consulta SQL según tu esquema de base de datos
+  let sql = `SELECT Grupos.* FROM Grupos
+             JOIN Usuario_Grupo2 ON Grupos.ID_Grupo = Usuario_Grupo2.ID_Grupo
+             WHERE Usuario_Grupo2.ID_Usuario = ?`;
+
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error en la consulta:', err);
+      res.status(500).send('Error en el servidor');
+      return;
+    }
+    console.log(results);
+    res.send(results);
+  });
+});
+
 
 // Escuchar en un puerto
 const PORT = process.env.PORT || 3000;

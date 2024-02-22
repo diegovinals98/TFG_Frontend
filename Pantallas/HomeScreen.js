@@ -4,7 +4,9 @@ import { View,
   TextInput,
   TouchableOpacity,
   button,
-  Dimensions
+  Dimensions,
+  Modal,
+  FlatList
 } from 'react-native';
 
 // Importaciones de React y elementos de React Native.
@@ -32,6 +34,33 @@ const HomeScreen = () => {
   const [seriesData, setSeriesData] = useState([]);
   // serieDetalle: Almacena detalles específicos de una serie seleccionada.
   const [serieDetalle, setSerieDetalle] = useState([]);
+
+
+  // datos del usuario
+  
+
+  // Para el dropwdown menu de los grupos
+  const [isVisible, setIsVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [TodosGrupos, setTodosGrupos] = useState([]);
+
+
+  const handleSelectItem = (item) => {
+    setSelectedItem(item.Nombre_grupo);
+    setIsVisible(false);
+  };
+
+  const groups = ['Grupo 1', 'Grupo 2', 'Grupo 3']; // Añade aquí más grupos si es necesario
+
+  function llamarAGrupos(){
+    setIsVisible(true)
+    // Llamada a la API para obtener datos de la tabla Grupos del usuario
+    fetch(`http://10.0.0.36:3000/grupos/${user?.id}`)
+    .then((response) => response.json())
+    .then((json) => setTodosGrupos(json))
+    .catch((error) => console.error('Error al obtener los grupos:', error));
+    console.log(TodosGrupos);
+  }
   
   // useEffect se ejecuta después de la renderización del componente.
   useEffect(() => {
@@ -40,6 +69,7 @@ const HomeScreen = () => {
     .then((response) => response.json())
     .then((json) => setData(json))
     .catch((error) => console.error(error));
+
   
     // Llamada a la API de TMDb para obtener información de una serie específica.
     const serie_a_buscar = 'Masters of the air';
@@ -77,11 +107,52 @@ const HomeScreen = () => {
       <Text style={styles.initials}>{iniciales}</Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={styles.buttonGroup} onPress={() => { /* Tu lógica de manejo de grupos aquí */ }}>
-      <Text style={styles.buttonText}>GRUPOS</Text>
-      <Text style={styles.dropdownIcon}>▼</Text>
-    </TouchableOpacity>
+    <TouchableOpacity
+        style={styles.buttonGroup}
+        onPress={() => llamarAGrupos()}
+      >
+        <Text style={styles.buttonText}>{selectedItem || 'Select an Item'}</Text>
+        <Text style={styles.dropdownIcon}>▼</Text>
+      </TouchableOpacity>
     </View>
+
+
+      <Modal
+        transparent={true}
+        visible={isVisible}
+        onRequestClose={() => setIsVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalContainer}
+          activeOpacity={1}
+          onPressOut={() => setIsVisible(false)}
+        >
+                <View style={styles.modalContent}>
+          {TodosGrupos.map((group, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.item}
+              onPress={() => handleSelectItem(group)}
+            >
+              <Text style={styles.itemText}>{group.Nombre_grupo}</Text>
+            </TouchableOpacity>
+          ))}
+
+          <TouchableOpacity
+            style={styles.item}
+          >
+            <Text style={styles.itemText}>+ Añadir Grupo</Text>
+          </TouchableOpacity>
+</View>
+
+
+
+
+
+        
+        
+        </TouchableOpacity>
+      </Modal>
       
       <Text>Bienvenido, {user?.nombre} {user?.apellidos} con id: {user?.id}</Text>
       
@@ -152,6 +223,26 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     color: 'white', // Color del ícono
     fontSize: 18, // Tamaño del ícono
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 20,
+    elevation: 5,
+  },
+  item: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  itemText: {
+    fontSize: 16,
   },
 });
 
