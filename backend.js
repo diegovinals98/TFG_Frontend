@@ -132,6 +132,27 @@ app.get('/grupos/:userId', (req, res) => {
   });
 });
 
+app.get('/series-ids-usuario/:userId', (req, res) => {
+  const userId = req.params.userId;
+  console.log("Llamado para obtener los IDs de series para el usuario:", userId);
+
+  // Asegúrate de que esta consulta SQL coincida con tu esquema de base de datos y que la tabla y columna sean correctas
+  let sql = `SELECT ID_Serie FROM Series WHERE ID_Usuario = ?`;
+
+  db.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error en la consulta:', err);
+      res.status(500).send('Error en el servidor');
+      return;
+    }
+    // Solo enviamos los IDs de las series en la respuesta
+    const seriesIds = results.map(row => row.ID_Serie);
+    console.log(seriesIds);
+    res.json(seriesIds);
+  });
+});
+
+
 
 // Escuchar en un puerto
 const PORT = process.env.PORT || 3000;

@@ -1,10 +1,25 @@
 // Importaciones de React, React Native y otras librerías.
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Dimensions, 
+  Image,
+  TextInput, 
+  TouchableWithoutFeedback,
+  FlatList,
+  Keyboard,
+  Button,
+  Alert
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
 import { StatusBar } from 'expo-status-bar';
 import { globalStyles } from '../estilosGlobales.js'; // Importa estilos globales.
+import { SelectCountry, Dropdown } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 // Obtiene las dimensiones de la ventana del dispositivo.
 const windowHeigh = Dimensions.get('window').height;
@@ -24,11 +39,13 @@ const HomeScreen = () => {
   const [data, setData] = useState([]); // Estado para datos de usuarios.
   const [seriesData, setSeriesData] = useState([]); // Estado para datos generales de series.
   const [serieDetalle, setSerieDetalle] = useState([]); // Estado para detalles específicos de una serie.
+  const [seriesIds, setseriesIds] = useState([]);
+  const [seriesDetalles, setSeriesDetalles] = useState([]);
 
   // Estado para la visibilidad del menú desplegable y el grupo seleccionado.
-  const [isVisible, setIsVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [TodosGrupos, setTodosGrupos] = useState([]); // Estado para almacenar todos los grupos.
+  const [value, setValue] = useState("Grupos");
+  const [isFocus, setIsFocus] = useState(false);
 
   // Función para manejar la selección de un grupo.
   const handleSelectItem = (item) => {
@@ -36,121 +53,211 @@ const HomeScreen = () => {
     setIsVisible(false);
   };
 
-  function anadirGrupo() {
-    setIsVisible(false)
+  async function anadirGrupo() {
     navigation.navigate('Añadir Grupo')
   }
 
   // Función para realizar la llamada a la API y obtener los grupos del Usuario
-  function llamarAGrupos(){
-    setIsVisible(true);
+  const llamarAGrupos = () =>{
     fetch(`http://10.0.0.36:3000/grupos/${user?.id}`)
       .then((response) => response.json())
       .then((json) => setTodosGrupos(json))
       .catch((error) => console.error('Error al obtener los grupos:', error));
+    console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
     console.log(TodosGrupos);
   }
-
   
+  const obtenerSeriesDelUsuario = async (userId) => {
+    try {
+      // Llamada al endpoint que acabas de crear para obtener los IDs de series.
+      const respuesta = await fetch(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
+      if (!respuesta.ok) {
+        throw new Error('Respuesta de red no fue ok.');
+      }
+      const seriesIds = await respuesta.json();
+      return seriesIds;
+    } catch (error) {
+      console.error('Hubo un problema con la petición fetch:', error);
+    }
+  };
 
   // Efecto para cargar datos de una serie específica.
   useEffect(() => {
-    // URL de la API de TMDb para buscar series.
-    const serie_a_buscar = 'reacher';
-    let apiSeries = `https://api.themoviedb.org/3/search/tv?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES&page=1&query=${serie_a_buscar}&include_adult=false`;
-
-    // Llamada a la API para obtener los detalles de la serie.
-    fetch(apiSeries)
-      .then(response => response.json())
-      .then(data => {
-        const serieId = data.results[0].id;
-        const apiSerieDetalle = `https://api.themoviedb.org/3/tv/${serieId}?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES`;
-        return fetch(apiSerieDetalle);
-      })
-      .then(response => response.json())
-      .then(serieDetalle => {
-        setSerieDetalle(serieDetalle);
-      })
-      .catch(error => console.error('Error:', error));
-  }, []); // El array vacío como segundo argumento asegura que useEffect se ejecute solo una vez.
-
+    llamarAGrupos();
+    obtenerSeriesDelUsuario(user.id).then(seriesIds => {
+      // Realizar una llamada a la API para cada ID de serie y almacenar los resultados en seriesDetalles
+      Promise.all(seriesIds.map(serieID => 
+        fetch(`https://api.themoviedb.org/3/tv/${serieID}?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES`)
+          .then(response => response.json())
+      )).then(seriesDetalles => {
+        setSeriesDetalles(seriesDetalles); // Guardar los detalles de las series en el estado
+        console.log(seriesDetalles); // Imprime los detalles de las series
+      }).catch(error => console.error('Error:', error));
+    });
+  }, []); // El array vacío asegura que useEffect se ejecute solo una vez.
+  
   // Función para navegar a la pantalla de ajustes.
   const handleSettings = () => {
     navigation.navigate('Settings');
   }
 
+  const poster = (path) => {
+    // Asegurándose de que el path es válido
+    if (!path) {
+      // Puedes retornar null o una imagen predeterminada
+      return null;
+    }
+  
+    let imagePath = { uri: `https://image.tmdb.org/t/p/w500${path}` };
+  
+    return (
+      <Image
+        source={imagePath}
+        style={styles.poster}
+      />
+    );
+  }
+
+  const [query, setQuery] = useState('');
+  const [series, setSeries] = useState([]);
+
+  const handleTextChange = (text) => {
+    setQuery(text);
+    
+  };
+
+  const buscarSeries = () => {
+    const apiURL = `https://api.themoviedb.org/3/search/tv?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES&page=1&query=${query}&include_adult=false`;
+    fetch(apiURL)
+      .then(response => response.json())
+      .then(data => setSeries(data.results))
+      .catch(error => console.error(error));
+    console.log("Series Buscadas:")
+    console.log(series)
+  };
+
+  const seleccionSerie = (text) => {
+    Alert.alert(
+      'Confirmación',
+      `¿Estás seguro de que quieres añadir la serie: ${text}?`,
+      [
+        {
+          text: 'Sí',
+          onPress: () => {
+            // Lógica para añadir la serie
+            // Por ejemplo, puedes llamar a una función para manejar la acción de añadir
+            // addSerie(text);
+            // Aquí solo muestro un mensaje de confirmación
+            alert(`Serie "${text}" añadida con éxito.`);
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel', // Pone este botón con un estilo de cancelar
+          onPress: () => {
+            // Lógica para añadir la serie
+            // Por ejemplo, puedes llamar a una función para manejar la acción de añadir
+            // addSerie(text);
+            // Aquí solo muestro un mensaje de confirmación
+            resetearBusqueda()
+          }
+        },
+      ],
+      { cancelable: false } // Evita que el cuadro de diálogo se cierre al tocar fuera de él
+    );
+  };
+
+  const resetearBusqueda = () => {
+    setQuery('');
+    setSeries([]);
+  };
+  
+
   return (
     <View style={[globalStyles.container, styles.container]}>
-      <StatusBar />
-  
-      {/* Renderizado de la fila superior con las iniciales del usuario y el botón de grupos. */}
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.circle} onPress={() => handleSettings()}>
-          <Text style={styles.initials}>{iniciales}</Text>
-        </TouchableOpacity>
-  
-        <TouchableOpacity
-          style={styles.buttonGroup}
-          onPress={() => llamarAGrupos()}
-        >
-          <Text style={styles.buttonText}>{selectedItem || 'Select an Item'}</Text>
-          <Text style={styles.dropdownIcon}>▼</Text>
-        </TouchableOpacity>
-      </View>
-  
-      {/* Modal para mostrar los grupos disponibles. */}
-      <Modal
-        transparent={true}
-        visible={isVisible}
-        onRequestClose={() => setIsVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalContainer}
-          activeOpacity={1}
-          onPressOut={() => setIsVisible(false)}
-        >
-          <View style={styles.modalContent}>
-            {TodosGrupos.map((group, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.item}
-                onPress={() => handleSelectItem(group)}
-              >
-                <Text style={styles.itemText}>{group.Nombre_grupo}</Text>
-              </TouchableOpacity>
-            ))}
-            {/* Botón para añadir un nuevo grupo. */}
-      <TouchableOpacity style={styles.item}
-        onPress={anadirGrupo}
-      >
-        <Text style={styles.itemText}>+ Crear Grupo</Text>
-      </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-  
-      {/* Renderizado de los detalles de la serie seleccionada. */}
-      {serieDetalle.name && (
-        <View style={styles.serieDetailContainer}>
-          <Text style={styles.serieTitle}>{serieDetalle.name}</Text>
-          <Text style={styles.serieOverview}>Descripcion: {serieDetalle.overview}</Text>
-          {serieDetalle.seasons && serieDetalle.seasons.map((season) => (
-            <Text key={season.id} style={styles.serieOverview}>
-              Temporada {season.season_number}: {season.episode_count} episodios
-            </Text>
-          ))}
-          <Text style={styles.serieOverview}>Status: {serieDetalle.status}</Text>
-        </View>
+  <StatusBar />
+  {/* Renderizado de la fila superior con las iniciales del usuario y el botón de grupos. */}
+  <View style={styles.row}>
+    <TouchableOpacity style={styles.circle} onPress={() => handleSettings()}>
+      <Text style={styles.initials}>{iniciales}</Text>
+    </TouchableOpacity>
+
+    <Dropdown
+      style={[styles.buttonGroup, isFocus && { borderColor: 'blue' }]}
+      placeholderStyle={styles.buttonText}
+      selectedTextStyle={styles.selectedTextStyle}
+      iconStyle={styles.iconStyle}
+      data={TodosGrupos}
+      maxHeight={300}
+      labelField="Nombre_grupo"
+      valueField={value}
+      placeholder={value}
+      value={value}
+      onFocus={() => setIsFocus(true)}
+      onBlur={() => setIsFocus(false)}
+      onChange={item => {
+        setValue(item.Nombre_grupo);
+        setIsFocus(false);
+      }}
+      renderLeftIcon={() => (
+        <Text style={styles.buttonText}>{value}</Text>
       )}
-  
-      {/* Mensaje de bienvenida y detalles del usuario. */}
-      <Text>Bienvenido, {user?.nombre} {user?.apellidos} con id: {user?.id}</Text>
+    />
+    
+    {/* Botón para añadir un nuevo grupo. */}
+    <TouchableOpacity style={styles.circle} onPress={() => anadirGrupo()}>
+      <Text style={styles.initials}>+</Text>
+    </TouchableOpacity>
+  </View>
 
-    </View>
+  <TouchableWithoutFeedback onPress={() => resetearBusqueda()}>
+  <View style={styles.searchContainer}>
+    <TextInput
+      value={query}
+      onChangeText={handleTextChange}
+      placeholder="Buscar series..."
+      style={styles.searchInput}
+    />
+    <Button title="Buscar" onPress={buscarSeries} style={styles.searchButton} />
+    
+    {series.length > 0 ? (
+      <FlatList
+        data={series}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Text onPress={() => seleccionSerie(item.name)}>{item.name}</Text>
+        )}
+        style={styles.flatList}
+      />
+    ) : null}
+  </View>
+</TouchableWithoutFeedback>
+
+
+  <View>
+    {/* Renderizado de los detalles de todas las series */}
+    {seriesDetalles.map((detalle, index) => (
+      <View key={index} style={[styles.serieDetailContainer, ]}>
+        <Text style={styles.serieTitle}>{detalle.name}</Text>
+        {poster(detalle.poster_path)}
+        <Text style={styles.serieOverview}>Descripción: {detalle.overview}</Text>
+        <Text style={styles.serieOverview}>Id de la serie: {detalle.id}</Text>
+        {detalle.seasons && detalle.seasons.map((season) => (
+          <Text key={season.id} style={styles.serieOverview}>
+            Temporada {season.season_number}: {season.episode_count} episodios, id: {season.id}
+          </Text>
+        ))}
+        <Text style={styles.serieOverview}>Status: {detalle.status}</Text>
+      </View>
+    ))}
+
+    {/* Mensaje de bienvenida y detalles del usuario. */}
+    <Text>Bienvenido, {user?.nombre} {user?.apellidos} con id: {user?.id}</Text>
+  </View>
+</View>
   );  
+  
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -159,19 +266,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row', // Mantiene los elementos en fila
+    alignItems: 'center', // Alinea los elementos verticalmente
+    justifyContent: 'space-between', // Distribuye el espacio uniformemente
     width: '100%',
-    padding: 20, // Agrega un padding para separar de los bordes de la pantalla
+    padding: 10, // Espacio alrededor del contenedor
   },
   circle: {
-    width: 50, // El tamaño del círculo
-    height: 50, // El tamaño del círculo
-    borderRadius: 25, // La mitad del tamaño para hacerlo circular
+    aspectRatio: 1, // Asegura que el ancho y la altura sean siempre iguales
+    borderRadius: 1000, // Un número grande para asegurarse de que los bordes sean completamente redondos
     backgroundColor: '#6666ff', // Color de fondo del círculo
-    justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10, // Margen derecho para separar del botón de grupos
+    marginRight: 5, // Margen derecho para separar del botón de grupos
+    marginLeft: 5,
+    flex: 1, // Asigna igual espacio a cada elemento
+    justifyContent: 'center', // Centra el contenido
   },
   initials: {
     fontSize: 25,
@@ -180,14 +289,16 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     height: 50,
-    width: '80%',
     flexDirection: 'row', // Orientación horizontal para el texto y el ícono
     backgroundColor: '#6666ff', // Color de fondo del botón de grupos
     paddingHorizontal: 20, // Padding horizontal
     paddingVertical: 10, // Padding vertical
-    borderRadius: 20, // Bordes redondeados
+    borderRadius: 15, // Bordes redondeados
     justifyContent: 'center', // Centrado horizontal
     alignItems: 'center', // Centrado vertical
+    flex: 4, // Ocupa más espacio que los círculos
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   buttonText: {
     color: 'white', // Color del texto
@@ -198,18 +309,6 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     color: 'white', // Color del ícono
     fontSize: 18, // Tamaño del ícono
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 20,
-    elevation: 5,
   },
   item: {
     padding: 10,
@@ -229,7 +328,6 @@ const styles = StyleSheet.create({
     marginBottom: 8, // Espacio debajo del título
     textAlign: 'center', // Centrar el texto
   },
-
   serieOverview: {
     fontSize: 16, // Tamaño moderado para la descripción
     color: '#333333', // Color oscuro para fácil lectura
@@ -238,6 +336,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10, // Espacio horizontal para no pegar al borde
     marginBottom: 12, // Espacio debajo del párrafo
   },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle:{
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 25,
+    height: 25,
+    tintColor: 'white',
+  },
+  poster: {
+    height: 150, // Ajusta la altura como prefieras
+    resizeMode: 'contain' // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
+  },prueba:{
+    backgroundColor: '#6666ff', // Color de fondo del botón de grupos
+  }
 });
 
 export default HomeScreen;
