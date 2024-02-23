@@ -152,6 +152,29 @@ app.get('/series-ids-usuario/:userId', (req, res) => {
   });
 });
 
+app.post('/agregar-serie-usuario', (req, res) => {
+  const userId = req.body.userId;
+  const idSerie = req.body.idSerie;
+
+  console.log(`Solicitud para agregar la serie con ID ${idSerie} al usuario ${userId}`);
+
+  // Asegúrate de que esta consulta SQL coincida con tu esquema de base de datos
+  let sql = `INSERT INTO Series (ID_Usuario, ID_Serie) VALUES (?, ?)`;
+
+  db.query(sql, [userId, idSerie], (err, results) => {
+    if (err) {
+      console.error('Error en la consulta:', err);
+      res.status(500).send('Error en el servidor');
+      return;
+    }
+    console.log(`Serie con ID ${idSerie} agregada al usuario ${userId}`);
+    res.status(200).send(`Serie agregada exitosamente al usuario ${userId}`);
+  });
+});
+
+
+
+
 
 
 // Escuchar en un puerto

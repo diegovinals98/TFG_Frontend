@@ -12,7 +12,8 @@ import {
   FlatList,
   Keyboard,
   Button,
-  Alert
+  Alert,
+  ScrollView
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
@@ -81,9 +82,7 @@ const HomeScreen = () => {
     }
   };
 
-  // Efecto para cargar datos de una serie específica.
-  useEffect(() => {
-    llamarAGrupos();
+  const obtenerSeries = () =>{
     obtenerSeriesDelUsuario(user.id).then(seriesIds => {
       // Realizar una llamada a la API para cada ID de serie y almacenar los resultados en seriesDetalles
       Promise.all(seriesIds.map(serieID => 
@@ -94,6 +93,13 @@ const HomeScreen = () => {
         console.log(seriesDetalles); // Imprime los detalles de las series
       }).catch(error => console.error('Error:', error));
     });
+  }
+
+  // Efecto para cargar datos de una serie específica.
+  useEffect(() => {
+    llamarAGrupos();
+    obtenerSeries();
+    
   }, []); // El array vacío asegura que useEffect se ejecute solo una vez.
   
   // Función para navegar a la pantalla de ajustes.
@@ -136,30 +142,51 @@ const HomeScreen = () => {
     console.log(series)
   };
 
-  const seleccionSerie = (text) => {
+  const agregarSerieAUsuario = async (userId, idSerie) => {
+    try {
+      let response = await fetch('http://10.0.0.36:3000/agregar-serie-usuario', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          idSerie: idSerie
+        }),
+      });
+  
+      let responseJson = await response.json();
+      console.log('Respuesta del servidor:', responseJson);
+      // Manejar la respuesta como sea necesario
+    } catch (error) {
+      //console.error('Error al enviar la solicitud:', error);
+    }
+  };
+  
+
+  const seleccionSerie = (text, idSerie) => {
+    
+    console.log("Se quire añadir " + text + ', con el id: ' + idSerie)
     Alert.alert(
       'Confirmación',
       `¿Estás seguro de que quieres añadir la serie: ${text}?`,
       [
         {
           text: 'Sí',
-          onPress: () => {
-            // Lógica para añadir la serie
-            // Por ejemplo, puedes llamar a una función para manejar la acción de añadir
-            // addSerie(text);
-            // Aquí solo muestro un mensaje de confirmación
-            alert(`Serie "${text}" añadida con éxito.`);
+          onPress: async () => {
+            // logica para añadir serie
+            agregarSerieAUsuario(user.id,idSerie)
+            obtenerSeries();
+            resetearBusqueda();
           },
+          
         },
         {
           text: 'No',
           style: 'cancel', // Pone este botón con un estilo de cancelar
           onPress: () => {
             // Lógica para añadir la serie
-            // Por ejemplo, puedes llamar a una función para manejar la acción de añadir
-            // addSerie(text);
-            // Aquí solo muestro un mensaje de confirmación
-            resetearBusqueda()
+            resetearBusqueda
           }
         },
       ],
@@ -170,6 +197,12 @@ const HomeScreen = () => {
   const resetearBusqueda = () => {
     setQuery('');
     setSeries([]);
+  };
+
+  const navegarADetalles = (idSerie) => {
+    // Aquí utilizas la función de navegación para ir a la pantalla de detalles
+    // Asegúrate de haber definido la ruta y los parámetros adecuadamente en tu configurador de navegación
+    navigation.navigate('Detalles Serie', { idSerie: idSerie });
   };
   
 
@@ -225,7 +258,7 @@ const HomeScreen = () => {
         data={series}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Text onPress={() => seleccionSerie(item.name)}>{item.name}</Text>
+          <Text onPress={() => seleccionSerie(item.name, item.id)}>{item.name}</Text>
         )}
         style={styles.flatList}
       />
@@ -234,26 +267,35 @@ const HomeScreen = () => {
 </TouchableWithoutFeedback>
 
 
+<ScrollView>
   <View>
     {/* Renderizado de los detalles de todas las series */}
     {seriesDetalles.map((detalle, index) => (
-      <View key={index} style={[styles.serieDetailContainer, ]}>
-        <Text style={styles.serieTitle}>{detalle.name}</Text>
-        {poster(detalle.poster_path)}
-        <Text style={styles.serieOverview}>Descripción: {detalle.overview}</Text>
-        <Text style={styles.serieOverview}>Id de la serie: {detalle.id}</Text>
-        {detalle.seasons && detalle.seasons.map((season) => (
-          <Text key={season.id} style={styles.serieOverview}>
-            Temporada {season.season_number}: {season.episode_count} episodios, id: {season.id}
-          </Text>
-        ))}
-        <Text style={styles.serieOverview}>Status: {detalle.status}</Text>
-      </View>
+  <TouchableOpacity
+    key={index}
+    style={[styles.serieDetailContainer]}
+    onPress={() => navegarADetalles(detalle.id)}
+  >
+        <View>
+          <Text style={styles.serieTitle}>{detalle.name}</Text>
+          {poster(detalle.poster_path)}
+          <Text style={styles.serieOverview}>Descripción: {detalle.overview}</Text>
+          <Text style={styles.serieOverview}>Id de la serie: {detalle.id}</Text>
+          {detalle.seasons && detalle.seasons.map((season) => (
+            <Text key={season.id} style={styles.serieOverview}>
+              Temporada {season.season_number}: {season.episode_count} episodios, id: {season.id}
+            </Text>
+          ))}
+          <Text style={styles.serieOverview}>Status: {detalle.status}</Text>
+        </View>
+      </TouchableOpacity>
     ))}
 
     {/* Mensaje de bienvenida y detalles del usuario. */}
     <Text>Bienvenido, {user?.nombre} {user?.apellidos} con id: {user?.id}</Text>
   </View>
+</ScrollView>
+
 </View>
   );  
   
