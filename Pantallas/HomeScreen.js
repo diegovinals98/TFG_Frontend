@@ -47,6 +47,7 @@ const HomeScreen = () => {
   const [TodosGrupos, setTodosGrupos] = useState([]); // Estado para almacenar todos los grupos.
   const [value, setValue] = useState("Grupos");
   const [isFocus, setIsFocus] = useState(false);
+  const [refrescar, setRefrescar] = useState(false);
 
   // Función para manejar la selección de un grupo.
   const handleSelectItem = (item) => {
@@ -100,7 +101,7 @@ const HomeScreen = () => {
     llamarAGrupos();
     obtenerSeries();
     
-  }, []); // El array vacío asegura que useEffect se ejecute solo una vez.
+  }, [ refrescar]); // El array vacío asegura que useEffect se ejecute solo una vez.
   
   // Función para navegar a la pantalla de ajustes.
   const handleSettings = () => {
@@ -176,8 +177,8 @@ const HomeScreen = () => {
           onPress: async () => {
             // logica para añadir serie
             agregarSerieAUsuario(user.id,idSerie)
-            obtenerSeries();
             resetearBusqueda();
+            setRefrescar(prev => !prev);
           },
           
         },
