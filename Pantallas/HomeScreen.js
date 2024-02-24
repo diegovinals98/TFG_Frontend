@@ -68,23 +68,7 @@ const HomeScreen = () => {
     console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
     console.log(TodosGrupos);
   }
-  
-  /** 
-  const obtenerSeriesDelUsuario = async (userId) => {
-    console.log('obtenerSeriesDelUsuario: ' + value)
-    try {
-      // Llamada al endpoint que acabas de crear para obtener los IDs de series.
-      const respuesta = await fetch(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
-      if (!respuesta.ok) {
-        throw new Error('Respuesta de red no fue ok.');
-      }
-      const seriesIds = await respuesta.json();
-      return seriesIds;
-    } catch (error) {
-      console.error('Hubo un problema con la petición fetch:', error);
-    }
-  };
-*/
+
 
 const obtenerSeriesDelUsuario = async (userId, value) => {
   console.log('obtenerSeriesDelUsuario: ' + value);
