@@ -132,6 +132,7 @@ app.get('/grupos/:userId', (req, res) => {
   });
 });
 
+/** 
 app.get('/series-ids-usuario/:userId', (req, res) => {
   const userId = req.params.userId;
   console.log("Llamado para obtener los IDs de series para el usuario:", userId);
@@ -151,6 +152,88 @@ app.get('/series-ids-usuario/:userId', (req, res) => {
     res.json(seriesIds);
   });
 });
+*/
+app.get('/series-ids-usuario/:userId', (req, res) => {
+  const userId = req.params.userId;
+  const groupName = req.query.value; // 'value' ahora representa el nombre del grupo
+
+  if (groupName === "Grupos") {
+    console.log("groupName es 'Grupos', enviando respuesta JSON vacía");
+    res.json({});
+    return;
+  }
+
+  console.log("Llamado para obtener los IDs de series para el usuario:", userId);
+  console.log("Para el grupo con nombre:", groupName); // Imprimiendo el nombre del grupo
+
+  // Primero, obtenemos el ID del grupo basándonos en el nombre del grupo
+  let sqlGetGroupId = `SELECT ID_Grupo FROM Grupos WHERE Nombre_grupo = ?`;
+
+  db.query(sqlGetGroupId, [groupName], (err, groupResults) => {
+    if (err) {
+      console.error('Error al buscar el grupo:', err);
+      res.status(500).send('Error al buscar el grupo en el servidor');
+      return;
+    }
+
+    // Verifica si se encontró el grupo
+    if (groupResults.length === 0) {
+      res.status(404).send('Grupo no encontrado');
+      return;
+    }
+
+    // Si se encuentra el grupo, procede a obtener los ID de usuario para ese grupo
+    const groupId = groupResults[0].ID_Grupo;
+    console.log("ID del grupo encontrado:", groupId);
+
+    let sqlGetUsersInGroup = `SELECT ID_Usuario FROM Usuario_Grupo2 WHERE ID_Grupo = ?`;
+
+    db.query(sqlGetUsersInGroup, [groupId], (usersErr, usersResults) => {
+      if (usersErr) {
+        console.error('Error en la consulta de usuarios del grupo:', usersErr);
+        res.status(500).send('Error al obtener los usuarios del grupo');
+        return;
+      }
+
+      // Imprimimos los IDs de los usuarios que pertenecen al grupo
+      const userIds = usersResults.map(row => row.ID_Usuario);
+      console.log(`Usuarios en el grupo ${groupId}:`, userIds);
+
+      // Ahora buscamos las series que tienen en común todos estos usuarios
+      if (userIds.length > 0) {
+        let placeholders = userIds.map(() => '?').join(',');
+        let sqlGetCommonSeries = `
+          SELECT ID_Serie 
+          FROM Series 
+          WHERE ID_Usuario IN (${placeholders}) 
+          GROUP BY ID_Serie 
+          HAVING COUNT(DISTINCT ID_Usuario) = ?
+        `;
+
+        db.query(sqlGetCommonSeries, [...userIds, userIds.length], (seriesErr, seriesResults) => {
+          if (seriesErr) {
+            console.error('Error al obtener las series comunes:', seriesErr);
+            res.status(500).send('Error al obtener las series comunes');
+            return;
+          }
+
+          // Imprimimos los IDs de series que todos los usuarios tienen en común
+          const commonSeriesIds = seriesResults.map(row => row.ID_Serie);
+          console.log(`Series comunes para los usuarios en el grupo ${groupId}:`, commonSeriesIds);
+          
+          // Devolvemos las series comunes como respuesta
+          res.json(commonSeriesIds);
+        });
+      } else {
+        // Si no hay usuarios en el grupo, no hay series comunes para buscar
+        res.status(404).send('No hay usuarios en el grupo');
+      }
+    });
+  });
+});
+
+
+
 
 app.post('/agregar-serie-usuario', (req, res) => {
   const userId = req.body.userId;
@@ -158,19 +241,36 @@ app.post('/agregar-serie-usuario', (req, res) => {
 
   console.log(`Solicitud para agregar la serie con ID ${idSerie} al usuario ${userId}`);
 
-  // Asegúrate de que esta consulta SQL coincida con tu esquema de base de datos
-  let sql = `INSERT INTO Series (ID_Usuario, ID_Serie) VALUES (?, ?)`;
+  // Primero, verifica si ya existe el par userId e idSerie
+  let sqlCheck = `SELECT * FROM Series WHERE ID_Usuario = ? AND ID_Serie = ?`;
 
-  db.query(sql, [userId, idSerie], (err, results) => {
+  db.query(sqlCheck, [userId, idSerie], (err, results) => {
     if (err) {
       console.error('Error en la consulta:', err);
       res.status(500).send('Error en el servidor');
       return;
     }
-    console.log(`Serie con ID ${idSerie} agregada al usuario ${userId}`);
-    res.status(200).send(`Serie agregada exitosamente al usuario ${userId}`);
+    if (results.length > 0) {
+      // Si ya existe la serie para el usuario, no hagas la inserción
+      console.log(`La serie con ID ${idSerie} ya existe para el usuario ${userId}`);
+      res.status(409).send(`La serie ya existe`);
+    } else {
+      // Si no existe, inserta la nueva serie para el usuario
+      let sqlInsert = `INSERT INTO Series (ID_Usuario, ID_Serie) VALUES (?, ?)`;
+
+      db.query(sqlInsert, [userId, idSerie], (insertErr, insertResults) => {
+        if (insertErr) {
+          console.error('Error al insertar:', insertErr);
+          res.status(500).send('Error al insertar en el servidor');
+          return;
+        }
+        console.log(`Serie con ID ${idSerie} agregada al usuario ${userId}`);
+        res.status(200).send(`Serie agregada exitosamente al usuario ${userId}`);
+      });
+    }
   });
 });
+
 
 
 

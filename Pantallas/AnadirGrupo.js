@@ -19,30 +19,29 @@ const windowHeigh = Dimensions.get('window').height;
 // Componente principal de la pantalla de inicio.
 const AnadirGrupo = () => {
 
-    const [nombreGrupo, setnombreGrupo] = useState()
-  
+    const [nombreGrupo, setnombreGrupo] = useState() // Estado para almacenar el nombre del grupo.
 
   // Renderizado del componente.
   return (
     <View style={[globalStyles.container, styles.container]}>
 
+      {/* Sección de entrada para el nombre del grupo */}
       <View style={styles.inputGroup}>
           <Text style={styles.label}>Nombre del Grupo</Text>
           <TextInput 
             style={styles.input}
-            onChangeText={setnombreGrupo}
-            placeholder="Nombre del grupo"
+            onChangeText={setnombreGrupo} // Función para actualizar el estado con el texto ingresado.
+            placeholder="Nombre del grupo" // Placeholder para guiar al usuario sobre qué debe ingresar.
           />
         </View>
 
-        
+      {/* Otras secciones y componentes pueden ser agregados aquí */}  
       
     </View>
   );
 };
 
-
-
+// Estilos para el componente.
 const styles = StyleSheet.create({
   
 });

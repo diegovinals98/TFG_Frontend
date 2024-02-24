@@ -69,7 +69,9 @@ const HomeScreen = () => {
     console.log(TodosGrupos);
   }
   
+  /** 
   const obtenerSeriesDelUsuario = async (userId) => {
+    console.log('obtenerSeriesDelUsuario: ' + value)
     try {
       // Llamada al endpoint que acabas de crear para obtener los IDs de series.
       const respuesta = await fetch(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
@@ -82,19 +84,47 @@ const HomeScreen = () => {
       console.error('Hubo un problema con la petición fetch:', error);
     }
   };
+*/
 
-  const obtenerSeries = () =>{
-    obtenerSeriesDelUsuario(user.id).then(seriesIds => {
-      // Realizar una llamada a la API para cada ID de serie y almacenar los resultados en seriesDetalles
-      Promise.all(seriesIds.map(serieID => 
-        fetch(`https://api.themoviedb.org/3/tv/${serieID}?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES`)
-          .then(response => response.json())
-      )).then(seriesDetalles => {
-        setSeriesDetalles(seriesDetalles); // Guardar los detalles de las series en el estado
-        console.log(seriesDetalles); // Imprime los detalles de las series
-      }).catch(error => console.error('Error:', error));
-    });
+const obtenerSeriesDelUsuario = async (userId, value) => {
+  console.log('obtenerSeriesDelUsuario: ' + value);
+  try {
+    // Suponiendo que el servidor espera 'value' como parámetro de consulta
+    const url = new URL(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
+    url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
+
+    // Llamada al endpoint con userId y value como parámetros de consulta
+    const respuesta = await fetch(url);
+    if (!respuesta.ok) {
+      throw new Error('Respuesta de red no fue ok.');
+    }
+    const seriesIds = await respuesta.json();
+    return seriesIds;
+  } catch (error) {
+    console.error('Hubo un problema con la petición fetch:', error);
   }
+};
+
+
+const obtenerSeries = () => {
+  obtenerSeriesDelUsuario(user.id, value).then(seriesIds => {
+    // Verifica si seriesIds está vacío
+    if (seriesIds.length === 0) {
+      console.log('No hay series para mostrar');
+      return; // Sale de la función si no hay IDs de series
+    }
+
+    // Si seriesIds no está vacío, ejecuta el resto del código
+    Promise.all(seriesIds.map(serieID => 
+      fetch(`https://api.themoviedb.org/3/tv/${serieID}?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES`)
+        .then(response => response.json())
+    )).then(seriesDetalles => {
+      setSeriesDetalles(seriesDetalles); // Guardar los detalles de las series en el estado
+      //console.log(seriesDetalles); // Imprime los detalles de las series
+    }).catch(error => console.error('Error:', error));
+  });
+}
+
 
   // Efecto para cargar datos de una serie específica.
   useEffect(() => {
@@ -231,6 +261,7 @@ const HomeScreen = () => {
       onBlur={() => setIsFocus(false)}
       onChange={item => {
         setValue(item.Nombre_grupo);
+        obtenerSeries();
         setIsFocus(false);
       }}
       renderLeftIcon={() => (
@@ -269,33 +300,28 @@ const HomeScreen = () => {
 
 
 <ScrollView>
-  <View>
-    {/* Renderizado de los detalles de todas las series */}
+  <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
     {seriesDetalles.map((detalle, index) => (
-  <TouchableOpacity
-    key={index}
-    style={[styles.serieDetailContainer]}
-    onPress={() => navegarADetalles(detalle.id)}
-  >
-        <View>
-          <Text style={styles.serieTitle}>{detalle.name}</Text>
-          {poster(detalle.poster_path)}
-          <Text style={styles.serieOverview}>Descripción: {detalle.overview}</Text>
-          <Text style={styles.serieOverview}>Id de la serie: {detalle.id}</Text>
-          {detalle.seasons && detalle.seasons.map((season) => (
-            <Text key={season.id} style={styles.serieOverview}>
-              Temporada {season.season_number}: {season.episode_count} episodios, id: {season.id}
-            </Text>
-          ))}
-          <Text style={styles.serieOverview}>Status: {detalle.status}</Text>
+      <TouchableOpacity
+        key={index}
+        style={styles.serieDetailContainer}
+        onPress={() => navegarADetalles(detalle.id)}
+      >
+
+<View style={{ flex: 1 , marginTop: 0}}>
+            {poster(detalle.poster_path)}
+          </View>
+        
+        <View style={{ flex: 5, marginBottom: 10}}>
+            <Text style={styles.serieTitle }>{detalle.name}</Text> 
         </View>
+        
       </TouchableOpacity>
     ))}
-
-    {/* Mensaje de bienvenida y detalles del usuario. */}
-    <Text>Bienvenido, {user?.nombre} {user?.apellidos} con id: {user?.id}</Text>
   </View>
 </ScrollView>
+
+
 
 </View>
   );  
@@ -361,23 +387,13 @@ const styles = StyleSheet.create({
   itemText: {
     textAlign: 'center', // Centrar el texto
     fontSize: 16,
-  },
-  serieDetailContainer:{
-    width:'90%'
-  }, serieTitle: {
-    fontSize: 24, // Tamaño grande para el título
+  },serieTitle: {
+    fontSize: 10, // Tamaño grande para el título
     fontWeight: 'bold', // Negrita para resaltar
     color: '#4A90E2', // Un color llamativo pero no demasiado intenso
-    marginBottom: 8, // Espacio debajo del título
+    marginBottom: '1%', // Espacio debajo del título
     textAlign: 'center', // Centrar el texto
-  },
-  serieOverview: {
-    fontSize: 16, // Tamaño moderado para la descripción
-    color: '#333333', // Color oscuro para fácil lectura
-    lineHeight: 24, // Espacio entre líneas para mejor legibilidad
-    textAlign: 'justify', // Justificar para dar una apariencia de bloque de texto
     paddingHorizontal: 10, // Espacio horizontal para no pegar al borde
-    marginBottom: 12, // Espacio debajo del párrafo
   },
   icon: {
     marginRight: 5,
@@ -402,9 +418,24 @@ const styles = StyleSheet.create({
   },
   poster: {
     height: 150, // Ajusta la altura como prefieras
-    resizeMode: 'contain' // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
-  },prueba:{
-    backgroundColor: '#6666ff', // Color de fondo del botón de grupos
+    resizeMode: 'contain', // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
+
+  },serieDetailContainer: {
+    width: '33,33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
+    padding: 10, // Añade algo de espacio alrededor de cada serie
+    flexDirection: 'column',
+  },searchInput: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 15,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },searchContainer:{
+    width: '80%',
+    flexDirection: 'column',
   }
 });
 
