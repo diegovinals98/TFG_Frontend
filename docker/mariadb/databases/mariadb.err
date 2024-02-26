@@ -239,3 +239,40 @@ Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 330
 2024-02-24 11:53:01 937 [Warning] Aborted connection 937 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
 2024-02-24 11:55:41 938 [Warning] Aborted connection 938 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
 2024-02-24 11:58:00 939 [Warning] Aborted connection 939 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
+2024-02-24 12:14:40 940 [Warning] Aborted connection 940 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-24 13:18:15 953 [Warning] Aborted connection 953 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+240225 13:00:09 mysqld_safe Starting mariadbd daemon with databases from /config/databases
+2024-02-25 13:00:09 0 [Warning] Setting lower_case_table_names=2 because file system for /config/databases/ is case insensitive
+2024-02-25 13:00:09 0 [Note] Starting MariaDB 10.11.6-MariaDB-log source revision fecd78b83785d5ae96f2c6ff340375be803cd299 as process 413
+2024-02-25 13:00:09 0 [Note] InnoDB: Compressed tables use zlib 1.3.1
+2024-02-25 13:00:09 0 [Note] InnoDB: Number of transaction pools: 1
+2024-02-25 13:00:09 0 [Note] InnoDB: Using ARMv8 crc32 + pmull instructions
+2024-02-25 13:00:09 0 [Note] mariadbd: O_TMPFILE is not supported on /tmp (disabling future attempts)
+2024-02-25 13:00:09 0 [Note] InnoDB: Using Linux native AIO
+2024-02-25 13:00:09 0 [Note] InnoDB: Initializing buffer pool, total size = 256.000MiB, chunk size = 4.000MiB
+2024-02-25 13:00:09 0 [Note] InnoDB: Completed initialization of buffer pool
+2024-02-25 13:00:09 0 [Note] InnoDB: Buffered log writes (block size=512 bytes)
+2024-02-25 13:00:09 0 [Note] InnoDB: Starting crash recovery from checkpoint LSN=49486
+2024-02-25 13:00:10 0 [Note] InnoDB: End of log at LSN=225213
+2024-02-25 13:00:10 0 [Note] InnoDB: To recover: 39 pages
+2024-02-25 13:00:10 0 [Note] InnoDB: Last binlog file '/config/log/mysql/mariadb-bin.000007', position 15089
+2024-02-25 13:00:10 0 [Note] InnoDB: 128 rollback segments are active.
+2024-02-25 13:00:10 0 [Note] InnoDB: Removed temporary tablespace data file: "./ibtmp1"
+2024-02-25 13:00:10 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+2024-02-25 13:00:10 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
+2024-02-25 13:00:10 0 [Note] InnoDB: log sequence number 225213; transaction id 370
+2024-02-25 13:00:10 0 [Note] Plugin 'FEEDBACK' is disabled.
+2024-02-25 13:00:10 0 [Note] InnoDB: Loading buffer pool(s) from /config/databases/ib_buffer_pool
+2024-02-25 13:00:10 0 [Note] Recovering after a crash using /config/log/mysql/mariadb-bin
+2024-02-25 13:00:10 0 [Note] Starting table crash recovery...
+2024-02-25 13:00:10 0 [Note] Crash table recovery finished.
+2024-02-25 13:00:10 0 [Note] InnoDB: Buffer pool(s) load completed at 240225 13:00:10
+2024-02-25 13:00:10 0 [Note] Server socket created on IP: '0.0.0.0'.
+2024-02-25 13:00:10 0 [Note] Server socket created on IP: '::'.
+2024-02-25 13:00:10 0 [Note] /usr/bin/mariadbd: ready for connections.
+Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  Alpine Linux
+2024-02-25 13:00:11 4 [Warning] Aborted connection 4 to db: 'unconnected' user: 'unauthenticated' host: 'localhost' (This connection closed normally without authentication)
+2024-02-25 13:01:38 6 [Warning] IP address '172.20.0.1' could not be resolved: Name does not resolve
+2024-02-25 13:51:02 6 [Warning] Aborted connection 6 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-25 17:13:10 7 [Warning] Aborted connection 7 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-25 17:47:55 8 [Warning] Aborted connection 8 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)

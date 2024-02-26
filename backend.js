@@ -274,11 +274,6 @@ app.post('/agregar-serie-usuario', (req, res) => {
 });
 
 
-
-
-
-
-
 // Escuchar en un puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
