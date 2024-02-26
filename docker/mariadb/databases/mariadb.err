@@ -335,3 +335,13 @@ Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 330
 2024-02-26  9:08:27 0 [Note] /usr/bin/mariadbd: ready for connections.
 Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  Alpine Linux
 2024-02-26  9:08:27 4 [Warning] Aborted connection 4 to db: 'unconnected' user: 'unauthenticated' host: 'localhost' (This connection closed normally without authentication)
+2024-02-26  9:13:51 6 [Warning] IP address '172.20.0.1' could not be resolved: Name does not resolve
+2024-02-26  9:32:42 6 [Warning] Aborted connection 6 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-26  9:53:24 7 [Warning] Aborted connection 7 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-26 10:11:41 8 [Warning] Aborted connection 8 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-26 10:21:45 31 [Warning] Aborted connection 31 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-26 10:49:55 34 [Warning] Aborted connection 34 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-26 11:42:03 35 [Warning] Aborted connection 35 to db: 'Series' user: 'root' host: '172.20.0.1' (Got timeout reading communication packets)
+2024-02-26 11:46:30 56 [Warning] Aborted connection 56 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
+2024-02-26 11:48:22 57 [Warning] Aborted connection 57 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
+2024-02-26 11:48:58 70 [Warning] Aborted connection 70 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)

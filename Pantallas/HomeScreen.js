@@ -291,7 +291,6 @@ const obtenerSeries = () => {
         style={styles.serieDetailContainer}
         onPress={() => navegarADetalles(detalle.id)}
       >
-
 <View style={{ flex: 1 , marginTop: 0}}>
             {poster(detalle.poster_path)}
           </View>
@@ -372,7 +371,8 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Centrar el texto
     fontSize: 16,
   },serieTitle: {
-    fontSize: 10, // Tamaño grande para el título
+    marginTop:'5%',
+    fontSize: 12, // Tamaño grande para el título
     fontWeight: 'bold', // Negrita para resaltar
     color: '#4A90E2', // Un color llamativo pero no demasiado intenso
     marginBottom: '1%', // Espacio debajo del título

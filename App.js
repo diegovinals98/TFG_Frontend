@@ -9,6 +9,8 @@ import SignUp from './Pantallas/SignUp.js'; // Asume que este es el componente a
 import Settings from './Pantallas/Settings.js'; // Asume que este es el componente al que quieres navegar después del login
 import AnadirGrupo from './Pantallas/AnadirGrupo.js';
 import PantallaDeDetalles from './Pantallas/PantallaDetalles.js';
+import DetallesDeTemporada from './Pantallas/TemporadaDetalle.js';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,7 @@ function App() {
           <Stack.Screen name="Settings" component={Settings}/>
           <Stack.Screen name="Añadir Grupo" component={AnadirGrupo}/>
           <Stack.Screen name="Detalles Serie" component={PantallaDeDetalles}/>
+          <Stack.Screen name="Temporada" component={DetallesDeTemporada}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

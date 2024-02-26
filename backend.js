@@ -274,6 +274,53 @@ app.post('/agregar-serie-usuario', (req, res) => {
 });
 
 
+app.get('/serie/:idSerie/usuarios', (req, res) => {
+  const { idSerie } = req.params;
+
+  let sql = `
+    SELECT 
+        U.Id,
+        U.Nombre,
+        U.Apellidos,
+        U.Usuario,
+        MAX(V.Fecha_Visualizacion) AS Ultima_Visualizacion,
+        C.Nombre_Capitulo,
+        C.Numero_Capitulo
+    FROM 
+        Usuarios U
+    JOIN 
+        Usuario_Grupo2 UG ON U.id = UG.ID_Usuario
+    JOIN 
+        Visualizaciones V ON U.id = V.ID_Usuario
+    JOIN 
+        Capitulo C ON V.ID_Capitulo = C.ID_Capitulo AND C.ID_Serie = ?
+    WHERE 
+        EXISTS (
+            SELECT 1
+            FROM 
+                Series S
+            WHERE 
+                S.ID_Serie = C.ID_Serie AND 
+                S.ID_Serie = ? 
+        )
+    GROUP BY 
+        U.id, C.Nombre_Capitulo, C.Numero_Capitulo
+    ORDER BY 
+        Ultima_Visualizacion DESC;
+  `;
+
+  db.query(sql, [idSerie, idSerie], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error en la base de datos');
+    }
+    
+    res.json(results);
+    console.log(results)
+  });
+});
+
+
 // Escuchar en un puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
