@@ -48,6 +48,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
         {poster(detallesSerie.poster_path)}
         <Text style={styles.title}>{detallesSerie.name.toUpperCase()}</Text>
         <Text style={styles.detail}>{detallesSerie.overview}</Text>
+        
         {/* Aquí puedes agregar más detalles de la serie */}
       </View>
     );
