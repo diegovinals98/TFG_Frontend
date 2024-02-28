@@ -36,7 +36,7 @@ Para ejecutar este proyecto localmente, sigue estos pasos:
 4. Navega al directorio del proyecto y ejecuta `npm install` para instalar las dependencias.
 5. Inicia el servidor de desarrollo con `expo start`.
 6. Asegura en backend.js y el resto de archivos que la ip coincide on tu ip local.
-7. Iniciar el backend con 'node backend.js'
+7. Iniciar el backend con `node backend.js`
 
 ## Uso de Docker
 
