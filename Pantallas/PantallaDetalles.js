@@ -203,8 +203,6 @@ const PantallaDeDetalles = ({ route, navigation }) => {
         <Text style={styles.eliminarSerieTexto}>Eliminar Serie</Text>
       </TouchableOpacity>
       
-     
-
         
       </View>
     );
