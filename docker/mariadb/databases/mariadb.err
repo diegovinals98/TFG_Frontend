@@ -401,3 +401,5 @@ Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 330
 2024-02-28 18:06:03 0 [Note] /usr/bin/mariadbd: ready for connections.
 Version: '10.11.6-MariaDB-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  Alpine Linux
 2024-02-28 18:06:03 4 [Warning] Aborted connection 4 to db: 'unconnected' user: 'unauthenticated' host: 'localhost' (This connection closed normally without authentication)
+2024-02-28 18:43:11 6 [Warning] IP address '172.20.0.1' could not be resolved: Name does not resolve
+2024-02-28 18:44:09 6 [Warning] Aborted connection 6 to db: 'Series' user: 'root' host: '172.20.0.1' (Got an error reading communication packets)
