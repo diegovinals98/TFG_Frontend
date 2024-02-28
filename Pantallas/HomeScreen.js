@@ -13,7 +13,8 @@ import {
   Keyboard,
   Button,
   Alert,
-  ScrollView
+  ScrollView,
+  RefreshControl
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
@@ -21,6 +22,8 @@ import { StatusBar } from 'expo-status-bar';
 import { globalStyles } from '../estilosGlobales.js'; // Importa estilos globales.
 import { SelectCountry, Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 // Obtiene las dimensiones de la ventana del dispositivo.
 const windowHeigh = Dimensions.get('window').height;
@@ -45,9 +48,35 @@ const HomeScreen = () => {
 
   // Estado para la visibilidad del menú desplegable y el grupo seleccionado.
   const [TodosGrupos, setTodosGrupos] = useState([]); // Estado para almacenar todos los grupos.
-  const [value, setValue] = useState("Grupos");
+  const [value, setValue] = useState("Grupos"); // variable que almacena en que grupo estamos
   const [isFocus, setIsFocus] = useState(false);
   const [refrescar, setRefrescar] = useState(false);
+  const [refrescando, setRefrescando] = useState(false);
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Llama a las funciones que cargan los datos
+      resetearBusqueda();
+      setRefrescar(prev => !prev);
+  
+      // Opcional: cualquier otra lógica que necesites ejecutar cuando la pantalla entra en foco
+    }, [])
+  );
+
+  const onRefresh = React.useCallback(() => {
+    setRefrescando(true);
+  
+    // Aquí debes llamar a las funciones que actualizan tus datos
+    resetearBusqueda();
+    setRefrescar(prev => !prev);
+    llamarAGrupos();
+    obtenerSeries();
+  
+    setRefrescando(false);
+  }, []);
+  
+  
 
   // Función para manejar la selección de un grupo.
   const handleSelectItem = (item) => {
@@ -217,7 +246,7 @@ const obtenerSeries = () => {
   const navegarADetalles = (idSerie) => {
     // Aquí utilizas la función de navegación para ir a la pantalla de detalles
     // Asegúrate de haber definido la ruta y los parámetros adecuadamente en tu configurador de navegación
-    navigation.navigate('Detalles Serie', { idSerie: idSerie });
+    navigation.navigate('Detalles Serie', { idSerie: idSerie, NombreGrupo: value });
   };
   
 
@@ -283,7 +312,12 @@ const obtenerSeries = () => {
 </TouchableWithoutFeedback>
 
 
-<ScrollView>
+<ScrollView refreshControl={
+    <RefreshControl
+      refreshing={refrescando}
+      onRefresh={onRefresh}
+    />
+  }>
   <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
     {seriesDetalles.map((detalle, index) => (
       <TouchableOpacity
