@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet,Image ,ScrollView, TouchableOpacity, Alert} from 'react-native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const PantallaDeDetalles = ({ route, navigation }) => {
@@ -26,23 +27,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
         
     };
 
-    const obtenerUsuariosPorSerie = (idSerie) => {
-      // Reemplaza 'http://10.0.0.36:3000' con la dirección de tu servidor real y el puerto
-      const url = `http://10.0.0.36:3000/serie/${idSerie}/usuarios`;
-    
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          // Aquí procesas la respuesta. Supongamos que 'data' es un array de usuarios.
-          // Puedes establecer ese array en el estado o hacer algo con él.
-          //console.log(data);
-        })
-        .catch(error => console.error('Error al obtener los usuarios:', error));
-    };
-
     const obtenerUsuariosViendoSerie = async (nombreGrupo, idSerie) => {
-
-      console.log('-------------- ENTRADO EN obtenerUsuariosViendoSerie --------------')
       try {
         const response = await fetch(`http://10.0.0.36:3000/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
         if (!response.ok) {
@@ -55,15 +40,25 @@ const PantallaDeDetalles = ({ route, navigation }) => {
         console.error('Hubo un problema con la petición fetch:', error);
       }
 
-      console.log('-------------- SALIDO DE obtenerUsuariosViendoSerie --------------')
     };
     
-  
-    useEffect(() => {
-      obtenerDetallesSerie(idSerie);
-      obtenerUsuariosPorSerie(idSerie);
-      obtenerUsuariosViendoSerie(NombreGrupo,idSerie )
-    }, [idSerie]);
+
+
+    // PARA ACTILIZAR LO QUE QUIERAS CUANDO LA PANTALLA GANA EL FOCO
+    useFocusEffect(
+      useCallback(() => {
+        // El código aquí se ejecutará cuando la pantalla gane foco
+        console.log('---------------------------------------- DETALLES SERIE ----------------------------------------');
+        
+        obtenerDetallesSerie(idSerie);
+        obtenerUsuariosViendoSerie(NombreGrupo, idSerie);
+
+        return () => {
+          // Opcional: Código de limpieza si necesitas hacer algo cuando la pantalla pierde foco
+          console.log('Pantalla va a perder foco...');
+        };
+      }, []) // Dependencias para este efecto
+    );
   
     // Verifica si detallesSerie aún es null
     if (!detallesSerie) {

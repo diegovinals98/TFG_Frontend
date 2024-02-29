@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image,TouchableOpacity } from 'react-native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
 import { useFocusEffect } from '@react-navigation/native';
@@ -9,6 +9,7 @@ const DetallesDeTemporada = ({ route }) => {
   const [numeroTemporada, setnumeroTemporada] = useState(route.params.NumeroTemporada);
 
   const { user } = useUser();
+  
 
 
   console.log('Id Serie: ' + route.params.idSerie)
@@ -18,70 +19,58 @@ const DetallesDeTemporada = ({ route }) => {
   const [capitulosVistos, setCapitulosVistos] = useState([]);
   const [actualizarVisto, setActualizarVisto] = useState(false);
 
-  
 
 
-  const obtenerDetallesTemporada = (idSerie, numeroTemporada) => {
-    const apiKey = 'c51082efa7d62553e4c05812ebf6040e';
-    const url = `https://api.themoviedb.org/3/tv/${idSerie}/season/${numeroTemporada}?api_key=${apiKey}&language=es-ES`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        setDetallesTemporada(data); // Suponiendo que tienes un estado llamado setDetallesTemporada para almacenar estos datos
-        //console.log(data);
-      })
-      .catch(error => console.error('Error al obtener detalles de la temporada:', error));
+  const obtenerCapitulosVistos = async () => {
+    try {
+      const apiKey = 'c51082efa7d62553e4c05812ebf6040e';
+      const url = `https://api.themoviedb.org/3/tv/${idSerie}/season/${numeroTemporada}?api_key=${apiKey}&language=es-ES`;
+    
+      const response = await fetch(url);
+      const data = await response.json();
+      setDetallesTemporada(data); // Esto actualiza el estado, pero recuerda que React puede agrupar varias actualizaciones de estado juntas.
+      
+
+      try{
+        // Debido a cómo funciona la actualización de estado en React, `detallesTemporada` aún no se ha actualizado aquí.
+        // Si necesitas usar inmediatamente los datos de `detallesTemporada`, utiliza directamente `data` obtenida de la respuesta.
+        const url2 = `http://10.0.0.36:3000/temporada-vista/${user.id}/${idSerie}/${data.season_number}`;
+        const response2 = await fetch(url2);
+        const data2 = await response2.json();
+        
+        setCapitulosVistos(data2.vistos);
+        console.log("Vistos: " + data2.vistos);
+
+      }catch(error){
+        console.error('Error al obtener capitulos vistos: ', error);
+      }
+      
+    } catch (error) {
+      console.error('Error al obtener detalles de la temporada: ', error);
+    }
   };
 
+
+  // PARA ACTILIZAR LO QUE QUIERAS CUANDO LA PANTALLA GANA EL FOCO
   useFocusEffect(
-    React.useCallback(() => {
-      // Esta función se define aquí para que pueda ser llamada más abajo en el efecto.
-    const obtenerCapitulosVistos = async () => {
-        if (detallesTemporada) { // Asegúrate de que detallesTemporada no es nulo.
-          console.log('Entramos en obtenerCapitulosVistos');
-          const url = `http://10.0.0.36:3000/temporada-vista/${user.id}/${idSerie}/${detallesTemporada.season_number}`;
-          const response = await fetch(url);
-          const data = await response.json();
-          setCapitulosVistos(data.vistos);
-          console.log("Vistos: " + data.vistos);
-          console.log("CapVistos: " + capitulosVistos);
-        }
+    useCallback(() => {
+      // El código aquí se ejecutará cuando la pantalla gane foco
+      console.log('---------------------------------------- TEMPORADA ----------------------------------------');
+      obtenerCapitulosVistos() // Esta función ahora espera a que obtenerDetallesTemporada se complete.
+      return () => {
+        // Opcional: Código de limpieza si necesitas hacer algo cuando la pantalla pierde foco
+        console.log('Pantalla va a perder foco...');
       };
-    
-      // Función asíncrona para llamar a obtenerDetallesTemporada y luego obtenerCapitulosVistos.
-      const cargarDatos = async () => {
-        await obtenerDetallesTemporada(idSerie, numeroTemporada);
-        await obtenerCapitulosVistos(); // Esta función ahora espera a que obtenerDetallesTemporada se complete.
-      };
-    
-      cargarDatos();
-  
-      // Opcional: cualquier otra lógica que necesites ejecutar cuando la pantalla entra en foco
-    }, [])
+    }, []) // Dependencias para este efecto
   );
 
-  useEffect(() => {
-    // Esta función se define aquí para que pueda ser llamada más abajo en el efecto.
-    const obtenerCapitulosVistos = async () => {
-      if (detallesTemporada) { // Asegúrate de que detallesTemporada no es nulo.
-        console.log('Entramos en obtenerCapitulosVistos');
-        const url = `http://10.0.0.36:3000/temporada-vista/${user.id}/${idSerie}/${detallesTemporada.season_number}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        setCapitulosVistos(data.vistos);
-        console.log("Vistos: " + data.vistos);
-        console.log("CapVistos: " + capitulosVistos);
-      }
-    };
+
+
+  useEffect(() => {  
+    //cargarDatos();
+    console.log('Actualizar después (dentro de useEffect): ' + actualizarVisto);
   
-    // Función asíncrona para llamar a obtenerDetallesTemporada y luego obtenerCapitulosVistos.
-    const cargarDatos = async () => {
-      await obtenerDetallesTemporada(idSerie, numeroTemporada);
-      await obtenerCapitulosVistos(); // Esta función ahora espera a que obtenerDetallesTemporada se complete.
-    };
-  
-    cargarDatos();
+    obtenerCapitulosVistos()
   }, [idSerie, numeroTemporada, actualizarVisto, user.id]); // Dependencias para el useEffect.
 
   
@@ -95,7 +84,9 @@ const DetallesDeTemporada = ({ route }) => {
   }
 
   const marcarVisto  = async (idSerie, capituloId, Name, Episode_number,season_number, userid) => {
+    console.log('Pulsado Marcar Visto')
     try {
+        console.log('Dentro del try')
         const response = await fetch('http://10.0.0.36:3000/agregar-visualizacion', {
           method: 'POST',
           headers: {
@@ -103,19 +94,46 @@ const DetallesDeTemporada = ({ route }) => {
           },
           body: JSON.stringify({ idSerie, capituloId, Name, Episode_number,season_number, userid}),
         });
+
+        if (!response.ok) {
+          console.log('Error al agregar capitulo');
+        }
+        
+        // Manejo adicional en caso de éxito, como actualizar la interfaz de usuario
+      } catch (error) {
+        console.log('Error al agregar capitulo:', error);
+      }
+      // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos vistos
+      setActualizarVisto(actual => !actual);
+      console.log('Fuera del try')
+
+  }
+
+  const eliminarVisto = async (capituloId, userid) => {
+
+    try {
+        const response = await fetch('http://10.0.0.36:3000/eliminar-visualizacion', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ capituloId, userid }),
+        });
     
         if (!response.ok) {
-          throw new Error('Error al agregar capitulo');
+          throw new Error('Error al eliminar visualización');
         }
         const result = await response.json();
         console.log(result);
-        // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos vistos
-        setActualizarVisto(true);
+        // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos no vistos
+        setActualizarVisto(actual => !actual);
+        
         // Manejo adicional en caso de éxito, como actualizar la interfaz de usuario
       } catch (error) {
-        console.error('Error al agregar capitulo:', error);
+        console.error('Error al eliminar visualización:', error);
       }
-  }
+}
+
 
   const posterCapitulo = (path) => {
     // Asegurándose de que el path es válido
@@ -144,23 +162,23 @@ const DetallesDeTemporada = ({ route }) => {
             { /* posterCapitulo(capitulo.still_path) */}
             <Text style={styles.capituloDescription}>{capitulo.overview}</Text>
             {
-            capitulosVistos.includes(capitulo.id)
-                ? (
+              (capitulosVistos || []).includes(capitulo.id) ? (
                 // Botón para el capítulo visto
                 <TouchableOpacity 
-                    style={[styles.eliminarSerieBoton, styles.botonVisto]} 
-                    onPress={() => {/* Funcionalidad para manejar el capítulo visto */}}>
-                    <Text style={styles.textoBoton}>Visto ✓</Text>
+                  style={[styles.eliminarSerieBoton, styles.botonVisto]} 
+                  onPress={() => eliminarVisto(capitulo.id, user.id)}>
+                  <Text style={styles.textoBoton}>Visto ✓</Text>
                 </TouchableOpacity>
-                ) : (
+              ) : (
                 // Botón para marcar el capítulo como visto
                 <TouchableOpacity 
-                    style={[styles.eliminarSerieBoton, styles.botonMarcarVisto]} 
-                    onPress={() => marcarVisto(idSerie, capitulo.id, capitulo.name, capitulo.episode_number, detallesTemporada.season_number, user.id)}>
-                    <Text style={styles.textoBoton}>Marcar como visto</Text>
+                  style={[styles.eliminarSerieBoton, styles.botonMarcarVisto]} 
+                  onPress={() => marcarVisto(idSerie, capitulo.id, capitulo.name, capitulo.episode_number, detallesTemporada.season_number, user.id)}>
+                  <Text style={styles.textoBoton}>Marcar como visto</Text>
                 </TouchableOpacity>
-                )
+              )
             }
+
           </View>
         ))}
       </View>

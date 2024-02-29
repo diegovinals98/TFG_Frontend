@@ -57,10 +57,11 @@ const HomeScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       // Llama a las funciones que cargan los datos
+      console.log('---------------------------------------- HOME SCREEN ----------------------------------------');
+        
       resetearBusqueda();
       setRefrescar(prev => !prev);
   
-      // Opcional: cualquier otra lógica que necesites ejecutar cuando la pantalla entra en foco
     }, [])
   );
 
@@ -143,7 +144,6 @@ const obtenerSeries = () => {
   useEffect(() => {
     llamarAGrupos();
     obtenerSeries();
-    
   }, [ refrescar]); // El array vacío asegura que useEffect se ejecute solo una vez.
   
   // Función para navegar a la pantalla de ajustes.

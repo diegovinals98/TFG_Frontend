@@ -332,8 +332,6 @@ app.post('/agregar-visualizacion', (req, res) => {
       res.status(500).send('Error al verificar el capítulo');
       return;
     }
-    
-
     // Si el capítulo no existe, insertarlo
     if (results.length === 0) {
       const insertarCapituloSql = "INSERT INTO Capitulo (ID_Capitulo, ID_Serie, Numero_Temporada, Nombre_Capitulo, Numero_Capitulo) VALUES (?, ?, ?, ?, ?)";
@@ -353,6 +351,7 @@ app.post('/agregar-visualizacion', (req, res) => {
   });
 });
 
+
 function agregarVisualizacion(userId, capituloId, res) {
   const fechaActual = new Date().toISOString().slice(0, 10);
   const insertarVisualizacionSql = "INSERT INTO Visualizaciones (ID_Usuario, ID_Capitulo, Fecha_Visualizacion) VALUES (?, ?, ?)";
@@ -361,22 +360,56 @@ function agregarVisualizacion(userId, capituloId, res) {
       console.error('Error al insertar la visualización:', err);
       res.status(500).send('Error al insertar la visualización');
     } else {
+      res.send({ message: 'Visualizacion agregada con exito' });
       console.log('Visualizacion agregada con exito')
-      res.send({ message: 'Visualización agregada con éxito' });
     }
   });
 }
 
 
+app.post('/eliminar-visualizacion', (req, res) => {
+  const { capituloId, userid } = req.body;
+
+  // Verificar si la visualización existe
+  const visualizacionExisteSql = "SELECT * FROM Visualizaciones WHERE ID_Capitulo = ? AND ID_Usuario = ?";
+  db.query(visualizacionExisteSql, [capituloId, userid], (err, results) => {
+    if (err) {
+      console.error('Error al verificar la visualización:', err);
+      res.send({ message: 'Error al verificar la visualización' });
+      return;
+    }
+    // Si la visualización existe, eliminarla
+    if (results.length > 0) {
+      const eliminarVisualizacionSql = "DELETE FROM Visualizaciones WHERE ID_Capitulo = ? AND ID_Usuario = ?";
+      db.query(eliminarVisualizacionSql, [capituloId, userid], (deleteErr, deleteResults) => {
+        if (deleteErr) {
+          console.error('Error al eliminar la visualización:', deleteErr);
+          res.send({ message: 'Error al eliminar la visualización' });
+          return;
+        }
+        console.log('Eliminado existosamente')
+        res.send({ message: 'Visualización eliminada exitosamente' });
+      });
+    } else {
+      // Si la visualización no existe, enviar mensaje
+      res.send({ message: 'Visualización no encontrada' });
+    }
+  });
+});
+
+
+
+
 app.get('/temporada-vista/:userId/:idSerie/:season_number', async (req, res) => {
   const { userId, idSerie, season_number } = req.params;
 
+  //res.json({ message: 'Entrando en el endpoint temporada-vista' });
   try {
     const sql = `
-      SELECT C.ID_Capitulo
-      FROM Capitulo C
-      LEFT JOIN Visualizaciones V ON C.ID_Capitulo = V.ID_Capitulo AND V.ID_Usuario = ?
-      WHERE C.ID_Serie = ? AND C.Numero_Temporada = ?
+    SELECT C.ID_Capitulo
+    FROM Capitulo C
+    INNER JOIN Visualizaciones V ON C.ID_Capitulo = V.ID_Capitulo AND V.ID_Usuario = ?
+    WHERE C.ID_Serie = ? AND C.Numero_Temporada = ?
     `;
     const capitulosVistos = await new Promise((resolve, reject) => {
       db.query(sql, [userId, idSerie, season_number], (err, results) => {
@@ -478,6 +511,125 @@ app.get('/usuarios-viendo-serie/:nombreGrupo/:idSerie', (req, res) => {
     }
   });
 });
+
+
+
+app.post('/crear-grupo-y-asociar-usuarios', (req, res) => {
+  const { nombreGrupo, nombresUsuarios } = req.body;
+
+  // Verificar si el nombre del grupo ya existe
+  db.query('SELECT * FROM Grupos WHERE Nombre_grupo = ?', [nombreGrupo], (err, grupoResults) => {
+    if (err) {
+      console.error('Error al verificar el grupo:', err);
+      return res.status(500).send('Error al verificar el grupo');
+    }
+
+    if (grupoResults.length > 0) {
+      // El grupo ya existe
+      const idGrupo = grupoResults[0].ID_Grupo;
+      console.log('El grupo ya existe con ID:', idGrupo);
+      res.send({ message: 'El grupo ya existe' });
+      //asociarUsuariosAGrupo(nombresUsuarios, idGrupo, res);
+    } else {
+      // El grupo no existe, intenta crear uno nuevo con un ID único
+      insertarGrupoConIdUnico(nombreGrupo, res, (idGrupoNuevo) => {
+      asociarUsuariosAGrupo(nombresUsuarios, idGrupoNuevo, res);
+      });
+    }
+  });
+});
+
+// Función para insertar un grupo con un ID único
+const insertarGrupoConIdUnico = (nombreGrupo, res, callback) => {
+  let idGrupo = Math.floor(Math.random() * 1000000);
+
+  const verificarYCrearGrupo = () => {
+    // Verificar si el ID_Grupo ya existe
+    db.query('SELECT * FROM Grupos WHERE ID_Grupo = ?', [idGrupo], (err, results) => {
+      if (err) {
+        console.error('Error al verificar el ID del grupo:', err);
+        return res.status(500).send('Error al verificar el ID del grupo');
+      }
+
+      if (results.length > 0) {
+        // El ID del grupo ya existe, genera uno nuevo y reintenta
+        idGrupo =  Math.floor(Math.random() * 1000000);
+        verificarYCrearGrupo();
+      } else {
+        // El ID del grupo no existe, crea el grupo
+        db.query('INSERT INTO Grupos (ID_Grupo, Nombre_grupo) VALUES (?, ?)', [idGrupo, nombreGrupo], (crearErr, crearResult) => {
+          if (crearErr) {
+            console.error('Error al crear el grupo:', crearErr);
+            return res.status(500).send('Error al crear el grupo');
+          }
+          console.log('Grupo creado con ID:', idGrupo);
+          if (callback) callback(idGrupo); // Continúa con la asociación de usuarios
+        });
+      }
+    });
+  };
+
+  verificarYCrearGrupo();
+};
+
+function asociarUsuariosAGrupo(nombresUsuarios, idGrupo, res) {
+  // Mapear cada nombre de usuario a una promesa que realiza la verificación y posible asociación
+  const asociacionesPromesas = nombresUsuarios.map(nombreUsuario => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const usuarioResults = await new Promise((resolve, reject) => {
+          db.query('SELECT * FROM Usuarios WHERE Usuario = ?', [nombreUsuario], (err, results) => {
+            if (err) reject(err);
+            resolve(results);
+          });
+        });
+
+        if (usuarioResults.length > 0) {
+          const idUsuario = usuarioResults[0].Id;
+
+          // Verificar si el usuario ya está asociado con el grupo
+          const asociaciones = await new Promise((resolve, reject) => {
+            db.query('SELECT * FROM Usuario_Grupo2 WHERE ID_Usuario = ? AND ID_Grupo = ?', [idUsuario, idGrupo], (err, results) => {
+              if (err) reject(err);
+              resolve(results);
+            });
+          });
+
+          if (asociaciones.length === 0) {
+            // Asociar el usuario al grupo
+            await new Promise((resolve, reject) => {
+              db.query('INSERT INTO Usuario_Grupo2 (ID_Usuario, ID_Grupo) VALUES (?, ?)', [idUsuario, idGrupo], (err, results) => {
+                if (err) reject(err);
+                resolve();
+              });
+            });
+            console.log(`Usuario ${nombreUsuario} (ID: ${idUsuario}) asociado al grupo ID: ${idGrupo}.`);
+            resolve(`Usuario ${nombreUsuario} asociado al grupo ID: ${idGrupo}.`);
+          } else {
+            resolve(`Usuario ${nombreUsuario} ya estaba asociado al grupo ID: ${idGrupo}.`);
+          }
+        } else {
+          console.log(`Usuario ${nombreUsuario} no existe.`);
+          resolve(`Usuario ${nombreUsuario} no existe.`);
+        }
+      } catch (error) {
+        reject(`Error al asociar el usuario ${nombreUsuario} al grupo ID: ${idGrupo}: ${error}`);
+      }
+    });
+  });
+
+  // Esperar a que todas las promesas se resuelvan
+  Promise.all(asociacionesPromesas).then(resultados => {
+    console.log("Todos los usuarios han sido procesados:", resultados);
+    res.send({ message: 'Todos los usuarios han sido procesados con éxito.', detalles: resultados });
+  }).catch(error => {
+    console.error("Error procesando los usuarios:", error);
+    res.status(500).send('Error al asociar usuarios al grupo.');
+  });
+}
+
+
+
 
 
 
