@@ -167,11 +167,16 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
 
         <View style={styles.usuarioContainer}>
+          <View  style={styles.usuarioTextoContainer}>
+                <Text style={styles.header}>USUARIO</Text>
+                <Text style={styles.header}>TEMPORADA</Text>
+                <Text style={styles.header}>CAPITULO</Text>
+              </View>
           {UsuariosSerie.map((usuario, index) => (
             <View key={index} style={styles.usuarioTextoContainer}>
-              <Text style={styles.usuarioTexto}>{usuario.Nombre}:</Text>
-              <Text style={styles.usuarioTexto}>Temporada: {usuario.Temporada_Mas_Alta},</Text>
-              <Text style={styles.usuarioTexto}>Capitulo: {usuario.Capitulo_Mas_Reciente}</Text>
+              <Text style={styles.usuarioTexto}>{usuario.Nombre}</Text>
+              <Text style={styles.usuarioTexto}>{usuario.Temporada_Mas_Alta}</Text>
+              <Text style={styles.usuarioTexto}>{usuario.Capitulo_Mas_Reciente}</Text>
             </View>
           ))}
         </View>
@@ -253,18 +258,25 @@ const styles = StyleSheet.create({
     color: 'white', // Color del texto
     fontSize: 16, // Tamaño del texto
   },usuarioContainer:{
+    flex:1,
+    marginRight:'5%',
     marginLeft:'5%',
-    borderWidth: 2
+    
   },seasonTitle:{
     textAlign: 'center'
   },usuarioTextoContainer: {
     flexDirection: 'row', // Alinear los Text en horizontal
     marginBottom: 5, // Ajustar el margen si es necesario
     
-    
   },usuarioTexto:{
-    
-   
+    flex:1,
+    textAlign:'center',
+    borderWidth: 2,
+  },header:{
+    flex:1,
+    textAlign:'center',
+    borderWidth: 2,
+    backgroundColor: '#9ca3ad'
   }
 });
 
