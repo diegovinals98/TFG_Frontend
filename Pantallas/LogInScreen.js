@@ -31,7 +31,7 @@ const LogInScreen = () => {
   async function handleLogin() {
     
     try {
-      let response = await fetch('http://10.0.0.36:3000/login', { // Asegúrate de que la IP y el puerto sean correctos
+      let response = await fetch('http://localhost:3000/login', { // Asegúrate de que la IP y el puerto sean correctos
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

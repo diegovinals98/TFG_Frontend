@@ -18,7 +18,7 @@ app.use(express.json()); // Para analizar application/json
   */
 
   const db = mysql.createConnection({
-    host: '10.0.0.36', // La IP de tu máquina donde corre Docker
+    host: 'localhost', // La IP de tu máquina donde corre Docker
     user: 'root', // El usuario de la base de datos
     password: '27101998', // La contraseña de la base de datos
     database: 'Series' // El nombre de tu base de datos

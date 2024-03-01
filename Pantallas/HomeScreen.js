@@ -91,7 +91,7 @@ const HomeScreen = () => {
 
   // Función para realizar la llamada a la API y obtener los grupos del Usuario
   const llamarAGrupos = () =>{
-    fetch(`http://10.0.0.36:3000/grupos/${user?.id}`)
+    fetch(`http://localhost:3000/grupos/${user?.id}`)
       .then((response) => response.json())
       .then((json) => setTodosGrupos(json))
       .catch((error) => console.error('Error al obtener los grupos:', error));
@@ -104,7 +104,7 @@ const obtenerSeriesDelUsuario = async (userId, value) => {
   console.log('obtenerSeriesDelUsuario: ' + value);
   try {
     // Suponiendo que el servidor espera 'value' como parámetro de consulta
-    const url = new URL(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
+    const url = new URL(`http://localhost:3000/series-ids-usuario/${userId}`);
     url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
 
     // Llamada al endpoint con userId y value como parámetros de consulta
@@ -188,7 +188,7 @@ const obtenerSeries = () => {
 
   const agregarSerieAUsuario = async (userId, idSerie) => {
     try {
-      let response = await fetch('http://10.0.0.36:3000/agregar-serie-usuario', {
+      let response = await fetch('http://localhost:3000/agregar-serie-usuario', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -290,20 +290,24 @@ const obtenerSeries = () => {
 
   <TouchableWithoutFeedback onPress={() => resetearBusqueda()}>
   <View style={styles.searchContainer}>
-    <TextInput
-      value={query}
-      onChangeText={handleTextChange}
-      placeholder="Buscar series..."
-      style={styles.searchInput}
-    />
-    <Button title="Buscar" onPress={buscarSeries} style={styles.searchButton} />
+  <View style={{ flexDirection: 'row'}}>
+      <TextInput
+        value={query}
+        onChangeText={handleTextChange}
+        placeholder="Buscar series..."
+        style={styles.searchInput}
+      />
+      <TouchableOpacity onPress={buscarSeries} style={styles.cajaBoton}>
+        <Text style={styles.searchButton}>Buscar</Text>
+      </TouchableOpacity>
+  </View>
     
     {series.length > 0 ? (
       <FlatList
         data={series}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Text onPress={() => seleccionSerie(item.name, item.id)}>{item.name}</Text>
+          <Text style={styles.textoBuscadas} onPress={() => seleccionSerie(item.name, item.id)}>{item.name}</Text>
         )}
         style={styles.flatList}
       />
@@ -443,7 +447,7 @@ const styles = StyleSheet.create({
     padding: 10, // Añade algo de espacio alrededor de cada serie
     flexDirection: 'column',
   },searchInput: {
-    width: '100%',
+    flex: 1, 
     borderWidth: 1,
     borderColor: '#ddd',
     padding: 15,
@@ -454,6 +458,26 @@ const styles = StyleSheet.create({
   },searchContainer:{
     width: '80%',
     flexDirection: 'column',
+  }, flatList:{
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor:'white'
+  },textoBuscadas:{
+    margin:'5%',
+  },searchButton:{
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#005f99',
+    borderRadius: 10,
+    padding:'4%'
+    
+  },cajaBoton:{
+    flexDirection: 'row',
+    alignItems:'center',
+    paddingBottom: 10,
+    marginLeft:'2%',
+
   }
 });
 

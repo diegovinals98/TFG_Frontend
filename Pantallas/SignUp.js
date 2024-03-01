@@ -71,7 +71,7 @@ const SignUp = ({ navigation }) => {
     
       // Intenta registrar al usuario en el servidor
       try {
-        let response = await fetch('http://10.0.0.36:3000/usuario', {
+        let response = await fetch('http://localhost:3000/usuario', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

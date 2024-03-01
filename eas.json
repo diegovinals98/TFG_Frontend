@@ -5,14 +5,24 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "store"
     },
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {},
+    "ios": {
+      "distribution": "store",
+      "node": "14.17.0"
+    }
   },
   "submit": {
-    "production": {}
+    "production": {},
+    "ios": {
+     
+    },
+    "development": {
+      
+    }
   }
 }

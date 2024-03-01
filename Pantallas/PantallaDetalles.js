@@ -29,7 +29,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
     const obtenerUsuariosViendoSerie = async (nombreGrupo, idSerie) => {
       try {
-        const response = await fetch(`http://10.0.0.36:3000/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
+        const response = await fetch(`http://localhost:3000/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
         if (!response.ok) {
           throw new Error('Respuesta de red no fue ok.');
         }
@@ -115,7 +115,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
               text: 'Sí',
               onPress: async () => {
                 try {
-                  const response = await fetch('http://10.0.0.36:3000/eliminar-serie-usuario', {
+                  const response = await fetch('http://localhost:3000/eliminar-serie-usuario', {
                     method: 'DELETE',
                     headers: {
                       'Content-Type': 'application/json',
@@ -167,13 +167,17 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
 
         <View style={styles.usuarioContainer}>
-        {UsuariosSerie.map((usuario, index) => (
-                <View key={index}>
-                    <Text style={styles.usuarioTexto}>{usuario.Nombre}: Temporada: {usuario.Temporada_Mas_Alta}, Capitulo: {usuario.Capitulo_Mas_Reciente}</Text>
-                </View>
-        ))}
+          {UsuariosSerie.map((usuario, index) => (
+            <View key={index} style={styles.usuarioTextoContainer}>
+              <Text style={styles.usuarioTexto}>{usuario.Nombre}:</Text>
+              <Text style={styles.usuarioTexto}>Temporada: {usuario.Temporada_Mas_Alta},</Text>
+              <Text style={styles.usuarioTexto}>Capitulo: {usuario.Capitulo_Mas_Reciente}</Text>
+            </View>
+          ))}
         </View>
 
+        </View>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap'}}>
         {/* Aquí se imprimen los títulos de las temporadas */}
         {detallesSerie.seasons && detallesSerie.seasons.map((season, index) => (
           <TouchableOpacity
@@ -229,13 +233,14 @@ const styles = StyleSheet.create({
     width: '100%',
     resizeMode: 'contain' // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
   },posterSeason:{
-    height: '100%', // Ajusta la altura como prefieras
-    width: '100%',
-    resizeMode: 'contain' 
+    height: 200, // Ajusta la altura como prefieras
+    resizeMode: 'contain' ,
+    
   },serieDetailContainer: {
     width: '33,33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
     padding: 10, // Añade algo de espacio alrededor de cada serie
     flexDirection: 'column',
+    
   },eliminarSerieBoton: {
     backgroundColor: 'red', // Color de fondo
     padding: 10, // Relleno
@@ -248,7 +253,18 @@ const styles = StyleSheet.create({
     color: 'white', // Color del texto
     fontSize: 16, // Tamaño del texto
   },usuarioContainer:{
-    marginLeft:'5%'
+    marginLeft:'5%',
+    borderWidth: 2
+  },seasonTitle:{
+    textAlign: 'center'
+  },usuarioTextoContainer: {
+    flexDirection: 'row', // Alinear los Text en horizontal
+    marginBottom: 5, // Ajustar el margen si es necesario
+    
+    
+  },usuarioTexto:{
+    
+   
   }
 });
 
