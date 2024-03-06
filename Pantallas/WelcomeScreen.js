@@ -21,7 +21,7 @@ export default function WelcomeScreen({ navigation }) {
   };
   
   const handleLoginPress = () => {
-    fetch('http://localhost:3000/usuario')
+    fetch('http://10.0.0.36:3000/usuario')
       .then((response) => response.json())
       .then((json) => {
         settodosUsuarios(json);

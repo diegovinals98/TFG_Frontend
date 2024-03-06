@@ -51,7 +51,7 @@ const Settings = () => {
     }else{
 
       try {
-        let response = await fetch(`http://localhost:3000/usuario/${userId}`, {
+        let response = await fetch(`http://10.0.0.36:3000/usuario/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

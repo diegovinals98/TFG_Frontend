@@ -1,5 +1,7 @@
 // Importaciones de React, React Native y otras librerías.
 import React, { useEffect, useState } from 'react';
+import Settings from './Settings.js'; // Asume que este es el componente al que quieres navegar después del login
+
 import { 
   View, 
   Text, 
@@ -23,6 +25,9 @@ import { globalStyles } from '../estilosGlobales.js'; // Importa estilos globale
 import { SelectCountry, Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useFocusEffect } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+
 
 
 // Obtiene las dimensiones de la ventana del dispositivo.
@@ -33,6 +38,8 @@ const HomeScreen = () => {
   // Hook de navegación y rutas de react-navigation.
   const route = useRoute();
   const navigation = useNavigation();
+
+  const Tab = createBottomTabNavigator();
 
   // Accede a los datos del usuario desde el contexto.
   const { user } = useUser();
@@ -91,7 +98,7 @@ const HomeScreen = () => {
 
   // Función para realizar la llamada a la API y obtener los grupos del Usuario
   const llamarAGrupos = () =>{
-    fetch(`http://localhost:3000/grupos/${user?.id}`)
+    fetch(`http://10.0.0.36:3000/grupos/${user?.id}`)
       .then((response) => response.json())
       .then((json) => setTodosGrupos(json))
       .catch((error) => console.error('Error al obtener los grupos:', error));
@@ -104,7 +111,7 @@ const obtenerSeriesDelUsuario = async (userId, value) => {
   console.log('obtenerSeriesDelUsuario: ' + value);
   try {
     // Suponiendo que el servidor espera 'value' como parámetro de consulta
-    const url = new URL(`http://localhost:3000/series-ids-usuario/${userId}`);
+    const url = new URL(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
     url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
 
     // Llamada al endpoint con userId y value como parámetros de consulta
@@ -188,7 +195,7 @@ const obtenerSeries = () => {
 
   const agregarSerieAUsuario = async (userId, idSerie) => {
     try {
-      let response = await fetch('http://localhost:3000/agregar-serie-usuario', {
+      let response = await fetch('http://10.0.0.36:3000/agregar-serie-usuario', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -446,6 +453,7 @@ const styles = StyleSheet.create({
     width: '33,33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
     padding: 10, // Añade algo de espacio alrededor de cada serie
     flexDirection: 'column',
+    
   },searchInput: {
     flex: 1, 
     borderWidth: 1,

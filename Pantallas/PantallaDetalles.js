@@ -29,7 +29,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
     const obtenerUsuariosViendoSerie = async (nombreGrupo, idSerie) => {
       try {
-        const response = await fetch(`http://localhost:3000/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
+        const response = await fetch(`http://10.0.0.36:3000/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
         if (!response.ok) {
           throw new Error('Respuesta de red no fue ok.');
         }
@@ -115,7 +115,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
               text: 'Sí',
               onPress: async () => {
                 try {
-                  const response = await fetch('http://localhost:3000/eliminar-serie-usuario', {
+                  const response = await fetch('http://10.0.0.36:3000/eliminar-serie-usuario', {
                     method: 'DELETE',
                     headers: {
                       'Content-Type': 'application/json',
@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
 
   },
   poster: {
-    height: '50%', // Ajusta la altura como prefieras
-    width: '100%',
+    height: '40%', // Ajusta la altura como prefieras
+    width: '60%',
     resizeMode: 'contain' // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
   },posterSeason:{
     height: 200, // Ajusta la altura como prefieras
