@@ -8,6 +8,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
         //backgroundColor:'#ffffff'
+        
       },
       
       button: {

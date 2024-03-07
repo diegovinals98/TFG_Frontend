@@ -628,6 +628,105 @@ function asociarUsuariosAGrupo(nombresUsuarios, idGrupo, res) {
   });
 }
 
+app.get('/miembros-grupo/:nombreGrupo', (req, res) => {
+  const { nombreGrupo } = req.params;
+
+  // Primero, obtén el ID del grupo basado en el nombre proporcionado
+  const sqlGetGroupId = 'SELECT ID_Grupo FROM Grupos WHERE Nombre_grupo = ?';
+
+  db.query(sqlGetGroupId, [nombreGrupo], (err, groupResults) => {
+    if (err) {
+      console.error('Error al buscar el grupo:', err);
+      return res.status(500).send('Error al buscar el grupo en el servidor');
+    }
+
+    if (groupResults.length === 0) {
+      return res.status(404).send('Grupo no encontrado');
+    }
+
+    const groupId = groupResults[0].ID_Grupo;
+
+    // Luego, obtén los miembros del grupo usando el ID del grupo
+    const sqlGetGroupMembers = `
+      SELECT id, Usuarios.Nombre, Usuarios.Usuario, Usuarios.Apellidos
+      FROM Usuarios
+      JOIN Usuario_Grupo2 ON id = Usuario_Grupo2.ID_Usuario
+      WHERE Usuario_Grupo2.ID_Grupo = ?
+    `;
+
+    db.query(sqlGetGroupMembers, [groupId], (err, membersResults) => {
+      if (err) {
+        console.error('Error al obtener los miembros del grupo:', err);
+        return res.status(500).send('Error al obtener los miembros del grupo');
+      }
+
+      res.json({
+        groupId: groupId,
+        members: membersResults
+      });
+    });
+  });
+});
+
+
+// modifca el nombre de un grupo
+app.put('/actualizar-nombre-grupo/:id', (req, res) => {
+  const { id } = req.params; // Obtén el ID del grupo de los parámetros de la ruta
+  const { nuevoNombre } = req.body; // Asume que el nuevo nombre viene en el cuerpo de la solicitud
+
+  console.log('Entramos en actualizar nombre del grupo')
+
+  if (!nuevoNombre) {
+    return res.status(400).send('El nuevo nombre es requerido');
+  }
+
+  // Consulta SQL para actualizar el nombre del grupo en la base de datos
+  const sqlUpdateGroupName = `
+    UPDATE Grupos
+    SET Nombre_grupo = ?
+    WHERE ID_Grupo = ?
+  `;
+
+  db.query(sqlUpdateGroupName, [nuevoNombre, id], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el nombre del grupo:', err);
+      return res.status(500).send('Error al actualizar el nombre del grupo');
+    }
+
+    if (result.affectedRows === 0) {
+      // Si no se encontró el grupo con ese ID o no se realizó la actualización
+      return res.status(404).send('Grupo no encontrado o no se pudo actualizar');
+    }
+
+    console.log(`Grupo con ID ${id} actualizado a nombre "${nuevoNombre}"`);
+    res.send(`Grupo con ID ${id} ha sido actualizado exitosamente a "${nuevoNombre}"`);
+  });
+});
+
+
+
+app.delete('/eliminar-grupo/:groupId', (req, res) => {
+  const { groupId } = req.params;
+
+  const sql = 'DELETE FROM Grupos WHERE ID_Grupo = ?';
+
+  db.query(sql, [groupId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el grupo:', err);
+      return res.status(500).send('Error al eliminar el grupo');
+    }
+
+    if (result.affectedRows > 0) {
+      res.send('Grupo eliminado correctamente.');
+    } else {
+      res.status(404).send('Grupo no encontrado.');
+    }
+  });
+});
+
+
+
+
 
 
 // Escuchar en un puerto

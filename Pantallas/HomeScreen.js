@@ -70,7 +70,8 @@ const HomeScreen = () => {
     React.useCallback(() => {
       // Llama a las funciones que cargan los datos
       console.log('---------------------------------------- HOME SCREEN ----------------------------------------');
-        
+      llamarAGrupos();
+      obtenerSeries();
       resetearBusqueda();
       setRefrescar(prev => !prev);
   
@@ -103,13 +104,20 @@ const HomeScreen = () => {
 
   // Función para realizar la llamada a la API y obtener los grupos del Usuario
   const llamarAGrupos = () =>{
+    console.log('Entrado en llamarGrupos')
     fetch(`http://10.0.0.36:3000/grupos/${user?.id}`)
       .then((response) => response.json())
       .then((json) => setTodosGrupos(json))
       .catch((error) => console.error('Error al obtener los grupos:', error));
     console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
     console.log(TodosGrupos);
-    
+
+    /** 
+    if(TodosGrupos.length == 0){
+      console.log('TodosGrupos esta vacio')
+      setValue('Grupos');
+    }
+    */
   }
 
 
@@ -134,22 +142,28 @@ const obtenerSeriesDelUsuario = async (userId, value) => {
 
 
 const obtenerSeries = () => {
-  obtenerSeriesDelUsuario(user.id, value).then(seriesIds => {
-    // Verifica si seriesIds está vacío
-    if (seriesIds.length === 0) {
-      console.log('No hay series para mostrar');
-      return; // Sale de la función si no hay IDs de series
-    }
 
-    // Si seriesIds no está vacío, ejecuta el resto del código
-    Promise.all(seriesIds.map(serieID => 
-      fetch(`https://api.themoviedb.org/3/tv/${serieID}?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES`)
-        .then(response => response.json())
-    )).then(seriesDetalles => {
-      setSeriesDetalles(seriesDetalles); // Guardar los detalles de las series en el estado
-      //console.log(seriesDetalles); // Imprime los detalles de las series
-    }).catch(error => console.error('Error:', error));
-  });
+  if(value == 'Grupos'){
+    console.log('Estamos en grupos, por lo que no hay series')
+    setSeriesDetalles([])
+  }else {
+    obtenerSeriesDelUsuario(user.id, value).then(seriesIds => {
+      // Verifica si seriesIds está vacío
+      if (seriesIds.length === 0) {
+        console.log('No hay series para mostrar');
+        return; // Sale de la función si no hay IDs de series
+      }
+  
+      // Si seriesIds no está vacío, ejecuta el resto del código
+      Promise.all(seriesIds.map(serieID => 
+        fetch(`https://api.themoviedb.org/3/tv/${serieID}?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES`)
+          .then(response => response.json())
+      )).then(seriesDetalles => {
+        setSeriesDetalles(seriesDetalles); // Guardar los detalles de las series en el estado
+        //console.log(seriesDetalles); // Imprime los detalles de las series
+      }).catch(error => console.error('Error:', error));
+    });
+  }
 
 }
 
