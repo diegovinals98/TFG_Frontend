@@ -1,6 +1,5 @@
 // Importaciones de React, React Native y otras librerías.
 import React, { useEffect, useState } from 'react';
-import Settings from './Settings.js'; // Asume que este es el componente al que quieres navegar después del login
 
 import { 
   View, 
@@ -26,6 +25,7 @@ import { SelectCountry, Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 
@@ -59,6 +59,11 @@ const HomeScreen = () => {
   const [isFocus, setIsFocus] = useState(false);
   const [refrescar, setRefrescar] = useState(false);
   const [refrescando, setRefrescando] = useState(false);
+
+
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState(TodosGrupos.map(grupo => ({label: grupo.Nombre_grupo, value: grupo.Nombre_grupo})));
+
 
 
   useFocusEffect(
@@ -104,6 +109,7 @@ const HomeScreen = () => {
       .catch((error) => console.error('Error al obtener los grupos:', error));
     console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
     console.log(TodosGrupos);
+    
   }
 
 
@@ -144,6 +150,7 @@ const obtenerSeries = () => {
       //console.log(seriesDetalles); // Imprime los detalles de las series
     }).catch(error => console.error('Error:', error));
   });
+
 }
 
 
@@ -255,6 +262,11 @@ const obtenerSeries = () => {
     // Asegúrate de haber definido la ruta y los parámetros adecuadamente en tu configurador de navegación
     navigation.navigate('Detalles Serie', { idSerie: idSerie, NombreGrupo: value });
   };
+
+
+  const editarGrupo = (nombreGrupo) => {
+    navigation.navigate('Editar Grupo', { nombreGrupo });
+  }
   
 
   return (
@@ -266,28 +278,37 @@ const obtenerSeries = () => {
       <Text style={styles.initials}>{iniciales}</Text>
     </TouchableOpacity>
 
+
+   
     <Dropdown
       style={[styles.buttonGroup, isFocus && { borderColor: 'blue' }]}
       placeholderStyle={styles.buttonText}
       selectedTextStyle={styles.selectedTextStyle}
+      backgroundColor='blur'
+      containerStyle={{ backgroundColor:'#6666ff', borderRadius:15}}
       iconStyle={styles.iconStyle}
       data={TodosGrupos}
-      maxHeight={300}
       labelField="Nombre_grupo"
       valueField={value}
       placeholder={value}
       value={value}
+      maxHeight={500}
+      itemTextStyle={{ textAlign: 'left', color:'white'}}
+      //itemContainerStyle={{ backgroundColor: 'grey', borderRadius: 15}}
       onFocus={() => setIsFocus(true)}
       onBlur={() => setIsFocus(false)}
       onChange={item => {
         setValue(item.Nombre_grupo);
         obtenerSeries();
         setIsFocus(false);
+        onRefresh()
       }}
       renderLeftIcon={() => (
         <Text style={styles.buttonText}>{value}</Text>
       )}
     />
+
+
     
     {/* Botón para añadir un nuevo grupo. */}
     <TouchableOpacity style={styles.circle} onPress={() => anadirGrupo()}>
@@ -348,6 +369,14 @@ const obtenerSeries = () => {
     ))}
   </View>
 </ScrollView>
+
+{
+  value !== 'Grupos' &&
+  <TouchableOpacity style={styles.editarGrupoBoton} onPress={() => editarGrupo(value)}>
+    <Text style={styles.editarGrupoTexto}>Editar Grupo: {value}</Text>
+  </TouchableOpacity>
+}
+
 
 
 
@@ -486,6 +515,16 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginLeft:'2%',
 
+  },editarGrupoBoton:{
+    backgroundColor: 'grey', // Color de fondo
+    padding: 10, // Relleno
+    marginTop: 20, // Margen superior
+    marginBottom: 20, // Margen inferior
+    alignItems: 'center', // Alinea el texto al centro
+    borderRadius: 5, // Bordes redondeados
+  },editarGrupoTexto:{
+    color: 'white', // Color del texto
+    fontSize: 16, // Tamaño del texto
   }
 });
 

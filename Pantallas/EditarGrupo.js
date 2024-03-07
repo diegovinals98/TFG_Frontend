@@ -35,19 +35,26 @@ const windowHeigh = Dimensions.get('window').height;
 // Componente principal de la pantalla de inicio.
 const EditarGrupo = () => {
   // Hook de navegación y rutas de react-navigation.
+   // Hook de navegación y rutas de react-navigation.
+   const route = useRoute();
 
-  // Accede a los datos del usuario desde el contexto.
+   // Accede al nombre del grupo pasado como parámetro
+   const { nombreGrupo } = route.params;
+     // Accede a los datos del usuario desde el contexto.
   const { user } = useUser();
+ 
+   // Accede a los datos del usuario desde el contexto.
+   // const { user } = useUser(); // Asumiendo que tienes un contexto para los datos del usuario
+ 
+   return (
+     <View style={[globalStyles.container, styles.container]}>
+       {/* Renderiza el nombre del grupo o lo que necesites aquí */}
+       <Text>Editar Grupo: {nombreGrupo}</Text>
+     </View>
+   );
+
+
   
-
-  return (
-    <View style={[globalStyles.container, styles.container]}>
-  
-
-
-
-</View>
-  );  
   
 };
 

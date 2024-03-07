@@ -630,9 +630,6 @@ function asociarUsuariosAGrupo(nombresUsuarios, idGrupo, res) {
 
 
 
-
-
-
 // Escuchar en un puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

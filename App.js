@@ -16,6 +16,8 @@ import EditarGrupo from './Pantallas/EditarGrupo.js';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+/** 
+
 function HomeTabs() {
   return (
     <Tab.Navigator>
@@ -28,6 +30,8 @@ function HomeTabs() {
   );
 }
 
+*/
+
 function App() {
   return (
     <UserProvider>
@@ -35,12 +39,13 @@ function App() {
         <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen name="Welcome" options={{ headerShown: false }} component={WelcomeScreen} />
           <Stack.Screen name="LogInScreen" options={{ headerShown: false }} component={LogInScreen} />
-          <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeTabs} /> 
+          <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} /> 
           <Stack.Screen name="SignUp" options={{ headerShown: false }} component={SignUp} />
           <Stack.Screen name="Settings" component={Settings}/>
           <Stack.Screen name="Añadir Grupo" component={AnadirGrupo}/>
           <Stack.Screen name="Detalles Serie" component={PantallaDeDetalles}/>
           <Stack.Screen name="Temporada" component={DetallesDeTemporada}/>
+          <Stack.Screen name="Editar Grupo" component={EditarGrupo}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
