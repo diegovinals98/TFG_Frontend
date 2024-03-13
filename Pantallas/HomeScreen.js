@@ -39,7 +39,7 @@ const HomeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
-  const Tab = createBottomTabNavigator();
+
 
   // Accede a los datos del usuario desde el contexto.
   const { user } = useUser();
@@ -198,6 +198,7 @@ const obtenerSeries = () => {
 
   const [query, setQuery] = useState('');
   const [series, setSeries] = useState([]);
+  
 
   const handleTextChange = (text) => {
     setQuery(text);
@@ -280,6 +281,10 @@ const obtenerSeries = () => {
 
   const editarGrupo = (nombreGrupo) => {
     navigation.navigate('Editar Grupo', { nombreGrupo });
+  }
+
+  const verCalendario = (nombreGrupo) => {
+    navigation.navigate('Calendario', { nombreGrupo });
   }
   
 
@@ -384,15 +389,24 @@ const obtenerSeries = () => {
   </View>
 </ScrollView>
 
+<View style={{flexDirection:'row'}}>
+
 {
   value !== 'Grupos' &&
   <TouchableOpacity style={styles.editarGrupoBoton} onPress={() => editarGrupo(value)}>
     <Text style={styles.editarGrupoTexto}>Editar Grupo: {value}</Text>
   </TouchableOpacity>
+  
 }
 
+{
+  value !== 'Grupos' &&
+<TouchableOpacity style={styles.editarGrupoBoton} onPress={() => verCalendario(value)}>
+    <Text style={styles.editarGrupoTexto}>Ver Calendario</Text>
+  </TouchableOpacity>
+}
 
-
+  </View>
 
 </View>
   );  
@@ -532,8 +546,7 @@ const styles = StyleSheet.create({
   },editarGrupoBoton:{
     backgroundColor: 'grey', // Color de fondo
     padding: 10, // Relleno
-    marginTop: 20, // Margen superior
-    marginBottom: 20, // Margen inferior
+    margin: '5%', 
     alignItems: 'center', // Alinea el texto al centro
     borderRadius: 5, // Bordes redondeados
   },editarGrupoTexto:{

@@ -12,6 +12,7 @@ import AnadirGrupo from './Pantallas/AnadirGrupo.js';
 import PantallaDeDetalles from './Pantallas/PantallaDetalles.js';
 import DetallesDeTemporada from './Pantallas/TemporadaDetalle.js';
 import EditarGrupo from './Pantallas/EditarGrupo.js';
+import Calendario from './Pantallas/Calendario.js'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +47,7 @@ function App() {
           <Stack.Screen name="Detalles Serie" component={PantallaDeDetalles}/>
           <Stack.Screen name="Temporada" component={DetallesDeTemporada}/>
           <Stack.Screen name="Editar Grupo" component={EditarGrupo}/>
+          <Stack.Screen name="Calendario" component={Calendario}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
