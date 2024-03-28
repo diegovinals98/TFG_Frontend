@@ -18,22 +18,28 @@ app.use(express.json()); // Para analizar application/json
   */
 
   const db = mysql.createConnection({
-    host: 'localhost', // La IP de tu máquina donde corre Docker
+    host: '10.0.0.36', // La IP de tu máquina donde corre Docker
     user: 'root', // El usuario de la base de datos
     password: '27101998', // La contraseña de la base de datos
     database: 'Series' // El nombre de tu base de datos
   });
 
-  
+  conectado = 0
 
   // Conectar a la base de datos
   db.connect((err) => {
     if(err) {
+      console.log('----- ERROR -----')
       throw err;
     }
+    conectado = 1
     console.log('Conectado a MariaDB');
   
 });
+
+app.get('/admin/health' , (req,res) => {
+  res.send('Hello World')
+})
 
 
 // Método para verificar el inicio de sesión de un usuario
@@ -726,11 +732,10 @@ app.delete('/eliminar-grupo/:groupId', (req, res) => {
 
 
 
-
-
-
-// Escuchar en un puerto
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+// Escuchar en un puerto
+

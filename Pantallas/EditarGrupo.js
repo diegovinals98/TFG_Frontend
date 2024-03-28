@@ -49,7 +49,7 @@ const EditarGrupo = () => {
     const fetchMiembrosGrupo = async () => {
       try {
         // Asume que el servidor está corriendo en localhost y tu dispositivo puede acceder a él por esta dirección
-        const response = await fetch(`http://10.0.0.36:3000/miembros-grupo/${nombreGrupo}`);
+        const response = await fetch(`http://apitfg.lapspartbox.com/miembros-grupo/${nombreGrupo}`);
         const data = await response.json();
         setMiembros(data.members);
         setIdGrupo(data.groupId)
@@ -71,7 +71,7 @@ const EditarGrupo = () => {
     // Por ejemplo, actualizar el estado en el servidor o en tu estado global
     setIsEditing(false);
     try {
-      const response = await fetch(`http://10.0.0.36:3000/actualizar-nombre-grupo/${idGrupo}`, {
+      const response = await fetch(`http://apitfg.lapspartbox.com/actualizar-nombre-grupo/${idGrupo}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const EditarGrupo = () => {
           onPress: async () => {
             try {
               // Ajusta esta URL según sea necesario para apuntar a tu servidor real
-              const response = await fetch(`http://10.0.0.36:3000/eliminar-grupo/${idGrupo}`, {
+              const response = await fetch(`http://apitfg.lapspartbox.com/eliminar-grupo/${idGrupo}`, {
                 method: 'DELETE',
               });
           

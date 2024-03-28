@@ -105,7 +105,7 @@ const HomeScreen = () => {
   // Función para realizar la llamada a la API y obtener los grupos del Usuario
   const llamarAGrupos = () =>{
     console.log('Entrado en llamarGrupos')
-    fetch(`http://10.0.0.36:3000/grupos/${user?.id}`)
+    fetch(`http://apitfg.lapspartbox.com/grupos/${user?.id}`)
       .then((response) => response.json())
       .then((json) => setTodosGrupos(json))
       .catch((error) => console.error('Error al obtener los grupos:', error));
@@ -125,7 +125,7 @@ const obtenerSeriesDelUsuario = async (userId, value) => {
   console.log('obtenerSeriesDelUsuario: ' + value);
   try {
     // Suponiendo que el servidor espera 'value' como parámetro de consulta
-    const url = new URL(`http://10.0.0.36:3000/series-ids-usuario/${userId}`);
+    const url = new URL(`http://apitfg.lapspartbox.com/series-ids-usuario/${userId}`);
     url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
 
     // Llamada al endpoint con userId y value como parámetros de consulta
@@ -217,7 +217,7 @@ const obtenerSeries = () => {
 
   const agregarSerieAUsuario = async (userId, idSerie) => {
     try {
-      let response = await fetch('http://10.0.0.36:3000/agregar-serie-usuario', {
+      let response = await fetch('http://apitfg.lapspartbox.com/agregar-serie-usuario', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

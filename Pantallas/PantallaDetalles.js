@@ -29,7 +29,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
     const obtenerUsuariosViendoSerie = async (nombreGrupo, idSerie) => {
       try {
-        const response = await fetch(`http://10.0.0.36:3000/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
+        const response = await fetch(`http://apitfg.lapspartbox.com/usuarios-viendo-serie/${nombreGrupo}/${idSerie}`);
         if (!response.ok) {
           throw new Error('Respuesta de red no fue ok.');
         }
@@ -115,7 +115,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
               text: 'Sí',
               onPress: async () => {
                 try {
-                  const response = await fetch('http://10.0.0.36:3000/eliminar-serie-usuario', {
+                  const response = await fetch('http://apitfg.lapspartbox.com/eliminar-serie-usuario', {
                     method: 'DELETE',
                     headers: {
                       'Content-Type': 'application/json',

@@ -90,7 +90,7 @@ const AnadirGrupo = () => {
       };
     
       try {
-        const response = await fetch('http://10.0.0.36:3000/crear-grupo-y-asociar-usuarios', {
+        const response = await fetch('http://apitfg.lapspartbox.com/crear-grupo-y-asociar-usuarios', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
