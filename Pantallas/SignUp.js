@@ -74,7 +74,7 @@ const SignUp = ({ navigation }) => {
     
       // Intenta registrar al usuario en el servidor
       try {
-        let response = await fetch('http://apitfg.lapspartbox.com/usuario', {
+        let response = await fetch('https://apitfg.lapspartbox.com/usuario', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

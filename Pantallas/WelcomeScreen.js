@@ -1,5 +1,5 @@
 import { React, useState} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 import logoFST from '../assets/logoFST.jpg';
 import { Dimensions } from 'react-native';
 import { globalStyles } from '../estilosGlobales.js';
@@ -21,7 +21,7 @@ export default function WelcomeScreen({ navigation }) {
   };
   
   const handleLoginPress = () => {
-    fetch('http://apitfg.lapspartbox.com/usuario')
+    fetch('https://apitfg.lapspartbox.com/usuario')
       .then((response) => response.json())
       .then((json) => {
         settodosUsuarios(json);
@@ -29,6 +29,19 @@ export default function WelcomeScreen({ navigation }) {
       })
       .catch((error) => console.error(error));
 
+      fetch('https://apitfg.lapspartbox.com/admin/health')
+      .then(response => response.text()) // Convertimos la respuesta a texto (o .json() si esperas un JSON)
+      .then(text => {
+        if (text == 'Hello World') {
+          // Si el texto es "Hello World", muestra una alerta
+          Alert.alert('Prueba de conexion', text);
+        } else {
+          // Si quieres hacer algo más con una respuesta diferente, puedes hacerlo aquí
+          Alert.alert('Prueba de conexion', 'No se conecta');
+        }
+      })
+      .catch(error => console.error(error)); // Capturamos y mostramos errores en caso de que ocurran
+    
     console.log('Login pressed');
     navigation.navigate('LogInScreen'); // Navegar a la pantalla 'LogInScreen'
   };

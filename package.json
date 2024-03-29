@@ -1,6 +1,6 @@
 {
   "name": "testtfg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -38,7 +38,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-web": "~0.19.6",
     "uuid": "^9.0.1",
-    "react-native-gesture-handler": "~2.14.0"
+    "react-native-gesture-handler": "~2.14.0",
+    "expo-system-ui": "~2.9.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

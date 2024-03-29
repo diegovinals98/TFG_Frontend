@@ -34,7 +34,7 @@ const DetallesDeTemporada = ({ route }) => {
       try{
         // Debido a cómo funciona la actualización de estado en React, `detallesTemporada` aún no se ha actualizado aquí.
         // Si necesitas usar inmediatamente los datos de `detallesTemporada`, utiliza directamente `data` obtenida de la respuesta.
-        const url2 = `http://apitfg.lapspartbox.com/temporada-vista/${user.id}/${idSerie}/${data.season_number}`;
+        const url2 = `https://apitfg.lapspartbox.com/temporada-vista/${user.id}/${idSerie}/${data.season_number}`;
         const response2 = await fetch(url2);
         const data2 = await response2.json();
         
@@ -87,7 +87,7 @@ const DetallesDeTemporada = ({ route }) => {
     console.log('Pulsado Marcar Visto')
     try {
         console.log('Dentro del try')
-        const response = await fetch('http://apitfg.lapspartbox.com/agregar-visualizacion', {
+        const response = await fetch('https://apitfg.lapspartbox.com/agregar-visualizacion', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const DetallesDeTemporada = ({ route }) => {
   const eliminarVisto = async (capituloId, userid) => {
 
     try {
-        const response = await fetch('http://apitfg.lapspartbox.com/eliminar-visualizacion', {
+        const response = await fetch('https://apitfg.lapspartbox.com/eliminar-visualizacion', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

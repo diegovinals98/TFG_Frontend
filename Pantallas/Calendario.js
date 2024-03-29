@@ -65,7 +65,7 @@ const Calendario = () => {
         console.log('obtenerSeriesDelUsuario: ' + value);
         try {
           // Suponiendo que el servidor espera 'value' como parámetro de consulta
-          const url = new URL(`http://apitfg.lapspartbox.com/series-ids-usuario/${userId}`);
+          const url = new URL(`https://apitfg.lapspartbox.com/series-ids-usuario/${userId}`);
           url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
       
           // Llamada al endpoint con userId y value como parámetros de consulta

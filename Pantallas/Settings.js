@@ -51,7 +51,7 @@ const Settings = () => {
     }else{
 
       try {
-        let response = await fetch(`http://apitfg.lapspartbox.com/usuario/${userId}`, {
+        let response = await fetch(`https://apitfg.lapspartbox.com/usuario/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
