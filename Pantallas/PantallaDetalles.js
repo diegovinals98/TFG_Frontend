@@ -109,7 +109,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
       const eliminarSerie = async ( idSerie, userId) => {
         Alert.alert(
           'Confirmación',
-          `¿Estás seguro de que quieres elimnibar la serie: ${detallesSerie.name}?`,
+          `¿Estás seguro de que quieres eliminar la serie: ${detallesSerie.name}?`,
           [
             {
               text: 'Sí',

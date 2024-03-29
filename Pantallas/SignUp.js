@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { globalStyles } from '../estilosGlobales.js';
 import logoFST from '../assets/logoFST.jpg';
+import { useUser } from '../userContext.js'; // Importa el hook useUser
 
 import {
   View,
@@ -12,7 +13,8 @@ import {
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 
 // Obtiene el ancho de la ventana del dispositivo
@@ -28,6 +30,7 @@ const SignUp = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { setUser } = useUser();
 
 
   // Función para volver a la pantalla anterior
@@ -81,10 +84,20 @@ const SignUp = ({ navigation }) => {
     
         // Verifica si el registro fue exitoso
         if (response.ok) {
-          alert('Usuario creado con éxito');
-          navigation.navigate('Welcome'); // Navega a la pantalla 'Welcome'
+          Alert.alert('Usuario creado con éxito');
+          setUser({
+            id: usuario.Id, // Asegúrate de que estos campos coincidan con los nombres en tu base de datos
+            nombre: usuario.Nombre,
+            apellidos: usuario.Apellidos,
+            usuario: usuario.Usuario,
+            contraseña: usuario.Contraseña,
+          });
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
         } else {
-          alert('Error al crear el usuario');
+          Alert.alert('Error al crear el usuario');
         }
       } catch (error) {
         console.error(error);

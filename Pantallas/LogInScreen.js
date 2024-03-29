@@ -62,7 +62,7 @@ const LogInScreen = () => {
       // Aquí manejas el caso de éxito 0 o cualquier otro caso
       console.log('Error en el inicio de sesión');
       setLoginError('Usuario o contraseña incorrectos');
-      Alert.alert("Error", "Usuario o contraseña incorrectos.");
+      Alert.alert("Usuario o contraseña incorrectos.");
     }
   } catch (error) {
     console.error('Error en la solicitud de inicio de sesión:', error);

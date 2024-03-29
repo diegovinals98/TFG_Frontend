@@ -28,7 +28,7 @@ export default function WelcomeScreen({ navigation }) {
         imprimirUsuarios(json); // Llama a una función para imprimir los usuarios
       })
       .catch((error) => console.error(error));
-  
+
     console.log('Login pressed');
     navigation.navigate('LogInScreen'); // Navegar a la pantalla 'LogInScreen'
   };
