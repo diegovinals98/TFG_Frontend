@@ -34,10 +34,10 @@ export default function WelcomeScreen({ navigation }) {
       .then(text => {
         if (text == 'Hello World') {
           // Si el texto es "Hello World", muestra una alerta
-          Alert.alert('Prueba de conexion', text);
+          //Alert.alert('Prueba de conexion', text);
         } else {
           // Si quieres hacer algo más con una respuesta diferente, puedes hacerlo aquí
-          Alert.alert('Prueba de conexion', 'No se conecta');
+          //Alert.alert('Prueba de conexion', 'No se conecta');
         }
       })
       .catch(error => console.error(error)); // Capturamos y mostramos errores en caso de que ocurran
