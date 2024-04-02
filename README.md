@@ -2,7 +2,7 @@
 # FAMILY SERIES TRACK
 
 ## Descripción
-FamilySeriesTrac es una aplicación desarrollada para el seguimiento de series. Esta aplicación permite a los usuarios llevar un registro de las series que están viendo, las que han completado, y descubrir nuevas series para ver.
+FamilySeriesTrack es una aplicación desarrollada para el seguimiento de series. Esta aplicación permite a los usuarios llevar un registro de las series que están viendo, las que han completado, y descubrir nuevas series para ver.
 
 ## Estructura de Directorios
 - `assets`: Archivos estáticos como imágenes, fuentes, etc., utilizados en la aplicación.
