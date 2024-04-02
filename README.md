@@ -2,14 +2,12 @@
 # FAMILY SERIES TRACK
 
 ## Descripción
-TFGSERIES Tracker es una aplicación desarrollada para el seguimiento de series. Esta aplicación permite a los usuarios llevar un registro de las series que están viendo, las que han completado, y descubrir nuevas series para ver.
+FamilySeriesTrac es una aplicación desarrollada para el seguimiento de series. Esta aplicación permite a los usuarios llevar un registro de las series que están viendo, las que han completado, y descubrir nuevas series para ver.
 
 ## Estructura de Directorios
 - `.expo`: Archivos de configuración para la herramienta Expo, que se utiliza para ejecutar y probar la aplicación.
 - `.vscode`: Archivos de configuración para el editor Visual Studio Code, probablemente contengan ajustes para el entorno de desarrollo.
 - `assets`: Archivos estáticos como imágenes, fuentes, etc., utilizados en la aplicación.
-- `docker`: Contiene archivos relacionados con Docker para contenerizar la aplicación.
-- `node_modules`: Dependencias instaladas a través de NPM.
 - `Pantallas`: Este directorio contiene las diferentes pantallas de la aplicación, implementadas como archivos JavaScript:
   - `AnadirGrupo.js`: Pantalla para añadir nuevos grupos.
   - `Calendario.js`: Pantalla de calendario para mostrar los episodios programados de series de televisión.
