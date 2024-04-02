@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logoFST from '../assets/logoFST.jpg';
+import logoFST from '../assets/logoFST.png';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
 import { Alert } from 'react-native';

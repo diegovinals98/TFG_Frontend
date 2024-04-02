@@ -61,6 +61,7 @@ const Calendario = () => {
         }, [])
       );
 
+  
     const obtenerSeriesDelUsuario = async (userId, value) => {
         console.log('obtenerSeriesDelUsuario: ' + value);
         try {

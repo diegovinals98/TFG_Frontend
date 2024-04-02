@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { globalStyles } from '../estilosGlobales.js';
-import logoFST from '../assets/logoFST.jpg';
+import logoFST from '../assets/logoFST.png';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
 
 import {

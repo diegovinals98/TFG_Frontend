@@ -1,6 +1,6 @@
 import { React, useState} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
-import logoFST from '../assets/logoFST.jpg';
+import logoFST from '../assets/logoFST.png';
 import { Dimensions } from 'react-native';
 import { globalStyles } from '../estilosGlobales.js';
 
