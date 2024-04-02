@@ -4,24 +4,37 @@
 ## Descripción
 TFGSERIES Tracker es una aplicación desarrollada para el seguimiento de series. Esta aplicación permite a los usuarios llevar un registro de las series que están viendo, las que han completado, y descubrir nuevas series para ver.
 
-## Estructura del Proyecto
+## Estructura de Directorios
+- `.expo`: Archivos de configuración para la herramienta Expo, que se utiliza para ejecutar y probar la aplicación.
+- `.vscode`: Archivos de configuración para el editor Visual Studio Code, probablemente contengan ajustes para el entorno de desarrollo.
+- `assets`: Archivos estáticos como imágenes, fuentes, etc., utilizados en la aplicación.
+- `docker`: Contiene archivos relacionados con Docker para contenerizar la aplicación.
+- `node_modules`: Dependencias instaladas a través de NPM.
+- `Pantallas`: Este directorio contiene las diferentes pantallas de la aplicación, implementadas como archivos JavaScript:
+  - `AnadirGrupo.js`: Pantalla para añadir nuevos grupos.
+  - `Calendario.js`: Pantalla de calendario para mostrar los episodios programados de series de televisión.
+  - `EditarGrupo.js`: Pantalla para editar detalles de grupos.
+  - `HomeScreen.js`: La pantalla principal de la aplicación.
+  - `LogInScreen.js`: Pantalla para el inicio de sesión de usuarios.
+  - `PantallaDetalles.js`: Pantalla con detalles para visualizar información de series de televisión o episodios.
+  - `Settings.js`: Pantalla de ajustes para la aplicación.
+  - `SignUp.js`: Pantalla para el registro de nuevos usuarios.
+  - `TemporadaDetalle.js`: Pantalla que muestra detalles de una temporada específica de una serie.
+  - `WelcomeScreen.js`: Pantalla de bienvenida para usuarios nuevos o que regresan.
+- `.gitignore`: Especifica archivos que Git ignorará intencionadamente.
+- `App.js`: Punto de entrada principal de la aplicación.
+- `app.json`: Archivo de configuración de la aplicación.
+- `babel.config.js`: Archivo de configuración para Babel, un compilador de JavaScript.
+- `eas.json`: Archivo de configuración para los Servicios de Aplicaciones de Expo.
+- `estilosGlobales.js`: Contiene estilos globales para la aplicación.
+- `index.js`: Otro posible punto de entrada o archivo del componente raíz.
+- `metro.config.js`: Configuración para Metro, el empaquetador de JavaScript para React Native.
+- `package-lock.json`: Archivo generado automáticamente para cualquier operación donde NPM modifica el árbol de node_modules o el package.json.
+- `package.json`: Lista todas las dependencias y scripts disponibles para el proyecto.
+- `README.md`: Este archivo, que incluye instrucciones y detalles sobre el proyecto.
+- `userContext.js`: Presumiblemente un archivo de contexto para manejar el estado del usuario en la aplicación.
 
-- `.expo`: Configuraciones específicas de Expo.
-- `assets`: Recursos estáticos como imágenes, fuentes, etc.
-- `data`: Scripts o datos que la aplicación puede utilizar.
-- `node_modules`: Módulos de Node.js instalados.
-- `Pantallas`: Componentes de React Native que representan las pantallas de la aplicación.
-- `App.js`: Punto de entrada principal de la aplicación React Native.
-- `app.json`: Configuración de Expo y metadatos de la aplicación.
-- `babel.config.js`: Configuraciones para Babel.
-- `eas.json`: Configuración para EAS Build, el servicio de compilación de Expo.
-- `estilosGlobales.js`: Estilos globales utilizados en toda la aplicación.
-- `index.js`: Archivo de arranque para el paquete.
-- `package-lock.json`: Versión bloqueada de las dependencias para garantizar la consistencia entre instalaciones.
-- `package.json`: Define las dependencias y scripts de la aplicación.
-- `userContext.js`: Contexto de React para manejar el estado del usuario a través de la aplicación.
-
-## Configuración
+## Configuración y Uso
 
 Para ejecutar este proyecto localmente, sigue estos pasos:
 
