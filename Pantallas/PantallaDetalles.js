@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain' ,
     
   },serieDetailContainer: {
-    width: '33,33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
+    width: '33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
     padding: 10, // Añade algo de espacio alrededor de cada serie
     flexDirection: 'column',
     
