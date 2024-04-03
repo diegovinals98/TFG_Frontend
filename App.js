@@ -41,12 +41,17 @@ function App() {
           <Stack.Screen name="Welcome" options={{ headerShown: false }} component={WelcomeScreen} />
           <Stack.Screen name="LogInScreen" options={{ headerShown: false }} component={LogInScreen} />
           <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              title: '', // Aquí puedes cambiar el texto que se muestra en la barra de navegación
-            }}
-          />
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: '',
+            headerStyle: {
+              //backgroundColor: '#f7f7f7', // Cambia el color de fondo a rojo
+              backgroundColor: '#f7f7f7',
+            },
+          }}
+        />
+
           <Stack.Screen name="SignUp" options={{ headerShown: false }} component={SignUp} />
           <Stack.Screen name="Settings" options={{ title: 'Ajustes' }} component={Settings}/>
           <Stack.Screen name="Añadir Grupo" component={AnadirGrupo}/>
