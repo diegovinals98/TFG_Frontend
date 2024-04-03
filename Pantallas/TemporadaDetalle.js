@@ -153,13 +153,15 @@ const DetallesDeTemporada = ({ route }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>{detallesTemporada.name.toUpperCase()}</Text>
+    <View style={styles.container}>
+    <Text style={styles.title}>{detallesTemporada.name.toUpperCase()}</Text>
+    <ScrollView style={styles.scrollView}>
+      
       <View style={styles.episodesContainer}>
         {detallesTemporada.episodes && detallesTemporada.episodes.map((capitulo, index) => (
           <View key={capitulo.id} style={styles.capituloContainer}>
             <Text style={styles.capituloTitle}>Capitulo {capitulo.episode_number }: {capitulo.name}</Text>
-            { /* posterCapitulo(capitulo.still_path) */}
+            { /* posterCapitulo(capitulo.still_path) */ }
             <Text style={styles.capituloDescription}>{capitulo.overview}</Text>
             {
               (capitulosVistos || []).includes(capitulo.id) ? (
@@ -183,6 +185,7 @@ const DetallesDeTemporada = ({ route }) => {
         ))}
       </View>
     </ScrollView>
+    </View>
   );
 };
 
@@ -190,27 +193,31 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
+      paddingBottom:'10%',
+      
+    },
+    scrollView: {
+      height: '100%'
     },
     title: {
-      fontSize: 24,
+      fontSize: 30,
       fontWeight: 'bold',
-      marginTop: 20,
-      marginBottom: 10,
+      paddingTop: '2%',
+      paddingBottom: '2%',
       textAlign: 'center',
-    },
-    capituloContainer: {
-      marginBottom: 20,
-      alignItems: 'center', // Centra los elementos en el eje transversal (horizontalmente)
+      backgroundColor: '#4A90E2'
     },
     capituloTitle: {
       fontSize: 18,
       fontWeight: 'bold',
-      margin: '5%',
+      marginLeft: '5%',
+      margin:'2%'
     },
     posterEpisode: {
-      width: '100%', // Establece el ancho que prefieras
-      height: '20%',
+      width: '30%', // Establece el ancho que prefieras
+      height: '10%',
       resizeMode: 'contain', // Asegura que el póster se ajuste al espacio disponible manteniendo su relación de aspecto
+      marginLeft: '5%'
     },
     capituloDescription: {
       fontSize: 14,
@@ -222,26 +229,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Ordena los elementos en fila
         flexWrap: 'wrap', // Permite el ajuste automático de los elementos
         justifyContent: 'space-around', // Distribuye el espacio alrededor de los elementos
+        
       },
       capituloContainer: {
+        flex:'row',
         width: '100%', // Ancho para que quepan dos elementos por fila
         alignItems: 'left',
+        paddingBottom:'5%',
+        borderWidth: 1
       },eliminarSerieBoton:{
         marginRight: '5%',
         marginLeft:'5%',
         marginTop:'5%'
       },botonMarcarVisto: {
         backgroundColor: 'blue', // Color azul para el botón no visto
-        // Otros estilos para el botón...
+        borderRadius: '5',
+        padding: '2%',
+        justifyContent: 'space-around'
       },
       botonVisto: {
         backgroundColor: 'green', // Color verde para el botón visto
-
-        // Otros estilos para el botón...
+        borderRadius: '5',
+        padding: '2%',
+        justifyContent: 'space-around',
       },
       textoBoton: {
         color: 'white',
-        // Otros estilos para el texto...
+        letterSpacing: 0.25,
       },
   });
   

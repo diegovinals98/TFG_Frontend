@@ -170,7 +170,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
           <View  style={styles.usuarioTextoContainer}>
                 <Text style={styles.header}>USUARIO</Text>
                 <Text style={styles.header}>TEMPORADA</Text>
-                <Text style={styles.header}>CAPITULO</Text>
+                <Text style={styles.header}>CAPÍTULO</Text>
               </View>
           {UsuariosSerie.map((usuario, index) => (
             <View key={index} style={styles.usuarioTextoContainer}>
@@ -214,15 +214,19 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: '5%',
     flex: 1,
     alignItems: 'center',
+    
   },
   title: {
     fontSize: 40, // Tamaño grande para el título
     fontWeight: 'bold', // Negrita para resaltar
-    color: '#4A90E2', // Un color llamativo pero no demasiado intenso
-    marginBottom: 8, // Espacio debajo del título
+    borderColor: '#4A90E2', // Color de la línea inferior
+    backgroundColor:'white',
+    borderWidth: 4, // Grosor de la línea inferior
+    width: '100%',
+    paddingBottom: '2%', // Espacio debajo del título
+    paddingTop: '2%', // Espacio debajo del título
     textAlign: 'center', // Centrar el texto
   },
   detail: {
@@ -234,9 +238,10 @@ const styles = StyleSheet.create({
 
   },
   poster: {
-    height: '40%', // Ajusta la altura como prefieras
-    width: '60%',
-    resizeMode: 'contain' // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
+    height: '20%', // Ajusta la altura como prefieras
+    width: '100%',
+    resizeMode: 'contain', // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
+    
   },posterSeason:{
     height: 200, // Ajusta la altura como prefieras
     resizeMode: 'contain' ,

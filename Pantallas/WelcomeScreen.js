@@ -77,11 +77,9 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: windowWidth * (windowWidth / windowWidth),
   },
-
-  
   titulo: {
     fontSize: 40,
-    marginBottom: 20,
-    marginTop: 50,
+    marginBottom: '5%',
+    marginTop: '10%',
   }
 });

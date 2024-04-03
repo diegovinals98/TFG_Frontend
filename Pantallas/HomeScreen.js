@@ -290,7 +290,7 @@ const obtenerSeries = () => {
 
   return (
     <View style={[globalStyles.container, styles.container]}>
-  <StatusBar />
+  
   {/* Renderizado de la fila superior con las iniciales del usuario y el botón de grupos. */}
   <View style={styles.row}>
     <TouchableOpacity style={styles.circle} onPress={() => handleSettings()}>
@@ -354,7 +354,9 @@ const obtenerSeries = () => {
         data={series}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Text style={styles.textoBuscadas} onPress={() => seleccionSerie(item.name, item.id)}>{item.name}</Text>
+          <TouchableOpacity style={{borderColor:'black', borderBottomWidth:2}}  onPress={() => seleccionSerie(item.name, item.id)}>
+          <Text style={styles.textoBuscadas} >{item.name}</Text>
+          </TouchableOpacity>
         )}
         style={styles.flatList}
       />
@@ -363,6 +365,7 @@ const obtenerSeries = () => {
 </TouchableWithoutFeedback>
 
 
+<View style={{ flexDirection: 'row', flexWrap: 'wrap'}}>
 <ScrollView refreshControl={
     <RefreshControl
       refreshing={refrescando}
@@ -370,6 +373,7 @@ const obtenerSeries = () => {
     />
   }>
   <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+  
     {seriesDetalles.map((detalle, index) => (
       <TouchableOpacity
         key={index}
@@ -388,9 +392,11 @@ const obtenerSeries = () => {
     ))}
   </View>
 </ScrollView>
+</View>
 
-<View style={{flexDirection:'row'}}>
 
+<View style={{position: 'absolute',
+    bottom: 0}}>
 {
   value !== 'Grupos' &&
   <TouchableOpacity style={styles.editarGrupoBoton} onPress={() => editarGrupo(value)}>
@@ -415,7 +421,8 @@ const obtenerSeries = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: '15%',
+    
+    
     alignItems: 'center',
     flex: 1,
   },
@@ -431,8 +438,8 @@ const styles = StyleSheet.create({
     borderRadius: 1000, // Un número grande para asegurarse de que los bordes sean completamente redondos
     backgroundColor: '#6666ff', // Color de fondo del círculo
     alignItems: 'center',
-    marginRight: 5, // Margen derecho para separar del botón de grupos
-    marginLeft: 5,
+    marginRight: '1%', // Margen derecho para separar del botón de grupos
+    marginLeft: '1%',
     flex: 1, // Asigna igual espacio a cada elemento
     justifyContent: 'center', // Centra el contenido
   },
@@ -442,7 +449,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Negrita para las iniciales
   },
   buttonGroup: {
-    height: 50,
+    height: '100%',
     flexDirection: 'row', // Orientación horizontal para el texto y el ícono
     backgroundColor: '#6666ff', // Color de fondo del botón de grupos
     paddingHorizontal: 20, // Padding horizontal
@@ -509,7 +516,7 @@ const styles = StyleSheet.create({
   },serieDetailContainer: {
     width: '33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
     padding: 10, // Añade algo de espacio alrededor de cada serie
-    flexDirection: 'column',
+    flexDirection: 'column'
     
   },searchInput: {
     flex: 1, 
@@ -546,7 +553,7 @@ const styles = StyleSheet.create({
   },editarGrupoBoton:{
     backgroundColor: 'grey', // Color de fondo
     padding: 10, // Relleno
-    margin: '5%', 
+    margin: '2%', 
     alignItems: 'center', // Alinea el texto al centro
     borderRadius: 5, // Bordes redondeados
   },editarGrupoTexto:{

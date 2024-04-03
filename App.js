@@ -40,9 +40,15 @@ function App() {
         <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen name="Welcome" options={{ headerShown: false }} component={WelcomeScreen} />
           <Stack.Screen name="LogInScreen" options={{ headerShown: false }} component={LogInScreen} />
-          <Stack.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} /> 
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              title: '', // Aquí puedes cambiar el texto que se muestra en la barra de navegación
+            }}
+          />
           <Stack.Screen name="SignUp" options={{ headerShown: false }} component={SignUp} />
-          <Stack.Screen name="Settings" component={Settings}/>
+          <Stack.Screen name="Settings" options={{ title: 'Ajustes' }} component={Settings}/>
           <Stack.Screen name="Añadir Grupo" component={AnadirGrupo}/>
           <Stack.Screen name="Detalles Serie" component={PantallaDeDetalles}/>
           <Stack.Screen name="Temporada" component={DetallesDeTemporada}/>
