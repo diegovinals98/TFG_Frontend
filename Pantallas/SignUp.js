@@ -109,10 +109,11 @@ const SignUp = ({ navigation }) => {
   
 
   return (
+    
     <KeyboardAvoidingView
       behavior={ "padding"} // "padding" para iOS y "height" para Android
       style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 200}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 200}
     >
     
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

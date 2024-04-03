@@ -6,7 +6,9 @@ import {
   TextInput, 
   TouchableOpacity, 
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -106,6 +108,11 @@ const Settings = () => {
   }
 
   return (
+    <KeyboardAvoidingView
+  behavior={Platform.OS === "ios" ? "padding" : "height"} // "padding" para iOS y "height" para Android
+  style={{ flex: 1 }}
+  
+>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[globalStyles.container, styles.container]}>
         <View style={styles.circle}>
@@ -174,6 +181,7 @@ const Settings = () => {
       </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

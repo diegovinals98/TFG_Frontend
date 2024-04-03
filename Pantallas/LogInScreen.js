@@ -14,7 +14,9 @@ import {
   Dimensions,
   Image,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 
 
@@ -75,6 +77,11 @@ const LogInScreen = () => {
 
 
   return (
+    <KeyboardAvoidingView
+  behavior={Platform.OS === "ios" ? "padding" : "height"} // "padding" para iOS y "height" para Android
+  style={{ flex: 1 }}
+  keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
     <Image source={logoFST} style={styles.logo} />
@@ -115,6 +122,7 @@ const LogInScreen = () => {
     
     </View>
     </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
