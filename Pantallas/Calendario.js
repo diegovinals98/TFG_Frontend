@@ -154,7 +154,8 @@ const Calendario = () => {
         />
     
 
-  
+    <View style={{ flexDirection: 'row', height:'70%'}}>
+    <ScrollView style={{height:'100%'}}>
 {seriesDetalles.map((detalle, index) => {
     // Función para renderizar el contenido condicionalmente
     const renderDetalle = () => {
@@ -163,10 +164,11 @@ const Calendario = () => {
         const formattedDate = formatDate(detalle.next_episode_to_air.air_date);
         return (
             <View>
+            <Text style= {styles.titulo}> { detalle.name.toUpperCase() }</Text>
             {poster(detalle.poster_path)}
             
             <Text style={styles.title}>
-                Temporada: {detalle.next_episode_to_air.season_number}, Episodio {detalle.next_episode_to_air.episode_number}
+                TEMPORADA: {detalle.next_episode_to_air.season_number}, EPISODIO {detalle.next_episode_to_air.episode_number}
             </Text>
             <Text style={styles.detalles}>
                 {detalle.next_episode_to_air.overview}
@@ -177,14 +179,18 @@ const Calendario = () => {
             
         }
     };
+   
 
     return (
+      
         <View key={index}>
             {renderDetalle()}
         </View>
+        
     );
 })}
-
+</ScrollView>
+</View>
 
     </View>
 
@@ -197,10 +203,8 @@ const styles = StyleSheet.create({
         width: '100%',
         resizeMode: 'contain' // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
     },title: {
-        fontSize: 40, // Tamaño grande para el título
-        fontWeight: 'bold', // Negrita para resaltar
-        color: '#4A90E2', // Un color llamativo pero no demasiado intenso
-        marginBottom: 8, // Espacio debajo del título
+        fontSize: 30, // Tamaño grande para el título
+        marginBottom: '5%', // Espacio debajo del título
         textAlign: 'center', // Centrar el texto
     },detalles:{
         marginTop: '1%',
@@ -208,6 +212,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'grey',
         textAlign: 'justify'
+    },titulo:{
+        fontSize: 40, // Tamaño grande para el título
+        fontWeight: 'bold', // Negrita para resaltar
+        color: '#4A90E2', // Un color llamativo pero no demasiado intenso
+        textAlign: 'center', // Centrar el texto
+        paddingHorizontal: 10, // Espacio horizontal para no pegar al borde
+        borderWidth: 4,
+        borderColor: '#4A90E2'
     }
   
 });

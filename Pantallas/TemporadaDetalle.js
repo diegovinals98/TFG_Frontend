@@ -229,10 +229,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row', // Ordena los elementos en fila
         flexWrap: 'wrap', // Permite el ajuste automático de los elementos
         justifyContent: 'space-around', // Distribuye el espacio alrededor de los elementos
-        
       },
       capituloContainer: {
-        flex:'row',
         width: '100%', // Ancho para que quepan dos elementos por fila
         alignItems: 'left',
         paddingBottom:'5%',
@@ -243,19 +241,18 @@ const styles = StyleSheet.create({
         marginTop:'5%'
       },botonMarcarVisto: {
         backgroundColor: 'blue', // Color azul para el botón no visto
-        borderRadius: '5',
+        borderRadius: 5,
         padding: '2%',
         justifyContent: 'space-around'
       },
       botonVisto: {
         backgroundColor: 'green', // Color verde para el botón visto
-        borderRadius: '5',
+        borderRadius: 5,
         padding: '2%',
         justifyContent: 'space-around',
       },
       textoBoton: {
         color: 'white',
-        letterSpacing: 0.25,
       },
   });
   

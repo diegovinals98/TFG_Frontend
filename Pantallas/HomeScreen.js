@@ -31,13 +31,16 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 
 // Obtiene las dimensiones de la ventana del dispositivo.
-const windowHeigh = Dimensions.get('window').height;
+
+const windowHeight = Dimensions.get('window').height;
 
 // Componente principal de la pantalla de inicio.
 const HomeScreen = () => {
   // Hook de navegación y rutas de react-navigation.
   const route = useRoute();
   const navigation = useNavigation();
+
+
 
 
 
@@ -365,9 +368,10 @@ const obtenerSeries = () => {
 </TouchableWithoutFeedback>
 
 
-<View style={{ flexDirection: 'row', flexWrap: 'wrap'}}>
+<View style={{ flexDirection: 'row', height:'70%'}}>
 <ScrollView refreshControl={
     <RefreshControl
+
       refreshing={refrescando}
       onRefresh={onRefresh}
     />
@@ -395,8 +399,8 @@ const obtenerSeries = () => {
 </View>
 
 
-<View style={{position: 'absolute',
-    bottom: 0}}>
+<View style={{position: '',
+    bottom: 0, flexDirection:'row'}}>
 {
   value !== 'Grupos' &&
   <TouchableOpacity style={styles.editarGrupoBoton} onPress={() => editarGrupo(value)}>
@@ -421,7 +425,6 @@ const obtenerSeries = () => {
 
 const styles = StyleSheet.create({
   container: {
-    
     
     alignItems: 'center',
     flex: 1,
@@ -510,13 +513,13 @@ const styles = StyleSheet.create({
     tintColor: 'white',
   },
   poster: {
-    height: 150, // Ajusta la altura como prefieras
+    height: windowHeight * 0.19, // Ajusta la altura como prefieras
     resizeMode: 'contain', // Esto asegura que la imagen se ajuste al espacio disponible manteniendo su relación de aspecto
 
   },serieDetailContainer: {
     width: '33%', // Asegúrate de que sea 100% para que cada elemento tenga su propia fila
     padding: 10, // Añade algo de espacio alrededor de cada serie
-    flexDirection: 'column'
+    flexDirection: 'column',
     
   },searchInput: {
     flex: 1, 

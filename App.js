@@ -41,20 +41,19 @@ function App() {
           <Stack.Screen name="Welcome" options={{ headerShown: false }} component={WelcomeScreen} />
           <Stack.Screen name="LogInScreen" options={{ headerShown: false }} component={LogInScreen} />
           <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title: '',
-            headerStyle: {
-              //backgroundColor: '#f7f7f7', // Cambia el color de fondo a rojo
-              backgroundColor: '#f7f7f7',
-            },
-          }}
-        />
-
+            name="Home"
+            component={HomeScreen}
+            options={{
+              headerShown: false,
+              title: '',
+              headerStyle: {
+                backgroundColor: '#f7f7f7',
+              }
+            }}
+          />
           <Stack.Screen name="SignUp" options={{ headerShown: false }} component={SignUp} />
           <Stack.Screen name="Settings" options={{ title: 'Ajustes' }} component={Settings}/>
-          <Stack.Screen name="Añadir Grupo" component={AnadirGrupo}/>
+          <Stack.Screen name="Añadir Grupo" options={{ title: 'Crear Grupo' }} component={AnadirGrupo}/>
           <Stack.Screen name="Detalles Serie" component={PantallaDeDetalles}/>
           <Stack.Screen name="Temporada" component={DetallesDeTemporada}/>
           <Stack.Screen name="Editar Grupo" component={EditarGrupo}/>
