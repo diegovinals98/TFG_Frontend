@@ -14,7 +14,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
-  Alert
+  Alert,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 
 // Obtiene el ancho de la ventana del dispositivo
@@ -107,6 +109,11 @@ const SignUp = ({ navigation }) => {
   
 
   return (
+    <KeyboardAvoidingView
+      behavior={ "padding"} // "padding" para iOS y "height" para Android
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 200}
+    >
     
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container} >
@@ -172,6 +179,7 @@ const SignUp = ({ navigation }) => {
   
     </View>
     </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
     
   )
 } 
