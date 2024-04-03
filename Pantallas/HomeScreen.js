@@ -15,7 +15,9 @@ import {
   Button,
   Alert,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView ,
+  Platform
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
@@ -26,6 +28,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 
 
@@ -40,7 +44,13 @@ const HomeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
+  const insets = useSafeAreaInsets();
 
+  // Estilos condicionales basados en la plataforma
+  const platformStyles = Platform.select({
+    ios: { paddingTop: StatusBar.currentHeight }, // para iOS usamos el inset top
+    android: { paddingTop:  insets.top}, // para Android usamos la altura de la barra de estado
+  });
 
 
 
@@ -292,15 +302,19 @@ const obtenerSeries = () => {
   
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f7f7f7' }}>
+    <StatusBar></StatusBar>
+      
+
+    <View style={[globalStyles.container, styles.container, platformStyles]}>
   
   {/* Renderizado de la fila superior con las iniciales del usuario y el botón de grupos. */}
-  <View style={styles.row}>
+  <View style={styles.row }>
     <TouchableOpacity style={styles.circle} onPress={() => handleSettings()}>
       <Text style={styles.initials}>{iniciales}</Text>
     </TouchableOpacity>
 
-
+ 
    
     <Dropdown
       style={[styles.buttonGroup, isFocus && { borderColor: 'blue' }]}
@@ -368,7 +382,7 @@ const obtenerSeries = () => {
 </TouchableWithoutFeedback>
 
 
-<View style={{ flexDirection: 'row', height:'70%'}}>
+<View style={{ flexDirection: 'row', height:windowHeight * 0.7}}>
 <ScrollView refreshControl={
     <RefreshControl
 
@@ -384,11 +398,11 @@ const obtenerSeries = () => {
         style={styles.serieDetailContainer}
         onPress={() => navegarADetalles(detalle.id)}
       >
-<View style={{ flex: 1 , marginTop: 0}}>
+<View style={{ flex: 1 }}>
             {poster(detalle.poster_path)}
           </View>
         
-        <View style={{ flex: 5, marginBottom: 10}}>
+        <View style={{ flex: 5, marginBottom: '2%'}}>
             <Text style={styles.serieTitle }>{detalle.name}</Text> 
         </View>
         
@@ -399,8 +413,7 @@ const obtenerSeries = () => {
 </View>
 
 
-<View style={{position: '',
-    bottom: 0, flexDirection:'row'}}>
+<View style={{flexDirection:'row', textAlign: 'center'}}>
 {
   value !== 'Grupos' &&
   <TouchableOpacity style={styles.editarGrupoBoton} onPress={() => editarGrupo(value)}>
@@ -419,6 +432,7 @@ const obtenerSeries = () => {
   </View>
 
 </View>
+</SafeAreaView>
   );  
   
 };
@@ -525,14 +539,16 @@ const styles = StyleSheet.create({
     flex: 1, 
     borderWidth: 1,
     borderColor: '#ddd',
-    padding: 15,
+    padding: '4%',
     borderRadius: 8,
-    marginBottom: 15,
+    marginBottom: '2%',
     fontSize: 16,
     backgroundColor: '#fff',
+
   },searchContainer:{
     width: '80%',
     flexDirection: 'column',
+ 
   }, flatList:{
     borderRadius: 10,
     borderWidth: 1,
@@ -545,13 +561,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#005f99',
     borderRadius: 10,
-    padding:'4%'
+    padding:'4%',
+    
     
   },cajaBoton:{
     flexDirection: 'row',
     alignItems:'center',
     paddingBottom: 10,
-    marginLeft:'2%',
+    marginLeft:'2%'
 
   },editarGrupoBoton:{
     backgroundColor: 'grey', // Color de fondo
