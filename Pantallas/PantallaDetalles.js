@@ -99,11 +99,11 @@ const PantallaDeDetalles = ({ route, navigation }) => {
       }
 
       // Esta función será llamada cuando se presione una temporada
-      const navegarADetallesDeTemporada = (idSerie, NumeroTemporada) => {
+      const navegarADetallesDeTemporada = (idSerie, NumeroTemporada, nombreGrupo, nombreSerie) => {
         // Aquí, 'DetallesDeTemporada' es el nombre de la pantalla a la que quieres navegar.
         // Debes reemplazarlo con el nombre real que hayas configurado en tu stack de navegación.
         // Asegúrate de pasar todos los detalles necesarios para mostrar la pantalla de detalles de la temporada.
-        navigation.navigate('Temporada', { idSerie,  NumeroTemporada});
+        navigation.navigate('Temporada', { idSerie,  NumeroTemporada, nombreGrupo, nombreSerie});
       };
 
       const eliminarSerie = async ( idSerie, userId) => {
@@ -188,7 +188,7 @@ const PantallaDeDetalles = ({ route, navigation }) => {
           <TouchableOpacity
         key={index}
         style={styles.serieDetailContainer}
-        onPress={() => navegarADetallesDeTemporada(idSerie, season.season_number)}
+        onPress={() => navegarADetallesDeTemporada(idSerie, season.season_number, NombreGrupo, detallesSerie.name)}
       >
           <View style={{ flex: 1 , marginTop: 0}}>
             <Text key={index} style={styles.seasonTitle}>

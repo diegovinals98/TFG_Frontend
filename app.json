@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.edgehealth.seriesdv"
+      "package": "com.edgehealth.seriesdv",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

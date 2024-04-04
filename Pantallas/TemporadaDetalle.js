@@ -2,11 +2,16 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image,TouchableOpacity } from 'react-native';
 import { useUser } from '../userContext.js'; // Importa el contexto del usuario.
 import { useFocusEffect } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const DetallesDeTemporada = ({ route }) => {
 
   const [idSerie, setidSerie] = useState(route.params.idSerie);
   const [numeroTemporada, setnumeroTemporada] = useState(route.params.NumeroTemporada);
+  const [nombreGrupo, setNombreGrupo] = useState(route.params.nombreGrupo);
+  const [nombreSerie, setNombreSerie] = useState(route.params.nombreSerie);
+  const [tokensRecibios, setTokensRecibidos] = useState([]);
 
   const { user } = useUser();
   
@@ -18,6 +23,7 @@ const DetallesDeTemporada = ({ route }) => {
   const [detallesTemporada, setDetallesTemporada] = useState(null);
   const [capitulosVistos, setCapitulosVistos] = useState([]);
   const [actualizarVisto, setActualizarVisto] = useState(false);
+
 
 
 
@@ -64,7 +70,7 @@ const DetallesDeTemporada = ({ route }) => {
     }, []) // Dependencias para este efecto
   );
 
-
+  
 
   useEffect(() => {  
     //cargarDatos();
@@ -82,8 +88,69 @@ const DetallesDeTemporada = ({ route }) => {
       </View>
     );
   }
+  
+
+  async function getGroupNotificationTokens(groupName) {
+    try {
+        // Corrección: Uso de backticks para interpolación de strings
+        const response = await fetch(`https://apitfg.lapspartbox.com/getNotificationTokens/${groupName}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al buscar Tokens: La respuesta de la red no fue ok.');
+        }
+
+        // Corrección: Uso de await para resolver la promesa
+        const tokensRecibidos = await response.json();
+        console.log('Tokens recibidos:', tokensRecibidos);
+
+        // Devuelve los tokens obtenidos
+        return tokensRecibidos;
+
+    } catch (error) {
+        console.error('Error al obtener tokens:', error);
+    }
+}
+
+
+async function sendPushNotification(token, messageBody) {
+  const expoPushEndpoint = 'https://exp.host/--/api/v2/push/send';
+
+  const message = {
+      to: token,
+      sound: 'default', // O cualquier sonido personalizado
+      body: messageBody,
+      data: { withSome: 'data' }, // Cualquier dato adicional que quieras enviar
+  };
+
+  try {
+      const response = await fetch(expoPushEndpoint, {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+      });
+
+      const responseData = await response.json();
+      if (response.ok) {
+          console.log('Notificación enviada:', responseData);
+      } else {
+          console.error('Error al enviar notificación:', responseData);
+      }
+  } catch (error) {
+      console.error('Error al enviar notificación:', error);
+  }
+}
+
 
   const marcarVisto  = async (idSerie, capituloId, Name, Episode_number,season_number, userid) => {
+    
     console.log('Pulsado Marcar Visto')
     try {
         console.log('Dentro del try')
@@ -97,12 +164,22 @@ const DetallesDeTemporada = ({ route }) => {
 
         if (!response.ok) {
           console.log('Error al agregar capitulo');
+        }else{
+          const messageBody = `${user.nombre} ha visto el Capítulo ${Episode_number} de la Temporada ${season_number} de la serie: ${nombreSerie}.`;
+          // Esta es una suposición sobre cómo podrías implementar getGroupNotificationTokens
+          const tokens = await getGroupNotificationTokens(nombreGrupo);
+          tokens.forEach(async (token) => {
+              await sendPushNotification(token, messageBody);
+          });
+
+          console.log('Notificaciones enviadas correctamente');
         }
         
         // Manejo adicional en caso de éxito, como actualizar la interfaz de usuario
       } catch (error) {
         console.log('Error al agregar capitulo:', error);
       }
+
       // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos vistos
       setActualizarVisto(actual => !actual);
       console.log('Fuera del try')

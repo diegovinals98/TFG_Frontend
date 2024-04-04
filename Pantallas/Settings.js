@@ -111,7 +111,6 @@ const Settings = () => {
     <KeyboardAvoidingView
   behavior={Platform.OS === "ios" ? "padding" : "height"} // "padding" para iOS y "height" para Android
   style={{ flex: 1 }}
-  
 >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={[globalStyles.container, styles.container]}>

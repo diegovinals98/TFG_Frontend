@@ -129,6 +129,7 @@ const SignUp = ({ navigation }) => {
         onChangeText={newText => setNombre(newText)}
         secureTextEntry={false}
         autoCapitalize="none"
+        autoComplete="given-name"
         />
 
         <TextInput
@@ -138,6 +139,7 @@ const SignUp = ({ navigation }) => {
         onChangeText={newText => setApellidos(newText)}
         secureTextEntry={false}
         autoCapitalize="none"
+        autoComplete="family-name"
         />
 
         <TextInput
@@ -146,6 +148,7 @@ const SignUp = ({ navigation }) => {
         placeholderTextColor="#666"
         onChangeText={newText => setnombreUsuario(newText)}
         autoCapitalize="none"
+        autoComplete="username"
         />
     
           <TextInput
