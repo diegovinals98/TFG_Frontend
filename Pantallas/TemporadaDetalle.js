@@ -117,35 +117,34 @@ const DetallesDeTemporada = ({ route }) => {
 }
 
 
-async function sendPushNotification(token, messageBody) {
-  const expoPushEndpoint = 'https://exp.host/--/api/v2/push/send';
-
-  const message = {
-      to: token,
-      sound: 'default', // O cualquier sonido personalizado
-      body: messageBody,
-      data: { withSome: 'data' }, // Cualquier dato adicional que quieras enviar
-  };
-
+async function sendPushNotification(token, usuario, nombreSerie,season_number Episode_number) {
+  console.log('INTENTANDO ENVIAR NOTIFICACION')
   try {
-      const response = await fetch(expoPushEndpoint, {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(message),
-      });
+    console.log('Dentro del try')
+    const response = await fetch('https://apitfg.lapspartbox.com/send-notification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token, usuario, nombreSerie,season_number Episode_number}),
+    });
 
-      const responseData = await response.json();
-      if (response.ok) {
-          console.log('Notificación enviada:', responseData);
-      } else {
-          console.error('Error al enviar notificación:', responseData);
-      }
+    if (!response.ok) {
+      console.log('Error al mandar notificacion');
+    }else{
+      console.log('Notificaciones enviadas correctamente');
+    }
+    
+    // Manejo adicional en caso de éxito, como actualizar la interfaz de usuario
   } catch (error) {
-      console.error('Error al enviar notificación:', error);
+    console.log('Error al agregar capitulo:', error);
   }
+
+  // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos vistos
+  setActualizarVisto(actual => !actual);
+  console.log('Fuera del try')
+
+}
 }
 
 
@@ -169,7 +168,7 @@ async function sendPushNotification(token, messageBody) {
           // Esta es una suposición sobre cómo podrías implementar getGroupNotificationTokens
           const tokens = await getGroupNotificationTokens(nombreGrupo);
           tokens.forEach(async (token) => {
-              await sendPushNotification(token, messageBody);
+              await sendPushNotification(token, user.nombre, nombreSerie ,season_number Episode_number);
           });
 
           console.log('Notificaciones enviadas correctamente');

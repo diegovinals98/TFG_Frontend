@@ -3,12 +3,15 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-na
 import logoFST from '../assets/logoFST.png';
 import { Dimensions } from 'react-native';
 import { globalStyles } from '../estilosGlobales.js';
+import * as Notifications from 'expo-notifications';
 
 const windowWidth = Dimensions.get('window').width;
 
 export default function WelcomeScreen({ navigation }) {
   // data: Almacena datos de usuarios.
   const [todosUsuarios, settodosUsuarios] = useState([]);
+
+
 
   const imprimirUsuarios = (usuarios) => {
     console.log("---------------------- USUARIOS ----------------------");

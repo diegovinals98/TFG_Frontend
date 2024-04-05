@@ -37,6 +37,7 @@ import Constants from 'expo-constants';
 
 
 
+
 // Obtiene las dimensiones de la ventana del dispositivo.
 
 const windowHeight = Dimensions.get('window').height;
@@ -93,6 +94,8 @@ const HomeScreen = () => {
   
     }, [])
   );
+
+  
 
   const onRefresh = React.useCallback(() => {
     setRefrescando(true);
@@ -171,7 +174,8 @@ const HomeScreen = () => {
         alert('Failed to get push token for push notification!');
         return;
       }
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
+      //const token = (await Notifications.getExpoPushTokenAsync()).data; // EXPO 
+      const token = (await Notifications.getDevicePushTokenAsync()).data; //DEVICE
       console.log('TOKEN PUSH: ' +  token)
       await enviarTokenAlBackend(token, user.id);
       // Aquí envías el token al backend

@@ -29,6 +29,7 @@
     "expo-system-ui": "~2.9.3",
     "expo-updates": "^0.24.11",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",
     "object.assign": "^4.1.5",
