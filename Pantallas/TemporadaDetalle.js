@@ -117,42 +117,36 @@ const DetallesDeTemporada = ({ route }) => {
 }
 
 
-async function sendPushNotification(token, usuario, nombreSerie,season_number Episode_number) {
+async function sendPushNotification(token, usuario, nombreSerie,season_number ,Episode_number) {
   console.log('INTENTANDO ENVIAR NOTIFICACION')
   try {
-    console.log('Dentro del try')
     const response = await fetch('https://apitfg.lapspartbox.com/send-notification', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ token, usuario, nombreSerie,season_number Episode_number}),
+      body: JSON.stringify({ token, usuario, nombreSerie,season_number, Episode_number}),
     });
+
+    console.log('RESPONSE DE MANDAR NOTIFICACION')
+    console.log(response)
 
     if (!response.ok) {
       console.log('Error al mandar notificacion');
     }else{
       console.log('Notificaciones enviadas correctamente');
     }
-    
     // Manejo adicional en caso de éxito, como actualizar la interfaz de usuario
   } catch (error) {
-    console.log('Error al agregar capitulo:', error);
+    console.log('Error api notificacion:', error);
   }
-
-  // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos vistos
-  setActualizarVisto(actual => !actual);
-  console.log('Fuera del try')
-
-}
 }
 
 
-  const marcarVisto  = async (idSerie, capituloId, Name, Episode_number,season_number, userid) => {
-    
-    console.log('Pulsado Marcar Visto')
+
+  const marcarVisto  = async (idSerie, capituloId, Name, Episode_number,season_number, userid) => {    
     try {
-        console.log('Dentro del try')
+  
         const response = await fetch('https://apitfg.lapspartbox.com/agregar-visualizacion', {
           method: 'POST',
           headers: {
@@ -164,14 +158,11 @@ async function sendPushNotification(token, usuario, nombreSerie,season_number Ep
         if (!response.ok) {
           console.log('Error al agregar capitulo');
         }else{
-          const messageBody = `${user.nombre} ha visto el Capítulo ${Episode_number} de la Temporada ${season_number} de la serie: ${nombreSerie}.`;
-          // Esta es una suposición sobre cómo podrías implementar getGroupNotificationTokens
           const tokens = await getGroupNotificationTokens(nombreGrupo);
           tokens.forEach(async (token) => {
-              await sendPushNotification(token, user.nombre, nombreSerie ,season_number Episode_number);
+              await sendPushNotification(token, user.nombre, nombreSerie ,season_number ,Episode_number);
           });
-
-          console.log('Notificaciones enviadas correctamente');
+          console.log('Capitulo agregado correctamente');
         }
         
         // Manejo adicional en caso de éxito, como actualizar la interfaz de usuario
@@ -181,7 +172,7 @@ async function sendPushNotification(token, usuario, nombreSerie,season_number Ep
 
       // Después de una operación exitosa, actualiza el estado para refrescar la lista de capítulos vistos
       setActualizarVisto(actual => !actual);
-      console.log('Fuera del try')
+      
 
   }
 
