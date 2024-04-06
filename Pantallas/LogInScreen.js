@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import logoFST from '../assets/logoFST.png';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
@@ -6,7 +6,7 @@ import { Alert } from 'react-native';
 import * as Crypto from 'expo-crypto';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 import { 
@@ -33,40 +33,13 @@ const LogInScreen = () => {
   const [loginError, setLoginError] = useState('');
   const { setUser } = useUser();
 
-
-  async function handleBiometrics(){
-      // Primero, intenta la autenticación biométrica
-      const biometricAuthAvailable = await LocalAuthentication.hasHardwareAsync() && await LocalAuthentication.isEnrolledAsync();
-
-      if (biometricAuthAvailable) {
-        const biometricAuth = await LocalAuthentication.authenticateAsync({
-          promptMessage: 'Autentícate',
-          cancelLabel: 'Usar contraseña en su lugar',
-        });
-
-        if (biometricAuth.success) {
-          // La autenticación biométrica fue exitosa
-          try {
-            // Intenta obtener el token de sesión almacenado de forma segura
-            const userToken = await SecureStore.getItemAsync('userToken');
-            if (userToken) {
-              // Aquí, usa el token para verificar la sesión con tu backend
-              // Por simplicidad, este paso se omite. Deberías hacer una solicitud a tu backend para validar el token.
-              console.log('Inicio de sesión exitoso con biometría');
-              // Continúa con la lógica de post-inicio de sesión aquí...
-              return;
-            }
-          } catch (error) {
-            console.error('Error al obtener el token de sesión:', error);
-          }
-        } else {
-          console.log('La autenticación biométrica no fue exitosa o fue cancelada');
-          // Opcional: Aquí puedes manejar un reintento o permitir al usuario usar el inicio de sesión con contraseña
-        }
-      }
-  }
+  useEffect(() => {
+    console.log('ENTRAMOS EN PANTALLA LOGIN')
+ 
+  }, []);
 
   async function handleLogin() {
+
 
       // Haz el hash de la contraseña ingresada usando expo-crypto
       const hashedPassword = await Crypto.digestStringAsync(
@@ -85,17 +58,20 @@ const LogInScreen = () => {
           contraseña: password
         })
       });
+
+      
       let json = await response.json();
-
-
       console.log('RESPUESTA ', json)
+
+
+      
        // Aquí obtendrías el hash de la contraseña almacenada para el 'username' desde tu base de datos
       const storedHashedPassword = json.hashPassword; 
 
   
      
     if (storedHashedPassword == hashedPassword) {
-      console.log('Inicio de sesión exitoso:', json);
+      console.log('Inicio de sesión exitoso');
       // Aquí puedes agregar la navegación a otra pantalla si es necesario
       //Alert.alert("Éxito", "Inicio de sesión exitoso.");
       setUser({

@@ -28,7 +28,7 @@ export default function WelcomeScreen({ navigation }) {
       .then((response) => response.json())
       .then((json) => {
         settodosUsuarios(json);
-        imprimirUsuarios(json); // Llama a una función para imprimir los usuarios
+        //imprimirUsuarios(json); // Llama a una función para imprimir los usuarios
       })
       .catch((error) => console.error(error));
 

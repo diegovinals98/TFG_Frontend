@@ -99,7 +99,6 @@ const HomeScreen = () => {
 
   const onRefresh = React.useCallback(() => {
     setRefrescando(true);
-  
     // Aquí debes llamar a las funciones que actualizan tus datos
     resetearBusqueda();
     setRefrescar(prev => !prev);

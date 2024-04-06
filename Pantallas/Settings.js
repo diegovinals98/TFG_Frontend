@@ -18,6 +18,8 @@ import { globalStyles } from '../estilosGlobales.js';
 import { useUser } from '../userContext.js';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
+import * as Crypto from 'expo-crypto';
+
 
 
 const Settings = () => {
@@ -57,7 +59,11 @@ const Settings = () => {
       setErrorMessage('La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número');
       return;
     }else{
-
+      // Utiliza expo-crypto para generar un hash de la contraseña
+      const newContrasena = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA512,
+        contrasena
+      );
       try {
         let response = await fetch(`https://apitfg.lapspartbox.com/usuario/${userId}`, {
           method: 'PUT',
