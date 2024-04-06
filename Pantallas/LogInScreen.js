@@ -3,6 +3,10 @@ import logoFST from '../assets/logoFST.png';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
 import { Alert } from 'react-native';
+import * as Crypto from 'expo-crypto';
+import * as LocalAuthentication from 'expo-local-authentication';
+import * as SecureStore from 'expo-secure-store';
+
 
 
 import { 
@@ -30,10 +34,48 @@ const LogInScreen = () => {
   const { setUser } = useUser();
 
 
+  async function handleBiometrics(){
+      // Primero, intenta la autenticación biométrica
+      const biometricAuthAvailable = await LocalAuthentication.hasHardwareAsync() && await LocalAuthentication.isEnrolledAsync();
+
+      if (biometricAuthAvailable) {
+        const biometricAuth = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Autentícate',
+          cancelLabel: 'Usar contraseña en su lugar',
+        });
+
+        if (biometricAuth.success) {
+          // La autenticación biométrica fue exitosa
+          try {
+            // Intenta obtener el token de sesión almacenado de forma segura
+            const userToken = await SecureStore.getItemAsync('userToken');
+            if (userToken) {
+              // Aquí, usa el token para verificar la sesión con tu backend
+              // Por simplicidad, este paso se omite. Deberías hacer una solicitud a tu backend para validar el token.
+              console.log('Inicio de sesión exitoso con biometría');
+              // Continúa con la lógica de post-inicio de sesión aquí...
+              return;
+            }
+          } catch (error) {
+            console.error('Error al obtener el token de sesión:', error);
+          }
+        } else {
+          console.log('La autenticación biométrica no fue exitosa o fue cancelada');
+          // Opcional: Aquí puedes manejar un reintento o permitir al usuario usar el inicio de sesión con contraseña
+        }
+      }
+  }
+
   async function handleLogin() {
+
+      // Haz el hash de la contraseña ingresada usando expo-crypto
+      const hashedPassword = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA512,
+        password
+      );
     
     try {
-      let response = await fetch('https://apitfg.lapspartbox.com/login', { // Asegúrate de que la IP y el puerto sean correctos
+      let response = await fetch('https://apitfg.lapspartbox.com/login2', { // Asegúrate de que la IP y el puerto sean correctos
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -43,18 +85,25 @@ const LogInScreen = () => {
           contraseña: password
         })
       });
-  
       let json = await response.json();
-    if (json.success === 1) {
+
+
+      console.log('RESPUESTA ', json)
+       // Aquí obtendrías el hash de la contraseña almacenada para el 'username' desde tu base de datos
+      const storedHashedPassword = json.hashPassword; 
+
+  
+     
+    if (storedHashedPassword == hashedPassword) {
       console.log('Inicio de sesión exitoso:', json);
       // Aquí puedes agregar la navegación a otra pantalla si es necesario
       //Alert.alert("Éxito", "Inicio de sesión exitoso.");
       setUser({
-        id: json.user.Id, // Asegúrate de que estos campos coincidan con los nombres en tu base de datos
-        nombre: json.user.Nombre,
-        apellidos: json.user.Apellidos,
-        usuario: json.user.Usuario,
-        contraseña: json.user.Contraseña,
+        id: json.usuario.Id, // Asegúrate de que estos campos coincidan con los nombres en tu base de datos
+        nombre: json.usuario.Nombre,
+        apellidos: json.usuario.Apellidos,
+        usuario: json.usuario.Usuario,
+        contraseña: json.usuario.Contraseña,
       });
       navigation.reset({
         index: 0,
@@ -63,6 +112,10 @@ const LogInScreen = () => {
     } else {
       // Aquí manejas el caso de éxito 0 o cualquier otro caso
       console.log('Error en el inicio de sesión');
+      console.log('------------- DATOS INICIO DE SESION ERRONEOS -------------')
+      console.log('Contraseña puesta por usuario: ', hashedPassword)
+      console.log('Contraseña de la base de datos: ', storedHashedPassword)
+      console.log('-------------------------- FINAL --------------------------')
       setLoginError('Usuario o contraseña incorrectos');
       Alert.alert("Usuario o contraseña incorrectos.");
     }

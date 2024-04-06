@@ -8,12 +8,17 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Button,
+  Alert
 } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { globalStyles } from '../estilosGlobales.js';
 import { useUser } from '../userContext.js';
+import * as LocalAuthentication from 'expo-local-authentication';
+import * as SecureStore from 'expo-secure-store';
+
 
 const Settings = () => {
 
@@ -39,6 +44,7 @@ const Settings = () => {
   
     return longitudValida && tieneMayuscula && tieneNumero;
   }
+  
 
   async function updateUser(userId, newNombre, newApellidos, newUsuario, newContrasena) {
     console.log(contrasena)
@@ -90,6 +96,8 @@ const Settings = () => {
 
     
   }
+
+  
   
 
   const guardarCambios = () => {
@@ -178,6 +186,7 @@ const Settings = () => {
         <TouchableOpacity style={[globalStyles.button, globalStyles.buttonOutline]} onPress={() => cerrarSesion()}>
         <Text style = {globalStyles.buttonText} >Cerrar Sesión</Text>
       </TouchableOpacity>
+      
       </View>
     </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

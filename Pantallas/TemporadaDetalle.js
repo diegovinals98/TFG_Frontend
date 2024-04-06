@@ -142,6 +142,26 @@ async function sendPushNotification(token, usuario, nombreSerie,season_number ,E
   }
 }
 
+// Can use this function below or use Expo's Push Notification Tool from: https://expo.dev/notifications
+async function sendPushNotification2(expoPushToken) {
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Original Title',
+    body: 'And here is the body!'
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
+
 
 
   const marcarVisto  = async (idSerie, capituloId, Name, Episode_number,season_number, userid) => {    
@@ -160,7 +180,8 @@ async function sendPushNotification(token, usuario, nombreSerie,season_number ,E
         }else{
           const tokens = await getGroupNotificationTokens(nombreGrupo);
           tokens.forEach(async (token) => {
-              await sendPushNotification(token, user.nombre, nombreSerie ,season_number ,Episode_number);
+              //await sendPushNotification(token, user.nombre, nombreSerie ,season_number ,Episode_number);
+              await sendPushNotification2(token);
           });
           console.log('Capitulo agregado correctamente');
         }

@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { globalStyles } from '../estilosGlobales.js';
 import logoFST from '../assets/logoFST.png';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
+import * as Crypto from 'expo-crypto';
+
+
 
 import {
   View,
@@ -57,25 +60,28 @@ const SignUp = ({ navigation }) => {
 
   // Manejador para el registro de un nuevo usuario
   const handleSignUp = async () => {
-
-    // Verifica si las contraseñas coinciden
-    if(password != password2){
+    if (password !== password2) {
       alert('Contraseñas no coinciden');
-    } else if(!validarContraseña(password)){
+    } else if (!validarContraseña(password)) {
       setErrorMessage('La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número');
-      return;
-    }else {
-      // Crea un objeto de usuario con la información proporcionada
-      const usuario = {
-        Id: generarIdUnico(), // Genera un ID único
-        Nombre: nombre,
-        Apellidos: apellidos,
-        Usuario: nombreUsuario,
-        Contraseña: password
-      };
-    
-      // Intenta registrar al usuario en el servidor
+    } else {
       try {
+        // Utiliza expo-crypto para generar un hash de la contraseña
+        const hash = await Crypto.digestStringAsync(
+          Crypto.CryptoDigestAlgorithm.SHA512,
+          password
+        );
+  
+        // Crea un objeto de usuario con la información proporcionada y el hash de la contraseña
+        const usuario = {
+          Id: generarIdUnico(), // Genera un ID único
+          Nombre: nombre,
+          Apellidos: apellidos,
+          Usuario: nombreUsuario,
+          Contraseña: hash // Guarda el hash de la contraseña
+        };
+  
+        // Intenta registrar al usuario en el servidor
         let response = await fetch('https://apitfg.lapspartbox.com/usuario', {
           method: 'POST',
           headers: {
@@ -83,12 +89,16 @@ const SignUp = ({ navigation }) => {
           },
           body: JSON.stringify(usuario)
         });
-    
+
+        let respuesta = await response.json();
+  
+        console.log('Respuesta al crear usuario' , respuesta)
         // Verifica si el registro fue exitoso
-        if (response.ok) {
-          Alert.alert('Usuario creado con éxito');
+        if (respuesta.success == 1) {
+          //Alert.alert('Usuario creado con éxito');
+          // Asegúrate de que estos campos coincidan con los nombres en tu base de datos
           setUser({
-            id: usuario.Id, // Asegúrate de que estos campos coincidan con los nombres en tu base de datos
+            id: usuario.Id,
             nombre: usuario.Nombre,
             apellidos: usuario.Apellidos,
             usuario: usuario.Usuario,
@@ -99,15 +109,16 @@ const SignUp = ({ navigation }) => {
             routes: [{ name: 'Home' }],
           });
         } else {
-          Alert.alert('Error al crear el usuario');
+
+          Alert.alert('Error', respuesta.message);
         }
       } catch (error) {
-        console.error(error);
+        console.error('Error al registrar al usuario:', error);
+        Alert.alert('Error al registrar al usuario');
       }
     }
   };
   
-
   return (
     
     <KeyboardAvoidingView
@@ -176,6 +187,7 @@ const SignUp = ({ navigation }) => {
           <TouchableOpacity style={globalStyles.button} title="Check user" onPress={() => handleSignUp()}>
             <Text style = {globalStyles.buttonText} >Crear Cuenta</Text>
           </TouchableOpacity>
+     
 
           <TouchableOpacity style={[globalStyles.button, globalStyles.buttonOutline]} onPress={() => volver()}>
             <Text style = {globalStyles.buttonText} >Volver</Text>

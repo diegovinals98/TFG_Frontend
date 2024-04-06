@@ -162,6 +162,24 @@ const HomeScreen = () => {
     console.log('Respuesta del servidor:', responseBody);
   }
 
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+  
+  Notifications.addNotificationReceivedListener(notification => {
+    console.log(notification);
+    // Tu código para manejar la notificación cuando se recibe mientras la app está abierta
+  });
+  
+  Notifications.addNotificationResponseReceivedListener(response => {
+    console.log(response);
+    // Tu código para manejar lo que sucede cuando el usuario toca/responds a la notificación
+  });
+
   const registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -174,9 +192,11 @@ const HomeScreen = () => {
         alert('Failed to get push token for push notification!');
         return;
       }
-      //const token = (await Notifications.getExpoPushTokenAsync()).data; // EXPO 
-      const token = (await Notifications.getDevicePushTokenAsync()).data; //DEVICE
+      const token = (await Notifications.getExpoPushTokenAsync()).data; // EXPO 
+      //const tokenObject = await Notifications.getDevicePushTokenAsync();
+      //const token = tokenObject.data;
       console.log('TOKEN PUSH: ' +  token)
+      // enviamos el token al backend
       await enviarTokenAlBackend(token, user.id);
       // Aquí envías el token al backend
 
