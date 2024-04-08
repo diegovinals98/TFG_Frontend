@@ -300,15 +300,31 @@ const obtenerSeries = () => {
     
   };
 
-  const buscarSeries = () => {
+  const buscarSeries = async () => {
     const apiURL = `https://api.themoviedb.org/3/search/tv?api_key=c51082efa7d62553e4c05812ebf6040e&language=es-ES&page=1&query=${query}&include_adult=false`;
-    fetch(apiURL)
-      .then(response => response.json())
-      .then(data => setSeries(data.results))
-      .catch(error => console.error(error));
-    console.log("Series Buscadas:")
-    console.log(series)
-  };
+
+    try {
+        const response = await fetch(apiURL);
+        const data = await response.json();
+
+        // Procesar cada serie para incluir la URL completa del póster
+        const seriesConPoster = data.results.map(serie => ({
+            ...serie,
+            posterURL: `https://image.tmdb.org/t/p/w500${serie.poster_path}`
+        }));
+
+       setSeries(seriesConPoster);
+    } catch (error) {
+        console.error(error);
+    }
+
+    // Esta parte se ejecutará inmediatamente después de actualizar el estado con setSeries,
+    // pero ten en cuenta que setSeries no garantiza que el estado esté actualizado inmediatamente después de su ejecución
+    console.log("Series Buscadas:");
+    console.log(series); 
+};
+
+
 
   const agregarSerieAUsuario = async (userId, idSerie) => {
     try {
@@ -385,8 +401,9 @@ const obtenerSeries = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f7f7f7' }}>
+    
     <StatusBar></StatusBar>
-      
+    <TouchableWithoutFeedback onPress={() => resetearBusqueda()}>
 
     <View style={[globalStyles.container, styles.container, platformStyles]}>
   
@@ -434,7 +451,7 @@ const obtenerSeries = () => {
     </TouchableOpacity>
   </View>
 
-  <TouchableWithoutFeedback onPress={() => resetearBusqueda()}>
+  
   <View style={styles.searchContainer}>
   <View style={{ flexDirection: 'row'}}>
       <TextInput
@@ -454,14 +471,15 @@ const obtenerSeries = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity style={{borderColor:'black', borderBottomWidth:2}}  onPress={() => seleccionSerie(item.name, item.id)}>
-          <Text style={styles.textoBuscadas} >{item.name}</Text>
+             <Image source={{ uri: item.posterURL }} style={{ height: windowHeight * 0.20 }} />
+            <Text style={styles.textoBuscadas} >{item.name}</Text>
           </TouchableOpacity>
         )}
         style={styles.flatList}
       />
     ) : null}
   </View>
-</TouchableWithoutFeedback>
+
 
 
 <View style={{ flexDirection: 'row', height:windowHeight * 0.7}}>
@@ -514,6 +532,7 @@ const obtenerSeries = () => {
   </View>
 
 </View>
+</TouchableWithoutFeedback>
 </SafeAreaView>
   );  
   
@@ -638,6 +657,8 @@ const styles = StyleSheet.create({
     backgroundColor:'white'
   },textoBuscadas:{
     margin:'5%',
+    textAlign: 'center'
+    
   },searchButton:{
     backgroundColor: 'transparent',
     borderWidth: 2,
