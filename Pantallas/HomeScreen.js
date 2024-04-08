@@ -109,7 +109,7 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
+    //registerForPushNotificationsAsync();
     // ...
   }, []);
   

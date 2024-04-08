@@ -9,6 +9,7 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
+
 import { 
   View, 
   Text, 
@@ -34,9 +35,33 @@ const LogInScreen = () => {
   const { setUser } = useUser();
 
   useEffect(() => {
-    console.log('ENTRAMOS EN PANTALLA LOGIN')
+   //console.log('ENTRAMOS EN PANTALLA LOGIN')
+    //authenticate()
  
   }, []);
+
+  async function authenticate() {
+    // Verificar la disponibilidad de autenticación biométrica
+    const isAvailable = await LocalAuthentication.hasHardwareAsync();
+    if (!isAvailable) {
+      return alert('La autenticación biométrica no está disponible en este dispositivo.');
+    }
+  
+    // Iniciar autenticación
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Autentícate',
+      cancelLabel: 'Cancelar',
+      fallbackLabel: 'Usar contraseña',
+    });
+  
+    if (result.success) {
+      console.log(result)
+      alert('Autenticación exitosa');
+    } else {
+      console.log(result)
+      alert('Autenticación fallida');
+    }
+  }
 
   async function handleLogin() {
 
@@ -122,6 +147,8 @@ const LogInScreen = () => {
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
+        clearButtonMode='while-editing'
+        
       />
       <TextInput
         style={styles.input}
@@ -129,7 +156,8 @@ const LogInScreen = () => {
         placeholderTextColor="#666"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        secureTextEntry = {true}
+
       />
 
 

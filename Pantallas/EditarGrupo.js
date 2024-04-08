@@ -44,6 +44,9 @@ const EditarGrupo = () => {
   const navigation = useNavigation();
   
 
+  const [showAddUser, setShowAddUser] = useState(false);
+const [newUserName, setNewUserName] = useState('');
+
 
   useEffect(() => {
     const fetchMiembrosGrupo = async () => {
@@ -66,6 +69,69 @@ const EditarGrupo = () => {
     setIsEditing(true);
   };
   
+
+  const handleAddUserPress = () => {
+    // Lógica para manejar la adición de un nuevo usuario
+    // Por ejemplo, podrías mostrar un TextInput para que el usuario introduzca el nombre
+
+    setShowAddUser(true);
+  };
+  
+  // Luego, en tu función para añadir el usuario realmente al grupo (pseudocódigo):
+  const addUserToGroup = async () => {
+    // Aquí llamarías a la API para añadir el usuario al grupo
+    //Alert.alert(newUserName)
+    
+    try{
+      console.log("primer TRY")
+      const responseId = await fetch(`https://apitfg.lapspartbox.com/usuario_por_id/${newUserName}`);
+      const data = await responseId.json();
+      console.log(data)
+
+      idNewUser = data.idUsuario
+      console.log('Id del usuario: ', idNewUser)
+
+    }catch (error) {
+      console.error('Error:', error);
+      alert('Error al conectar con el servidor.');
+    }
+
+    try{
+      console.log("Segundo TRY")
+      const response = await fetch(`https://apitfg.lapspartbox.com/anadir_usuario_a_grupo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idGrupo: idGrupo,
+          idUsuario: idNewUser
+        }),
+      });
+      const data2 = await response.json();
+      console.log("Data2: ", data2)
+      if(data2.success === 2){
+       
+        Alert.alert('Error', data2.mensaje)
+        setShowAddUser(false);
+        setNewUserName('');
+        setRefrescar(prev => !prev);
+      }else if(data2.success === 1){
+        // Luego, escondes el TextInput y limpias el estado
+        setShowAddUser(false);
+        setNewUserName('');
+        setRefrescar(prev => !prev);
+      } else{
+        Alert.alert('Error', 'Error en el servidor')
+      }
+    }catch(error){
+
+    }
+  
+    
+    // Actualizar la lista de miembros, etc.
+  };
+
   const handleSave = async () => {
     // Aquí deberías agregar la lógica para guardar el nombre del grupo editado
     // Por ejemplo, actualizar el estado en el servidor o en tu estado global
@@ -100,6 +166,37 @@ const EditarGrupo = () => {
     }
     
 
+  };
+
+  const salirdelGrupo = async (idGrupo) => {
+    Alert.alert(
+      'Confirmación',
+      `¿Estás seguro de que quieres salir el grupo: ${nombreGrupo}?`,
+      [
+        {
+          text: 'Sí',
+          onPress: async () => {
+            try {
+              // API QUE ELIMINE DE LA TABLA USUARIO_GRUPO2 LA FILA
+              Alert.alert('No hace nada este boton de momento ')
+
+            } catch (error) {
+              
+            }
+          },
+          
+        },
+        {
+          text: 'No',
+          style: 'cancel', // Pone este botón con un estilo de cancelar
+          onPress: () => {
+            // Lógica para añadir la serie
+            //resetearBusqueda
+          }
+        },
+      ],
+      { cancelable: false } // Evita que el cuadro de diálogo se cierre al tocar fuera de él
+    );
   };
 
   const eliminargrupo = async (idGrupo) => {
@@ -190,10 +287,31 @@ const EditarGrupo = () => {
       />
     </View>
 
-    <TouchableOpacity style={styles.eliminarSerieBoton} onPress={() => eliminargrupo(idGrupo)}>
-      <Text style={styles.eliminarSerieTexto}>Eliminar Grupo</Text>
-    </TouchableOpacity>
-
+    {showAddUser && (
+    <TextInput
+      value={newUserName}
+      onChangeText={setNewUserName}
+      placeholder="Nombre del nuevo usuario"
+      style={styles.input2} // Asegúrate de tener definido este estilo o usa otro existente
+    />
+  )}
+  <View style={styles.anadirUsuario}>
+      {!showAddUser && (
+        <Button title="Añadir usuario"  color='black' onPress={handleAddUserPress} />
+      )}
+      {showAddUser && (
+        <Button title="Confirmar añadir usuario" color='black' onPress={addUserToGroup} />
+      )}
+    </View>
+    
+    <View style={styles.fixToText}>
+      <View style={styles.salir}>
+        <Button title='Salir del Grupo'color= 'black'  onPress={() => salirdelGrupo(idGrupo)}></Button>
+      </View>
+      <View style={styles.eliminar}>
+        <Button title='Eliminar grupo' color= 'white' onPress={() => eliminargrupo(idGrupo)}></Button>  
+      </View>
+      </View>
     </View>
   );
 };
@@ -204,6 +322,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f7f7f7', // Un fondo claro para la accesibilidad
     
+  }, fixToText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    
+  },anadirUsuario:{
+    
+    borderRadius: 5,
+    width:'80%',
+    margin:'2%',
+    backgroundColor:'#005f99'
+    
+  },salir:{
+    backgroundColor:'#bfbabe',
+    borderRadius: 5,
+  },eliminar:{
+    backgroundColor:'red',
+    borderRadius: 5,
   },
   container: {
     alignItems: 'center',
@@ -217,6 +353,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'gray',
     width: '100%',
+    padding: 10,
+    marginBottom: 20,
+  },
+  input2: {
+    // Estilos para tu TextInput
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+    width: '80%',
     padding: 10,
     marginBottom: 20,
   },
