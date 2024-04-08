@@ -139,7 +139,7 @@ const SignUp = ({ navigation }) => {
         placeholderTextColor="#666"
         onChangeText={newText => setNombre(newText)}
         secureTextEntry={false}
-        autoCapitalize="none"
+        autoCapitalize="Words"
         autoComplete="given-name"
         />
 
@@ -149,7 +149,7 @@ const SignUp = ({ navigation }) => {
         placeholderTextColor="#666"
         onChangeText={newText => setApellidos(newText)}
         secureTextEntry={false}
-        autoCapitalize="none"
+        autoCapitalize="Words"
         autoComplete="family-name"
         />
 
@@ -169,6 +169,7 @@ const SignUp = ({ navigation }) => {
             placeholder="Contraseña"
             keyboardType="default"
             secureTextEntry={true}
+            autoCapitalize="none"
             placeholderTextColor={'#cacaca'}
           />
 
@@ -179,6 +180,7 @@ const SignUp = ({ navigation }) => {
             placeholder="Repite la contraseña"
             keyboardType="default"
             secureTextEntry={true}
+            autoCapitalize="none"
             placeholderTextColor={'#cacaca'}
           />
 

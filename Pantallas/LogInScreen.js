@@ -156,7 +156,9 @@ const LogInScreen = () => {
         placeholderTextColor="#666"
         value={password}
         onChangeText={setPassword}
+        autoCapitalize="none"
         secureTextEntry = {true}
+        clearButtonMode='while-editing'
 
       />
 
