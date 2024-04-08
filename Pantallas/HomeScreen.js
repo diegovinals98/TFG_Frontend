@@ -297,7 +297,7 @@ const obtenerSeries = () => {
 
   const handleTextChange = (text) => {
     setQuery(text);
-    
+    buscarSeries()
   };
 
   const buscarSeries = async () => {
@@ -460,9 +460,14 @@ const obtenerSeries = () => {
         placeholder="Buscar series..."
         style={styles.searchInput}
       />
-      <TouchableOpacity onPress={buscarSeries} style={styles.cajaBoton}>
+      {
+        /*
+<TouchableOpacity onPress={buscarSeries} style={styles.cajaBoton}>
         <Text style={styles.searchButton}>Buscar</Text>
       </TouchableOpacity>
+        */
+      }
+      
   </View>
     
     {series.length > 0 ? (
