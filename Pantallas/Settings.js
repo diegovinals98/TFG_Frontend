@@ -103,6 +103,56 @@ const Settings = () => {
     
   }
 
+  async function eliminarCuenta(idUser){
+    Alert.alert(
+      `¿Estás seguro de que quieres eliminar la cuenta?`,
+      `Se borrará toda la Información`,
+      [
+        {
+          text: 'Sí',
+          onPress: async () => {
+            //logica dfe borrar cuenta
+            try {
+              // Ajusta esta URL según sea necesario para apuntar a tu servidor real
+              const response = await fetch(`https://apitfg.lapspartbox.com/eliminar-cuenta/${idUser}`, {
+                method: 'DELETE',
+              });
+          
+              if (response.ok) {
+                const data = await response.text(); // o response.json() si esperas una respuesta JSON
+                console.log('Cuenta eliminada:', data);
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Welcome' }],
+                });
+                // Aquí puedes agregar código para manejar la actualización de la UI,
+                // como remover el grupo eliminado de la lista mostrada al usuario.
+              } else {
+                // Manejo de respuestas no exitosas
+                console.error('Error al eliminar la cuenta');
+                alert('Error al eliminar la cuenta.');
+              }
+            } catch (error) {
+              // Manejo de errores de red o al realizar la solicitud
+              console.error('Error al conectar con el servidor:', error);
+              alert('Error al conectar con el servidor.');
+            }
+          },
+          
+        },
+        {
+          text: 'No',
+          style: 'cancel', // Pone este botón con un estilo de cancelar
+          onPress: () => {
+            // Lógica para añadir la serie
+            //resetearBusqueda
+          }
+        },
+      ],
+      { cancelable: false } // Evita que el cuadro de diálogo se cierre al tocar fuera de él
+    );
+  }
+
   
   
 
@@ -192,6 +242,9 @@ const Settings = () => {
         <TouchableOpacity style={[globalStyles.button, globalStyles.buttonOutline]} onPress={() => cerrarSesion()}>
         <Text style = {globalStyles.buttonText} >Cerrar Sesión</Text>
       </TouchableOpacity>
+      <View style={styles.eliminar}>
+        <Button title='Eliminar Cuenta' color= 'black' onPress={() => eliminarCuenta(user.id)}></Button>  
+      </View>
       
       </View>
     </TouchableWithoutFeedback>
@@ -204,6 +257,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },eliminar:{
+    backgroundColor:'red',
+    borderRadius: 10,
+    width:'80%',
+    margin: '2%'
   },
   circle: {
     marginBottom: '5%',

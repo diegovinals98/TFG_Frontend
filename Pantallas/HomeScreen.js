@@ -31,6 +31,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import { set } from 'lodash';
 
 
 
@@ -91,7 +92,7 @@ const HomeScreen = () => {
       obtenerSeries();
       resetearBusqueda();
       setRefrescar(prev => !prev);
-  
+
     }, [])
   );
 
@@ -111,6 +112,7 @@ const HomeScreen = () => {
   useEffect(() => {
     //registerForPushNotificationsAsync();
     // ...
+    
   }, []);
   
   
@@ -134,6 +136,7 @@ const HomeScreen = () => {
       .catch((error) => console.error('Error al obtener los grupos:', error));
     console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
     console.log(TodosGrupos);
+    
 
     /** 
     if(TodosGrupos.length == 0){
@@ -320,8 +323,8 @@ const obtenerSeries = () => {
 
     // Esta parte se ejecutará inmediatamente después de actualizar el estado con setSeries,
     // pero ten en cuenta que setSeries no garantiza que el estado esté actualizado inmediatamente después de su ejecución
-    console.log("Series Buscadas:");
-    console.log(series); 
+    //console.log("Series Buscadas:");
+    //console.log(series); 
 };
 
 

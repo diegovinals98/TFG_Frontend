@@ -139,7 +139,7 @@ const SignUp = ({ navigation }) => {
         placeholderTextColor="#666"
         onChangeText={newText => setNombre(newText)}
         secureTextEntry={false}
-        autoCapitalize="Words"
+        autoCapitalize="words"
         autoComplete="given-name"
         />
 
@@ -149,7 +149,7 @@ const SignUp = ({ navigation }) => {
         placeholderTextColor="#666"
         onChangeText={newText => setApellidos(newText)}
         secureTextEntry={false}
-        autoCapitalize="Words"
+        autoCapitalize="words"
         autoComplete="family-name"
         />
 

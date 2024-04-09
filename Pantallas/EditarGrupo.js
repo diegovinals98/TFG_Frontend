@@ -178,7 +178,28 @@ const [newUserName, setNewUserName] = useState('');
           onPress: async () => {
             try {
               // API QUE ELIMINE DE LA TABLA USUARIO_GRUPO2 LA FILA
-              Alert.alert('No hace nada este boton de momento ')
+              try {
+                // Ajusta esta URL según sea necesario para apuntar a tu servidor real
+                const response = await fetch(`https://apitfg.lapspartbox.com/eliminar-usuario_grupo/${idGrupo}/${user.id}`, {
+                  method: 'DELETE',
+                });
+            
+                if (response.ok) {
+                  const data = await response.text(); // o response.json() si esperas una respuesta JSON
+                  console.log('Grupo eliminado:', data);
+                  navigation.navigate('Home')
+                  // Aquí puedes agregar código para manejar la actualización de la UI,
+                  // como remover el grupo eliminado de la lista mostrada al usuario.
+                } else {
+                  // Manejo de respuestas no exitosas
+                  console.error('Error al eliminar el grupo');
+                  alert('Error al eliminar el grupo.');
+                }
+              } catch (error) {
+                // Manejo de errores de red o al realizar la solicitud
+                console.error('Error al conectar con el servidor:', error);
+                alert('Error al conectar con el servidor.');
+              }
 
             } catch (error) {
               

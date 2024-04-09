@@ -17,10 +17,9 @@ export const globalStyles = StyleSheet.create({
         height: '5%',
         justifyContent: 'center', // En React Native usamos camelCase en lugar de guiones.
         alignItems: 'center',
-        flexShrink: 0, // Esta propiedad funciona igual que en CSS.
         backgroundColor: '#005f99', // Ejemplo de color azul, ya que no especificaste un color.
         borderRadius: 10, // Si quieres mantener los bordes redondeados como en tu estilo original.
-        margin: 10, // Para dar un poco de padding vertical si es necesario.
+        margin: '2%', // Para dar un poco de padding vertical si es necesario.
       },
       buttonOutline: {
         backgroundColor: 'transparent',
@@ -31,9 +30,9 @@ export const globalStyles = StyleSheet.create({
         height: '5%',
         justifyContent: 'center', // En React Native usamos camelCase en lugar de guiones.
         alignItems: 'center',
-        flexShrink: 0, // Esta propiedad funciona igual que en CSS.
+        
         borderRadius: 10, // Si quieres mantener los bordes redondeados como en tu estilo original.
-        margin: 10, // Para dar un poco de padding vertical si es necesario.
+        margin: '2%', // Para dar un poco de padding vertical si es necesario.
       },
       buttonText: {
         fontSize: 16,
