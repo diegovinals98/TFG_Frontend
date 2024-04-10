@@ -16,8 +16,7 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.edgehealth.seriesdv",
-      
+      "bundleIdentifier": "com.edgehealth.seriesdv"
     },
     "android": {
       "adaptiveIcon": {
