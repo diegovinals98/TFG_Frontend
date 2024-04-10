@@ -548,16 +548,15 @@ const obtenerSeries = () => {
 
 const styles = StyleSheet.create({
   container: {
-    
     alignItems: 'center',
-    flex: 1,
+    flex: 1
   },
   row: {
     flexDirection: 'row', // Mantiene los elementos en fila
     alignItems: 'center', // Alinea los elementos verticalmente
     justifyContent: 'space-between', // Distribuye el espacio uniformemente
     width: '100%',
-    padding: 10, // Espacio alrededor del contenedor
+    padding: '2%', // Espacio alrededor del contenedor
   },
   circle: {
     aspectRatio: 1, // Asegura que el ancho y la altura sean siempre iguales
@@ -578,13 +577,10 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row', // Orientación horizontal para el texto y el ícono
     backgroundColor: '#6666ff', // Color de fondo del botón de grupos
-    paddingHorizontal: 20, // Padding horizontal
-    paddingVertical: 10, // Padding vertical
-    borderRadius: 15, // Bordes redondeados
+    borderRadius: 50, // Bordes redondeados
     justifyContent: 'center', // Centrado horizontal
     alignItems: 'center', // Centrado vertical
     flex: 4, // Ocupa más espacio que los círculos
-    flexDirection: 'row',
     justifyContent: 'center',
   },
   buttonText: {

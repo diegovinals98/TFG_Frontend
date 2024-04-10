@@ -2,7 +2,7 @@
   "expo": {
     "name": "FamilySeriesTrack",
     "slug": "TestTFG",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "orientation": "portrait",
     "icon": "./assets/logoFST.png",
     "userInterfaceStyle": "light",
@@ -15,8 +15,9 @@
       "data/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.edgehealth.seriesdv"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.edgehealth.seriesdv",
+      
     },
     "android": {
       "adaptiveIcon": {

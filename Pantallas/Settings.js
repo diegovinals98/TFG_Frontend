@@ -10,7 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Button,
-  Alert
+  Alert,
+  Dimensions
 } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -20,6 +21,7 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
 
+const windowHeight = Dimensions.get('window').height;
 
 
 const Settings = () => {
@@ -261,13 +263,14 @@ const styles = StyleSheet.create({
     backgroundColor:'red',
     borderRadius: 10,
     width:'80%',
-    margin: '2%'
+    margin: '2%',
+   
   },
   circle: {
     marginBottom: '5%',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: windowHeight * 0.1,
+    height: windowHeight * 0.1,
+    borderRadius: 10000,
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -279,10 +282,10 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
+    borderWidth: 1,
+    borderWidth: 1,
     borderColor: '#ddd',
-    padding: '5%',
+    padding: windowHeight * 0.015,
     borderRadius: 10,
     marginBottom: '3%',
     fontSize: 16,
@@ -290,18 +293,18 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     width: '80%',
-    flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: '0.05%',
     justifyContent: 'center',
+    height: windowHeight * 0.1
+    
   },
   label: {
     marginBottom: '1%'
   },
   errorText: {
     color: 'red',
-    marginBottom: 10,
-    width: '80%'
+    width: '80%',
+    justifyContent: 'center'
   },
 });
 

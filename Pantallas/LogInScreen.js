@@ -2,7 +2,7 @@ import React, { useState , useEffect} from 'react';
 import logoFST from '../assets/logoFST.png';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
-import { Alert } from 'react-native';
+import { Alert , SafeAreaView} from 'react-native';
 import * as Crypto from 'expo-crypto';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
@@ -26,6 +26,7 @@ import {
 
 
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const LogInScreen = () => {
   
   const navigation = useNavigation();
@@ -131,6 +132,7 @@ const LogInScreen = () => {
 
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f7f7f7' }}>
     <KeyboardAvoidingView
   behavior={Platform.OS === "ios" ? "padding" : "height"} // "padding" para iOS y "height" para Android
   style={{ flex: 1 }}
@@ -182,6 +184,7 @@ const LogInScreen = () => {
     </View>
     </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
@@ -245,9 +248,9 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   logo: {
-    marginTop: '-20%',
-    width: windowWidth * 0.6,
-    height: windowWidth * 0.6 * (windowWidth  / windowWidth),
+    
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
   },
 });
 

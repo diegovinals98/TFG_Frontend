@@ -209,8 +209,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
+    borderWidth: 1,
     borderColor: '#ddd',
     padding: 15,
     borderRadius: 8,
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10, // Si quieres mantener los bordes redondeados como en tu estilo original.
     margin: 10, // Para dar un poco de padding vertical si es necesario.
-
+   
   },textoBoton:{
     fontSize: 16,
     lineHeight: 21,

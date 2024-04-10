@@ -1,11 +1,12 @@
 import { React, useState} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import logoFST from '../assets/logoFST.png';
 import { Dimensions } from 'react-native';
 import { globalStyles } from '../estilosGlobales.js';
 import * as Notifications from 'expo-notifications';
 
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function WelcomeScreen({ navigation }) {
   // data: Almacena datos de usuarios.
@@ -56,6 +57,7 @@ export default function WelcomeScreen({ navigation }) {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f7f7f7' }}>
     <View style={globalStyles.container}>
       <Image source={logoFST} style={styles.logo} />
         <Text style={styles.titulo}>FamilySeriesTrack</Text>
@@ -70,19 +72,21 @@ export default function WelcomeScreen({ navigation }) {
     
       
     </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   
   logo: {
-    marginTop: '10%',
-    width: windowWidth,
-    height: windowWidth * (windowWidth / windowWidth),
+    //width: windowWidth,
+    //height: windowWidth * (windowWidth / windowWidth),
+    height: 0.5 * windowHeight,
+    width: 0.5 * windowHeight
   },
   titulo: {
     fontSize: 40,
     marginBottom: '5%',
-    marginTop: '10%',
+    marginTop: '5%',
   }
 });

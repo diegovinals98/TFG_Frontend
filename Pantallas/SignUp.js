@@ -4,6 +4,7 @@ import { globalStyles } from '../estilosGlobales.js';
 import logoFST from '../assets/logoFST.png';
 import { useUser } from '../userContext.js'; // Importa el hook useUser
 import * as Crypto from 'expo-crypto';
+import { SafeAreaView } from "react-native";
 
 
 
@@ -24,6 +25,7 @@ import {
 
 // Obtiene el ancho de la ventana del dispositivo
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 // Componente SignUp para el registro de usuarios
 const SignUp = ({ navigation }) => {
@@ -261,8 +263,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   logo: {
-    width: windowWidth * 0.6,
-    height: windowWidth * 0.6 * (windowWidth  / windowWidth),
+    width: windowHeight * 0.3,
+    height: windowHeight * 0.3,
   },
   errorText: {
     color: 'red',
