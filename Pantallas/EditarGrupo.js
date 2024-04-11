@@ -313,6 +313,7 @@ const [newUserName, setNewUserName] = useState('');
       value={newUserName}
       onChangeText={setNewUserName}
       placeholder="Nombre del nuevo usuario"
+      autoCapitalize='none'
       style={styles.input2} // Asegúrate de tener definido este estilo o usa otro existente
     />
   )}

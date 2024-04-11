@@ -92,19 +92,11 @@ const ComentariosSerie = () => {
         };
       
         obtenerYcargarDatos();
+        const intervalId = setInterval(obtenerYcargarDatos, 10000);
       
         // Opcionalmente, define una función de limpieza si es necesario realizar alguna acción cuando el componente se desmonta o antes de que el efecto se vuelva a ejecutar.
-        return () => {
-          // Lógica de limpieza aquí, si es necesario
-        };
+        return () => clearInterval(intervalId);
       }, [nombreGrupo, idSerie, parar, refrescar]); // Incluye parar en las dependencias para reaccionar a sus cambios
-      
-
-      
-      const obtenerComentariosPorGrupoYSerie = async (nombreGrupo, serieId) => {
-        setCargandoComentarios(true);
-        
-      };
       
 
       async function enviarComentario(userId){
@@ -151,18 +143,23 @@ const ComentariosSerie = () => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardView}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 200}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 200}
         >
           
             <View style={styles.container}>
               <Text style={styles.title}>{nombreSerie}</Text>
               {/* ScrollView para los comentarios */}
-              <ScrollView keyboardDismissMode= 'on-drag' keyboardShouldPersistTaps= 'never' snapToEnd = 'true' style={styles.scrollView}>
+              <ScrollView 
+              snapToEnd={true} 
+              keyboardDismissMode= 'on-drag' 
+              keyboardShouldPersistTaps= 'never' 
+              
+              style={styles.scrollView}>
               {comentarios.map((comentario, index) => (
                 <View key={index} style={styles.comentarioContainer}>
                     <Text style={styles.autor}>{comentario.nombreCompleto}</Text>
                     <Text>{comentario.comentario}</Text>
-                    <Text style={styles.fecha}>{moment(comentario.fechaHora).format('DD/MM/YYYY HH:mm')}</Text>
+                    <Text style={styles.fecha}>{moment(comentario.fechaHora).format('dddd D, HH:mm')}</Text>
                 </View>
                 ))}
                 </ScrollView>
@@ -247,12 +244,11 @@ const ComentariosSerie = () => {
         flex: 1
       },
       comentarioContainer: {
+        borderRadius: 15,
         backgroundColor: '#ffffff',  // Fondo blanco para cada comentario
-        padding: 16,  // Espacio interior para cada comentario
-        borderBottomWidth: 1,  // Línea divisoria sutil
-        borderBottomColor: '#e0e0e0',  // Color de la línea divisoria
-        marginVertical: 8,  // Margen vertical para separar los comentarios
-        marginHorizontal: 12  // Margen horizontal para un poco de espacio a los lados
+        padding: '3%',  // Espacio interior para cada comentario
+        marginVertical: '2%',  // Margen vertical para separar los comentarios
+        marginHorizontal: '2%'  // Margen horizontal para un poco de espacio a los lados
       },
       autor: {
         fontWeight: 'bold',  // Texto en negrita para el autor
@@ -262,12 +258,12 @@ const ComentariosSerie = () => {
       comentario: {
         fontSize: 14,  // Tamaño de letra para el comentario
         color: '#666',  // Gris oscuro para el texto del comentario
-        marginTop: 4  // Espacio arriba del comentario
+        marginTop: '1%'  // Espacio arriba del comentario
       },
       fecha: {
         fontSize: 12,  // Tamaño de letra más pequeño para la fecha
         color: '#999',  // Gris más claro para la fecha
-        marginTop: 4  // Espacio arriba de la fecha
+        marginTop: '1%'  // Espacio arriba de la fecha
       }
     });
 
