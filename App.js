@@ -12,7 +12,8 @@ import AnadirGrupo from './Pantallas/AnadirGrupo.js';
 import PantallaDeDetalles from './Pantallas/PantallaDetalles.js';
 import DetallesDeTemporada from './Pantallas/TemporadaDetalle.js';
 import EditarGrupo from './Pantallas/EditarGrupo.js';
-import Calendario from './Pantallas/Calendario.js'
+import Calendario from './Pantallas/Calendario.js';
+import ComentariosSerie from './Pantallas/ComentariosSerie.js';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,6 +59,8 @@ function App() {
           <Stack.Screen name="Temporada" component={DetallesDeTemporada}/>
           <Stack.Screen name="Editar Grupo" component={EditarGrupo}/>
           <Stack.Screen name="Calendario" component={Calendario}/>
+          <Stack.Screen name="Comentarios Serie" options={{ title: 'Comentarios' }} component={ComentariosSerie}/>
+          
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

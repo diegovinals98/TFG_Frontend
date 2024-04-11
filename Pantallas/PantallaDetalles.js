@@ -98,6 +98,10 @@ const PantallaDeDetalles = ({ route, navigation }) => {
         );
       }
 
+      function irComentaros(idSerie , NombreGrupo){
+        navigation.navigate('Comentarios Serie', { idSerie,  NombreGrupo, nombreSerie: detallesSerie.name});
+      }
+
       // Esta función será llamada cuando se presione una temporada
       const navegarADetallesDeTemporada = (idSerie, NumeroTemporada, nombreGrupo, nombreSerie) => {
         // Aquí, 'DetallesDeTemporada' es el nombre de la pantalla a la que quieres navegar.
@@ -154,6 +158,8 @@ const PantallaDeDetalles = ({ route, navigation }) => {
 
       
 
+      
+
   
     return (
       <View style={styles.container}>
@@ -203,9 +209,14 @@ const PantallaDeDetalles = ({ route, navigation }) => {
         {/* Aquí puedes agregar más detalles de la serie */}
         </ScrollView>
         {/* Botón de eliminar serie */}
+        <View style={{flexDirection: 'row', marginRight: '1%', marginLeft: '1%'}}>
       <TouchableOpacity style={styles.eliminarSerieBoton} onPress={() => eliminarSerie(idSerie, user.id)}>
         <Text style={styles.eliminarSerieTexto}>Eliminar Serie</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.comentariosBoton} onPress={() => irComentaros(idSerie,NombreGrupo ,detallesSerie.name)}>
+        <Text style={styles.eliminarSerieTexto}>Comentarios</Text>
+      </TouchableOpacity>
+      </View>
       
         
       </View>
@@ -253,9 +264,20 @@ const styles = StyleSheet.create({
     
   },eliminarSerieBoton: {
     backgroundColor: 'red', // Color de fondo
-    padding: 10, // Relleno
-    marginTop: 20, // Margen superior
-    marginBottom: 20, // Margen inferior
+    padding: '2%', // Relleno
+    marginTop: '2%', // Margen superior
+    marginRight: '2%', // Margen superior
+    marginLeft: '2%', // Margen superior
+    marginBottom: '4%', // Margen inferior
+    alignItems: 'center', // Alinea el texto al centro
+    borderRadius: 5, // Bordes redondeados
+  },comentariosBoton:{
+    backgroundColor: 'blue', // Color de fondo
+    padding: '2%', // Relleno
+    marginTop: '2%', // Margen superior
+    marginRight: '2%', // Margen superior
+    marginLeft: '2%', // Margen superior
+    marginBottom: '4%', // Margen inferior
     alignItems: 'center', // Alinea el texto al centro
     borderRadius: 5, // Bordes redondeados
   },
