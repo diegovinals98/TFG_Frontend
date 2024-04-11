@@ -155,7 +155,7 @@ const ComentariosSerie = () => {
                 console.log('Respuesta del servidor:', data.mensaje);
                 setComentarioaEnviar('');
                 setRefrescar(prev => !prev);
-                Keyboard.dismiss();
+                
                 // aqui tendriamos que refrescar para obtener los comentarios
 
                 // Aquí puedes continuar con la lógica de tu aplicación usando la respuesta del servidor
