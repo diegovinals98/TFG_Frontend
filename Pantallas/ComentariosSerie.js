@@ -169,7 +169,7 @@ const ComentariosSerie = () => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.keyboardView}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 200}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 40}
         >
           
             <View style={styles.container}>
