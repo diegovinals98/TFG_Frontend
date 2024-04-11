@@ -1,5 +1,5 @@
 // Importaciones de React, React Native y otras librerías.
-import React, { useEffect, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 
 import { 
@@ -41,6 +41,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const windowHeigh = Dimensions.get('window').height;
 
 const ComentariosSerie = () => {
+    const scrollViewRef = useRef();
     const route = useRoute()
     const { user } = useUser();
     const [nombreGrupo,setNombregrupo ] = useState(route.params.NombreGrupo)
@@ -85,6 +86,7 @@ const ComentariosSerie = () => {
             const comentarios = await responseComentarios.json();
             setComentarios(comentarios)
             console.log(comentarios);
+            
       
           } catch (error) {
             console.error('Error:', error);
@@ -92,13 +94,37 @@ const ComentariosSerie = () => {
         };
       
         obtenerYcargarDatos();
-        const intervalId = setInterval(obtenerYcargarDatos, 10000);
+        const intervalId = setInterval(obtenerYcargarDatos, 500);
+        scrollViewRef.current.scrollToEnd({ });
       
         // Opcionalmente, define una función de limpieza si es necesario realizar alguna acción cuando el componente se desmonta o antes de que el efecto se vuelva a ejecutar.
         return () => clearInterval(intervalId);
       }, [nombreGrupo, idSerie, parar, refrescar]); // Incluye parar en las dependencias para reaccionar a sus cambios
-      
 
+
+      useEffect(() => {
+        // Cuando el teclado se muestra, se hace scroll al final del ScrollView
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => scrollViewRef.current?.scrollToEnd({ animated: true })
+        );
+    
+        // Hacer scroll al final una vez cuando el componente se monta
+        scrollViewRef.current?.scrollToEnd({ animated: false });
+    
+        return () => {
+          // Limpieza del listener cuando el componente se desmonte
+          keyboardDidShowListener.remove();
+        };
+      }, []); // Las dependencias vacías aseguran que el efecto solo se ejecute al montar y desmontar
+
+      useEffect(() => {
+        // Si hay comentarios, se hace scroll al final del ScrollView.
+        if (comentarios.length > 0) {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        }
+      }, [comentarios]);
+    
       async function enviarComentario(userId){
         if (!comentarioaEnviar){
 
@@ -150,7 +176,7 @@ const ComentariosSerie = () => {
               <Text style={styles.title}>{nombreSerie}</Text>
               {/* ScrollView para los comentarios */}
               <ScrollView 
-              snapToEnd={true} 
+              ref={scrollViewRef}
               keyboardDismissMode= 'on-drag' 
               keyboardShouldPersistTaps= 'never' 
               
