@@ -29,6 +29,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { head } from 'lodash';
 import moment from 'moment';
+import 'moment/locale/es';  // Importa el locale español
+
+moment.locale('es');  // Configura globalmente moment en español
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
@@ -53,8 +56,12 @@ const ComentariosSerie = () => {
     const [cargandoComentarios, setCargandoComentarios] = useState(false);
     const [parar, setParar] = useState(false);
     const [refrescar, setRefrescar] = useState(false);
+    const [cambio, setCambio] = useState(false);
+    const comentariosRef = useRef(comentarios);
 
-
+    useEffect(() => {
+      comentariosRef.current = comentarios;
+    }, [comentarios]);
       
 
     useEffect(() => {
@@ -83,9 +90,19 @@ const ComentariosSerie = () => {
             if (!responseComentarios.ok) {
               throw new Error('Respuesta de red no fue ok');
             }
-            const comentarios = await responseComentarios.json();
-            setComentarios(comentarios)
-            console.log(comentarios);
+            const nuevosComentarios = await responseComentarios.json();
+
+            // Comprobar si los nuevos comentarios son diferentes a los actuales antes de actualizar
+            if (JSON.stringify(comentariosRef.current) !== JSON.stringify(nuevosComentarios)) {
+              setComentarios(nuevosComentarios);
+              setCambio(prev => !prev);
+              console.log('Los comentarios SI han cambiado');
+            } else {
+              
+              console.log('Los comentarios no han cambiado, no se actualiza el estado.');
+            }
+
+            //console.log(nuevosComentarios);
             
       
           } catch (error) {
@@ -94,8 +111,8 @@ const ComentariosSerie = () => {
         };
       
         obtenerYcargarDatos();
-        const intervalId = setInterval(obtenerYcargarDatos, 500);
-        scrollViewRef.current.scrollToEnd({ });
+        const intervalId = setInterval(obtenerYcargarDatos, 5000);
+        //scrollViewRef.current.scrollToEnd({ });
       
         // Opcionalmente, define una función de limpieza si es necesario realizar alguna acción cuando el componente se desmonta o antes de que el efecto se vuelva a ejecutar.
         return () => clearInterval(intervalId);
@@ -119,11 +136,16 @@ const ComentariosSerie = () => {
       }, []); // Las dependencias vacías aseguran que el efecto solo se ejecute al montar y desmontar
 
       useEffect(() => {
-        // Si hay comentarios, se hace scroll al final del ScrollView.
-        if (comentarios.length > 0) {
-          scrollViewRef.current?.scrollToEnd({ animated: true });
-        }
-      }, [comentarios]);
+      console.log('ENTRADO EN USE EFFECT CAMBIO')
+      const timer = setTimeout(() => {
+          if (comentarios.length > 0) {
+            scrollViewRef.current?.scrollToEnd({ animated: true });
+          }
+        }, 100); // 1000 milisegundos = 1 segundo
+    
+        // Limpiar el temporizador al desmontar el componente o cambiar las dependencias
+        return () => clearTimeout(timer);
+      }, [cambio, enviarComentario]);
     
       async function enviarComentario(userId){
         if (!comentarioaEnviar){
@@ -185,7 +207,7 @@ const ComentariosSerie = () => {
                 <View key={index} style={styles.comentarioContainer}>
                     <Text style={styles.autor}>{comentario.nombreCompleto}</Text>
                     <Text>{comentario.comentario}</Text>
-                    <Text style={styles.fecha}>{moment(comentario.fechaHora).format('dddd D, HH:mm')}</Text>
+                    <Text style={styles.fecha}>{moment.utc(comentario.fechaHora).format('dddd D [de] MMMM, HH:mm')}</Text>
                 </View>
                 ))}
                 </ScrollView>
@@ -235,8 +257,8 @@ const ComentariosSerie = () => {
       },
       commentBox: {
         marginTop: '1%',
-        paddingLeft: '3%',
-        paddingRight: '3%',
+        paddingLeft: '5%',
+        paddingRight: '5%',
         height: windowHeigh * 0.12, // Ajusta según necesites
       },inputRow: {
         flexDirection: 'row', // Coloca los elementos en fila
