@@ -347,8 +347,10 @@ useEffect(() => {
         <Button title='Salir del Grupo'color= 'black'  onPress={() => salirdelGrupo(idGrupo)}></Button>
       </View>
       <View style={styles.eliminar}>
-        {user.id === admin && (
+        {user.id === admin ? (
           <Button title='Eliminar grupo' color='white' onPress={() => eliminargrupo(idGrupo)}></Button>
+        ) : (
+          <Button title='No eres Admin' color='grey' disabled={true}></Button>
         )}
       </View>
       </View>

@@ -320,11 +320,6 @@ const obtenerSeries = () => {
     } catch (error) {
         console.error(error);
     }
-
-    // Esta parte se ejecutará inmediatamente después de actualizar el estado con setSeries,
-    // pero ten en cuenta que setSeries no garantiza que el estado esté actualizado inmediatamente después de su ejecución
-    //console.log("Series Buscadas:");
-    //console.log(series); 
 };
 
 
