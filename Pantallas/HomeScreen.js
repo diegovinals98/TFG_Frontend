@@ -70,6 +70,7 @@ const HomeScreen = () => {
   const [serieDetalle, setSerieDetalle] = useState([]); // Estado para detalles específicos de una serie.
   const [seriesIds, setseriesIds] = useState([]);
   const [seriesDetalles, setSeriesDetalles] = useState([]);
+  const [idelegido, setIdElegido] = useState();
 
   // Estado para la visibilidad del menú desplegable y el grupo seleccionado.
   const [TodosGrupos, setTodosGrupos] = useState([]); // Estado para almacenar todos los grupos.
@@ -137,95 +138,20 @@ const HomeScreen = () => {
     console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
     console.log(TodosGrupos);
     
-
-    /** 
-    if(TodosGrupos.length == 0){
-      console.log('TodosGrupos esta vacio')
-      setValue('Grupos');
-    }
-    */
   }
 
-  async function enviarTokenAlBackend(token, userId) {
-    const response = await fetch('https://apitfg.lapspartbox.com/guardar-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token, userId }),
-    });
   
-    if (!response.ok) {
-      console.error('Hubo un problema al enviar el token al servidor');
-      return;
-    }
-  
-    const responseBody = await response.text();
-    console.log('Respuesta del servidor:', responseBody);
-  }
-
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
-  
-  Notifications.addNotificationReceivedListener(notification => {
-    console.log(notification);
-    // Tu código para manejar la notificación cuando se recibe mientras la app está abierta
-  });
-  
-  Notifications.addNotificationResponseReceivedListener(response => {
-    console.log(response);
-    // Tu código para manejar lo que sucede cuando el usuario toca/responds a la notificación
-  });
-
-  const registerForPushNotificationsAsync = async () => {
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      const token = (await Notifications.getExpoPushTokenAsync()).data; // EXPO 
-      //const tokenObject = await Notifications.getDevicePushTokenAsync();
-      //const token = tokenObject.data;
-      console.log('TOKEN PUSH: ' +  token)
-      // enviamos el token al backend
-      await enviarTokenAlBackend(token, user.id);
-      // Aquí envías el token al backend
 
 
-      // ...
-    } else {
-      alert('Must use physical device for Push Notifications');
-    }
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-  };
-
-
-const obtenerSeriesDelUsuario = async (userId, value) => {
-  console.log('obtenerSeriesDelUsuario: ' + value);
+const obtenerSeriesDelUsuario = async (userId, nombre, idgrupo ) => {
+  console.log('Obtener series del usuario con id: ' + userId);
+  console.log('Obtener series del grupo con id: ' + idgrupo);
+  console.log('Obtener series del grupo con nombre: ' + nombre);
   try {
     // Suponiendo que el servidor espera 'value' como parámetro de consulta
-    const url = new URL(`https://apitfg.lapspartbox.com/series-ids-usuario/${userId}`);
-    url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
-
+    
+    const url = new URL(`https://apitfg.lapspartbox.com/series-ids-usuario/${userId}/${idgrupo}`);
+    
     // Llamada al endpoint con userId y value como parámetros de consulta
     const respuesta = await fetch(url);
     if (!respuesta.ok) {
@@ -245,7 +171,7 @@ const obtenerSeries = () => {
     console.log('Estamos en grupos, por lo que no hay series')
     setSeriesDetalles([])
   }else {
-    obtenerSeriesDelUsuario(user.id, value).then(seriesIds => {
+    obtenerSeriesDelUsuario(user.id, value, idelegido).then(seriesIds => {
       // Verifica si seriesIds está vacío
       if (seriesIds.length === 0) {
         console.log('No hay series para mostrar');
@@ -389,7 +315,8 @@ const obtenerSeries = () => {
 
 
   const editarGrupo = (nombreGrupo) => {
-    navigation.navigate('Editar Grupo', { nombreGrupo });
+    
+    navigation.navigate('Editar Grupo', { idelegido , nombreGrupo});
   }
 
   const verCalendario = (nombreGrupo) => {
@@ -432,6 +359,7 @@ const obtenerSeries = () => {
       onBlur={() => setIsFocus(false)}
       onChange={item => {
         setValue(item.Nombre_grupo);
+        setIdElegido(item.ID_Grupo);
         obtenerSeries();
         setIsFocus(false);
         onRefresh()
