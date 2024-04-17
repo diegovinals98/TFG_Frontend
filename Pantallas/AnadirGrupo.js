@@ -86,7 +86,8 @@ const AnadirGrupo = () => {
       // Preparar el cuerpo de la solicitud
       const body = {
         nombreGrupo: nombreGrupo,
-        nombresUsuarios: inputsUsuarios.map(input => input.value) // Extrae solo los nombres de usuario del arreglo de inputs
+        nombresUsuarios: inputsUsuarios.map(input => input.value), // Extrae solo los nombres de usuario del arreglo de inputs
+        admin: user.id
       };
     
       try {

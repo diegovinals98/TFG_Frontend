@@ -42,28 +42,44 @@ const EditarGrupo = () => {
   const [idGrupo,  setIdGrupo] = useState();
   const [refrescar, setRefrescar] = useState(false);
   const navigation = useNavigation();
+  const [admin, setAdmin] = useState(0);
   
 
   const [showAddUser, setShowAddUser] = useState(false);
 const [newUserName, setNewUserName] = useState('');
 
 
-  useEffect(() => {
-    const fetchMiembrosGrupo = async () => {
-      try {
-        // Asume que el servidor está corriendo en localhost y tu dispositivo puede acceder a él por esta dirección
-        const response = await fetch(`https://apitfg.lapspartbox.com/miembros-grupo/${nombreGrupo}`);
-        const data = await response.json();
-        setMiembros(data.members);
-        setIdGrupo(data.groupId)
-        console.log(data)
-      } catch (error) {
-        console.error('Error al obtener miembros del grupo:', error);
-      }
-    };
+useEffect(() => {
+  const fetchMiembrosGrupo = async () => {
+    try {
+      const response = await fetch(`https://apitfg.lapspartbox.com/miembros-grupo/${nombreGrupo}`);
+      const data = await response.json();
+      setMiembros(data.members);
+      setIdGrupo(data.groupId);
+      console.log(data);
+      // Ahora llama a fetchIDAdmin aquí, justo después de obtener y establecer idGrupo
+      await fetchIDAdmin(data.groupId);
+    } catch (error) {
+      console.error('Error al obtener miembros del grupo:', error);
+    }
+  };
 
-    fetchMiembrosGrupo();
-  }, [nombreGrupo, refrescar]);
+  const fetchIDAdmin = async (idGrupo) => {
+    try {
+      const response = await fetch(`https://apitfg.lapspartbox.com/id-admin/${idGrupo}`);
+      const data = await response.json();
+      console.log(data.admin[0].Admin);
+      setAdmin(data.admin[0].Admin);
+      //console.log('ADMIN ' + admin);
+    } catch (error) {
+      console.error('Error al obtener id del admin:', error);
+    }
+  };
+
+  // Eliminamos los timers y simplemente llamamos a fetchMiembrosGrupo
+  fetchMiembrosGrupo();
+
+}, [nombreGrupo, refrescar]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -324,14 +340,16 @@ const [newUserName, setNewUserName] = useState('');
       {showAddUser && (
         <Button title="Confirmar añadir usuario" color='black' onPress={addUserToGroup} />
       )}
-    </View>
+    </View> 
     
     <View style={styles.fixToText}>
       <View style={styles.salir}>
         <Button title='Salir del Grupo'color= 'black'  onPress={() => salirdelGrupo(idGrupo)}></Button>
       </View>
       <View style={styles.eliminar}>
-        <Button title='Eliminar grupo' color= 'white' onPress={() => eliminargrupo(idGrupo)}></Button>  
+        {user.id === admin && (
+          <Button title='Eliminar grupo' color='white' onPress={() => eliminargrupo(idGrupo)}></Button>
+        )}
       </View>
       </View>
     </View>
