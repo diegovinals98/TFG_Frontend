@@ -220,6 +220,8 @@ const ComentariosSerie = () => {
                     autoCapitalize="sentences"
                     placeholder="Escribe un comentario"
                     value={comentarioaEnviar} 
+                    multiline={true} 
+                    numberOfLines={1} // Número inicial de líneas
                     />
                     <TouchableOpacity style={styles.button} onPress={() => enviarComentario(user.id)}>
                     <Text style={styles.buttonText}>Enviar</Text>
@@ -272,6 +274,7 @@ const ComentariosSerie = () => {
         padding: windowHeigh * 0.01,
         marginRight: '1%', // Añadido para separar el input del botón
         borderRadius: 5,
+        
       },
       button: {
         flex: 1,
