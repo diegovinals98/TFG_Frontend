@@ -146,6 +146,7 @@ const HomeScreen = () => {
 const obtenerSeriesDelUsuario = async (userId, nombre, idgrupo ) => {
   console.log('Obtener series del usuario con id: ' + userId);
   console.log('Obtener series del grupo con id: ' + idgrupo);
+  setIdElegido(idgrupo)
   console.log('Obtener series del grupo con nombre: ' + nombre);
   try {
     // Suponiendo que el servidor espera 'value' como parámetro de consulta
@@ -320,7 +321,7 @@ const obtenerSeries = () => {
   }
 
   const verCalendario = (nombreGrupo) => {
-    navigation.navigate('Calendario', { nombreGrupo });
+    navigation.navigate('Calendario', { nombreGrupo, idelegido });
   }
   
 

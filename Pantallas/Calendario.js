@@ -40,6 +40,8 @@ const Calendario = () => {
     const [selected, setSelected] = useState('');
     const [seriesDetalles, setSeriesDetalles] = useState([]);
     const [markedDates, setMarkedDates] = useState({});
+    const [idGrupo, setIdgrupo] = useState(route.params.idelegido)
+    console.log('ID DEL GRUPO: ' + idGrupo)
 
     useEffect(() => {
         const newMarkedDates = {};
@@ -62,13 +64,13 @@ const Calendario = () => {
       );
 
   
-    const obtenerSeriesDelUsuario = async (userId, value) => {
-        console.log('obtenerSeriesDelUsuario: ' + value);
+    const obtenerSeriesDelUsuario = async (userId, idgrupo) => {
+        console.log('obtenerSeriesDelUsuario: ' + idgrupo);
         try {
           // Suponiendo que el servidor espera 'value' como parámetro de consulta
-          const url = new URL(`https://apitfg.lapspartbox.com/series-ids-usuario/${userId}`);
-          url.searchParams.append('value', value); // Agrega 'value' como parámetro de consulta
-      
+          
+          const url = new URL(`https://apitfg.lapspartbox.com/series-ids-usuario/${userId}/${idgrupo}`);
+          
           // Llamada al endpoint con userId y value como parámetros de consulta
           const respuesta = await fetch(url);
           if (!respuesta.ok) {
@@ -88,7 +90,7 @@ const Calendario = () => {
           console.log('Estamos en grupos, por lo que no hay series')
           setSeriesDetalles([])
         }else {
-          obtenerSeriesDelUsuario(user.id, nombreGrupo).then(seriesIds => {
+          obtenerSeriesDelUsuario(user.id, idGrupo).then(seriesIds => {
             // Verifica si seriesIds está vacío
             if (seriesIds.length === 0) {
               console.log('No hay series para mostrar');
