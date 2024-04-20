@@ -87,44 +87,56 @@ const HomeScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('HOME SCREEN');
+      // Llama a las funciones que cargan los datos
+      console.log('---------------------------------------- HOME SCREEN ----------------------------------------');
       llamarAGrupos();
+      obtenerSeries();
       resetearBusqueda();
+      setRefrescar(prev => !prev);
+
     }, [])
   );
+
   
+
   const onRefresh = React.useCallback(() => {
     setRefrescando(true);
+    // Aquí debes llamar a las funciones que actualizan tus datos
     resetearBusqueda();
+    setRefrescar(prev => !prev);
     llamarAGrupos();
-    console.log('ID elegido: ' + idelegido);
+    obtenerSeries();
+    console.log(' ---------------------- ID elegido ----------------------' + idelegido)
+  
     setRefrescando(false);
-  }, [idelegido]);
-  
-  // Esta función ya no es necesaria si solo establece el estado.
-  // const handleSelectItem = (item) => {
-  //   setSelectedItem(item.Nombre_grupo);
-  //   setIsVisible(false);
-  // };
-  
+  }, []);
+    
+  // Función para manejar la selección de un grupo.
+  const handleSelectItem = (item) => {
+    setSelectedItem(item.Nombre_grupo);
+    setIsVisible(false);
+  };
+
   async function anadirGrupo() {
     navigation.navigate('Añadir Grupo')
   }
-  
-  const llamarAGrupos = () => {
-    console.log('Obteniendo grupos para', user?.nombre, user?.apellidos);
+
+  // Función para realizar la llamada a la API y obtener los grupos del Usuario
+  const llamarAGrupos = () =>{
+    console.log('Entrado en llamarGrupos')
     fetch(`https://apitfg.lapspartbox.com/grupos/${user?.id}`)
       .then((response) => response.json())
-      .then((json) => {
-        setTodosGrupos(json);
-        console.log("Grupos actualizados.");
-      })
+      .then((json) => setTodosGrupos(json))
       .catch((error) => console.error('Error al obtener los grupos:', error));
-  };
-  
+    console.log("Grupos del Usuario: " + user.nombre + user.apellidos);  
+    console.log(TodosGrupos);
+    
+  }
+
   useEffect(() => {
-    console.log('El ID elegido ha cambiado, actualizando series.');
+    console.log('El ID elegido es ahora: ' + idelegido);
     obtenerSeries();
+    // Cualquier otra acción que necesite el estado actualizado
   }, [idelegido]);
 
   
