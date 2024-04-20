@@ -106,18 +106,11 @@ const HomeScreen = () => {
     setRefrescar(prev => !prev);
     llamarAGrupos();
     obtenerSeries();
+    console.log(' ---------------------- ID elegido ----------------------' + idelegido)
   
     setRefrescando(false);
   }, []);
-
-  useEffect(() => {
-    //registerForPushNotificationsAsync();
-    // ...
     
-  }, []);
-  
-  
-
   // Función para manejar la selección de un grupo.
   const handleSelectItem = (item) => {
     setSelectedItem(item.Nombre_grupo);
@@ -140,13 +133,19 @@ const HomeScreen = () => {
     
   }
 
+  useEffect(() => {
+    console.log('El ID elegido es ahora: ' + idelegido);
+    obtenerSeries();
+    // Cualquier otra acción que necesite el estado actualizado
+  }, [idelegido]);
+
   
 
 
 const obtenerSeriesDelUsuario = async (userId, nombre, idgrupo ) => {
   console.log('Obtener series del usuario con id: ' + userId);
   console.log('Obtener series del grupo con id: ' + idgrupo);
-  setIdElegido(idgrupo)
+  //setIdElegido(idgrupo)
   console.log('Obtener series del grupo con nombre: ' + nombre);
   try {
     // Suponiendo que el servidor espera 'value' como parámetro de consulta
@@ -159,6 +158,7 @@ const obtenerSeriesDelUsuario = async (userId, nombre, idgrupo ) => {
       throw new Error('Respuesta de red no fue ok.');
     }
     const seriesIds = await respuesta.json();
+    console.log('Series: ' + seriesIds)
     return seriesIds;
   } catch (error) {
     console.error('Hubo un problema con la petición fetch:', error);
@@ -360,7 +360,11 @@ const obtenerSeries = () => {
       onBlur={() => setIsFocus(false)}
       onChange={item => {
         setValue(item.Nombre_grupo);
+        console.log('ID DE ITEM ' + item.ID_Grupo)
         setIdElegido(item.ID_Grupo);
+
+        // no hace BNIEN EL ID ELEGIdo, no se cambia
+        console.log('ID DE ITEM ' + idelegido)
         obtenerSeries();
         setIsFocus(false);
         onRefresh()
